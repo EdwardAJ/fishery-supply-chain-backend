@@ -2,6 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import dotenv from 'dotenv'
+dotenv.config()
+
 import FabricCAServices from 'fabric-ca-client';
 import { Wallets, X509Identity } from 'fabric-network';
 import fs from 'fs';
@@ -9,6 +12,8 @@ import path from 'path';
 
 async function main() {
     try {
+        const ordererAdmin = process.env.ORDERER_ADMIN as string
+        const ordererPassword = process.env.ORDERER_PASSWORD as string
         // load the network configuration
         const ccpPath = path.resolve(__dirname, '..','test-network','organizations','ordererOrganizations','example.com', 'connection-orderer.json');
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
@@ -24,14 +29,14 @@ async function main() {
         console.log(`Wallet path: ${walletPath}`);
 
         // Check to see if we've already enrolled the admin user.
-        const identity = await wallet.get('admin');
+        const identity = await wallet.get(ordererAdmin);
         if (identity) {
-            console.log('An identity for the admin user "admin" already exists in the wallet');
+            console.log(`An identity for the admin user ${ordererAdmin} already exists in the wallet`);
             return;
         }
 
         // Enroll the admin user, and import the new identity into the wallet.
-        const enrollment = await ca.enroll({ enrollmentID: 'admin-orderer', enrollmentSecret: 'PASSWORD_ORDERER' });
+        const enrollment = await ca.enroll({ enrollmentID: ordererAdmin, enrollmentSecret: ordererPassword});
         const x509Identity: X509Identity = {
             credentials: {
                 certificate: enrollment.certificate,
@@ -40,11 +45,11 @@ async function main() {
             mspId: 'OrdererMSP',
             type: 'X.509',
         };
-        await wallet.put('admin', x509Identity);
-        console.log('Successfully enrolled admin user "admin" and imported it into the wallet');
+        await wallet.put(ordererAdmin, x509Identity);
+        console.log(`Successfully enrolled admin user ${ordererAdmin} and imported it into the wallet`);
 
     } catch (error) {
-        console.error(`Failed to enroll admin user "admin": ${error}`);
+        console.error(`Failed to enroll: ${error}`);
         process.exit(1);
     }
 }
