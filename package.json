@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node src/index.ts",
+    "enroll-orderer-admin": "ts-node blockchain/scripts/enrollAdmin.ts",
     "lint": "eslint '*/**/*.{js,ts,tsx}'",
     "lint-fix": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },
