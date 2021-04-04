@@ -1,4 +1,4 @@
-import { createLogger, transports, Logger } from 'winston'
+import { createLogger, transports, Logger } from "winston"
 
 const logger: Logger = createLogger({
   transports: [
@@ -6,4 +6,6 @@ const logger: Logger = createLogger({
   ]
 })
 
-export default logger
+export {
+  logger
+}

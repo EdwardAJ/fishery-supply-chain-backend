@@ -17,6 +17,7 @@
       "@typescript-eslint"
   ],
   "rules": {
-      "semi": "off"
+      "semi": ["error", "never"],
+      "quotes": ["error", "double"]
   }
 }
