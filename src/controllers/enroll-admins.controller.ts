@@ -19,7 +19,6 @@ const enrollAdmin = async (req: Request, res: ExpressResponse):
     const ordererAdminUsername = req.headers["username"] as string
     const isCurrentUserAnOrdererAdmin =
       isAdminOrderer(ordererAdminUsername) && await adminExists(ordererAdminUsername)
-    
     if (!isCurrentUserAnOrdererAdmin)
       return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
 
@@ -30,8 +29,7 @@ const enrollAdmin = async (req: Request, res: ExpressResponse):
     // TODO: Enroll admin to fabric
     await insertAdmin(orgAdminUsername, hashedGeneratedPassword)
     const jwtToken = signAndGetToken(orgAdminUsername)
-    return sendSuccessResponse(
-      res, `${orgAdminUsername} successfully enrolled!`, { token: jwtToken })
+    return sendSuccessResponse(res, `${orgAdminUsername} successfully enrolled!`, { token: jwtToken })
     
   } catch (error) {
     logger.error(error)

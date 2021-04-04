@@ -1,4 +1,7 @@
 import { Router } from "express"
+import { enrollAdminRouter } from "./enroll-admin.route"
+
 const router: Router = Router()
-// TODO: add some routes
-export default router
+router.use("/enroll-admin", enrollAdminRouter)
+
+export { router as mainRoutes }
