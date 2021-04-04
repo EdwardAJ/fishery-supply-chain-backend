@@ -1,6 +1,6 @@
 import { generate } from "generate-password"
 import { hash } from "bcrypt"
-import { SALT_ROUNDS } from "constants/password.constant"
+import { SALT_ROUNDS } from "~/constants/password.constant"
 
 const getGeneratedPassword = (): string => {
   return generate( { length : 10, numbers: true })

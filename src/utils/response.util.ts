@@ -1,5 +1,5 @@
-import { Statuses } from "constants/http/status.constant"
-import { Codes } from "constants/http/code.constant"
+import { Statuses } from "~/constants/http/status.constant"
+import { Codes } from "~/constants/http/code.constant"
 import { Response as ExpressResponse } from "express"
 import { Response } from "../models/response.model"
 

@@ -2,9 +2,9 @@
 
 import jwt from "jsonwebtoken"
 import { Request, Response, NextFunction } from "express"
-import { Codes } from "constants/http/code.constant"
-import { sendErrorResponse } from "utils/response.util"
-import { logger } from "utils/logger.util"
+import { Codes } from "~/constants/http/code.constant"
+import { sendErrorResponse } from "~/utils/response.util"
+import { logger } from "~/utils/logger.util"
 
 
 const authorizeToken = (req: Request, res: Response, next: NextFunction) => {

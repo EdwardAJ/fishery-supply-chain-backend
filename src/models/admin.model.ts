@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose"
-import { ModelNames } from "constants/model.constant"
+import { ModelNames } from "~/constants/model.constant"
 
 const schema = new Schema({
   username: { type: String, required: true },

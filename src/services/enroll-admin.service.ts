@@ -9,8 +9,8 @@ import path from "path"
 import {
   getOrgAdminUsername, getOrgPassword, getOrgDomain,
   getOrgMspId, getOrgConnectionFileName
-} from "utils/organization.util"
-import { logger } from "utils/logger.util"
+} from "~/utils/organization.util"
+import { logger } from "~/utils/logger.util"
 
 const enrollAdminToBlockchain = async (orgName: string): Promise<void> => {
   const orgAdminUsername = getOrgAdminUsername(orgName)

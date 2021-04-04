@@ -1,5 +1,5 @@
-import { AdminModel } from "models/admin.model"
-import { AdminInterface } from "interfaces/admin.interface"
+import { AdminModel } from "~/models/admin.model"
+import { AdminInterface } from "~/interfaces/admin.interface"
 
 const insertAdmin =
   async (adminUsername: string, hashedPassword: string):Promise<void> => {

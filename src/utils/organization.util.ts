@@ -1,4 +1,4 @@
-import { OrgNames, OrgDomains, OrgMspIds } from "constants/organization.constant"
+import { OrgNames, OrgDomains, OrgMspIds } from "~/constants/organization.constant"
 
 const getOrgAdminUsername = (orgName: string): string => {
   switch (orgName) {
@@ -85,7 +85,8 @@ const getOrgMspId = (orgName: string): string => {
 }
 
 const getOrgConnectionFileName = (orgMspId: string): string => {
-  // Remove "MSP" character from orgMspId, then lowercase the string
+  // Remove "MSP" characters (last three characters) from orgMspId, 
+  // then lowercase the string
   const orgNumber = orgMspId.slice(0, -3).toLowerCase()
   return `connection-${orgNumber}.json`
 }

@@ -7,10 +7,10 @@ const app = express()
 import morgan from "morgan"
 import cors from "cors"
 
-import database from "./database"
-import { logger } from "./utils/logger.util"
-import { mainRoutes } from "./routes"
-import { DEFAULT_PORT } from "./constants/env.constant"
+import database from "~/database"
+import { logger } from "~/utils/logger.util"
+import { mainRoutes } from "~/routes"
+import { DEFAULT_PORT } from "~/constants/env.constant"
 
 const main = async () => {
   logger.info("Initializing app...")
