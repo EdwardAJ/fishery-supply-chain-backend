@@ -1,7 +1,7 @@
 import { sign } from "jsonwebtoken"
 
-const signAndGetJwt = (payload: string): string => {
-  return sign(payload, process.env.JWT_SECRET as string)
+const signAndGetJwt = (username: string): string => {
+  return sign({ username }, process.env.JWT_SECRET as string, { expiresIn: "1h" })
 }
 
 export {

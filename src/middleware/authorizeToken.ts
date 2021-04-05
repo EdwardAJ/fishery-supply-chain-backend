@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import jwt from "jsonwebtoken"
@@ -13,13 +14,13 @@ const authorizeToken = (req: Request, res: Response, next: NextFunction) => {
     return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
   }
 
-  jwt.verify(token, process.env.JWT_SECRET as string, (err, username) => {
-    if (err || !username) {
+  jwt.verify(token, process.env.JWT_SECRET as string, (err, user: any) => {
+    logger.info("Request sent by %O", user)
+    if (err || !user?.username) {
       logger.error(`Error: ${err}`)
       return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
     }
-    logger.info(`Request sent by ${username}`)
-    req.headers["username"] = username ? username.toString() : ""
+    req.headers["username"] = user.username
     next()
   })
 }
