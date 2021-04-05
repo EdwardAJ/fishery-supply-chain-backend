@@ -34,9 +34,7 @@ const enrollAdmin = async (req: Request, res: ExpressResponse):
     const hashedGeneratedPassword = await getHashedPassword(generatedPassword)
     
     await insertAdmin(orgAdminUsername, hashedGeneratedPassword)
-    const jwt = signAndGetJwt(orgAdminUsername)
     return sendSuccessResponse(res, `${orgAdminUsername} successfully enrolled!`, {
-      token: jwt,
       password: generatedPassword
     })
     

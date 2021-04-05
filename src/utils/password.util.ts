@@ -1,5 +1,5 @@
 import { generate } from "generate-password"
-import { hash } from "bcrypt"
+import { compare, hash } from "bcrypt"
 import { SALT_ROUNDS } from "~/constants/password.constant"
 
 const getGeneratedPassword = (): string => {
@@ -7,11 +7,16 @@ const getGeneratedPassword = (): string => {
 }
 
 const getHashedPassword = async (password: string): Promise<string> => {
-  const hashedPassword = await hash(password, SALT_ROUNDS)
-  return hashedPassword
+  return await hash(password, SALT_ROUNDS)
+}
+
+const arePasswordsSame =
+  async (password: string, hashedPassword: string): Promise<boolean> => {
+  return await compare(password, hashedPassword)
 }
 
 export {
   getGeneratedPassword,
-  getHashedPassword
+  getHashedPassword,
+  arePasswordsSame
 }

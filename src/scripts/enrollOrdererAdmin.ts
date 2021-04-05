@@ -70,8 +70,6 @@ const main = async () => {
 
     const hashedGeneratedPassword = await getHashedPassword(generatedPassword)
     await insertAdmin(ordererAdminUsername, hashedGeneratedPassword)
-    const jwt = signAndGetJwt(ordererAdminUsername)
-    console.log(`jwt: ${jwt}`)
     process.exit(0)
 
   } catch (error) {

@@ -10,6 +10,12 @@ const insertAdmin =
   return await AdminModel.create(admin)
 }
 
+const getAdminByUsername = async (adminUsername: string): Promise<AdminInterface> => {
+  const admin: AdminInterface = await AdminModel.findOne({ username: adminUsername })
+  return admin
+}
+
 export {
-  insertAdmin
+  insertAdmin,
+  getAdminByUsername
 }
