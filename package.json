@@ -7,8 +7,8 @@
   "author": "EdwardAJ <13517115@std.stei.itb.ac.id>",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node -r tsconfig-paths/register src/index.ts",
-    "enroll-orderer-admin": "ts-node blockchain/scripts/enrollOrdererAdmin.ts",
+    "start": "ts-node-dev --respawn -r tsconfig-paths/register src/index.ts",
+    "enroll-orderer-admin": "ts-node -r tsconfig-paths/register src/scripts/enrollOrdererAdmin.ts",
     "lint": "eslint '*/**/*.{js,ts,tsx}'",
     "lint-fix": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },

@@ -8,9 +8,7 @@ import { logger } from "~/utils/logger.util"
 
 
 const authorizeToken = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers["Authorization"] as string
-  const token = authHeader?.split(" ")[1]
-
+  const token = req.headers["authorization"] as string
   if (!token) { 
     return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
   }
@@ -21,7 +19,7 @@ const authorizeToken = (req: Request, res: Response, next: NextFunction) => {
       return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
     }
     logger.info(`Request sent by ${username}`)
-    req.headers["user"] = username ? username.toString() : ""
+    req.headers["username"] = username ? username.toString() : ""
     next()
   })
 }

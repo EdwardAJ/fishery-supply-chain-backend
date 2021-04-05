@@ -9,7 +9,7 @@ import cors from "cors"
 
 import database from "~/database"
 import { logger } from "~/utils/logger.util"
-import { mainRoutes } from "~/routes"
+import { mainRouter } from "~/routes"
 import { DEFAULT_PORT } from "~/constants/env.constant"
 
 const main = async () => {
@@ -20,9 +20,9 @@ const main = async () => {
     logger.info("MongoDB successfully connected")
 
     app.use(morgan("combined"))
-    app.use(cors)
+    app.use(cors())
     app.use(express.json())
-    app.use(mainRoutes)
+    app.use(mainRouter)
 
     const PORT = process.env.PORT || DEFAULT_PORT
     app.listen(PORT, () => {

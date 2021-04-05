@@ -24,14 +24,21 @@ const enrollAdmin = async (req: Request, res: ExpressResponse):
     if (!isCurrentUserAnOrdererAdmin)
       return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
 
-    const { orgName } = req.body
+    const orgName = req.body.org_name
     const orgAdminUsername = getOrgAdminUsername(orgName)
-    const hashedGeneratedPassword = await getHashedPassword(getGeneratedPassword())
-    
+    if (orgAdminUsername === "")
+      return sendErrorResponse(res, "Admin username not found")
+
     await enrollAdminToBlockchain(orgName)
+    const generatedPassword = getGeneratedPassword()
+    const hashedGeneratedPassword = await getHashedPassword(generatedPassword)
+    
     await insertAdmin(orgAdminUsername, hashedGeneratedPassword)
     const jwt = signAndGetJwt(orgAdminUsername)
-    return sendSuccessResponse(res, `${orgAdminUsername} successfully enrolled!`, { token: jwt })
+    return sendSuccessResponse(res, `${orgAdminUsername} successfully enrolled!`, {
+      token: jwt,
+      password: generatedPassword
+    })
     
   } catch (error) {
     logger.error(error)

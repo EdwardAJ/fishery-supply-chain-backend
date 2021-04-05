@@ -1,7 +1,7 @@
-import { Router } from "express"
+import express from "express"
 import { enrollAdminRouter } from "./enroll-admin.route"
 
-const router: Router = Router()
-router.use("/enroll-admin", enrollAdminRouter)
+const router = express.Router()
+router.use("/enroll", enrollAdminRouter)
 
-export { router as mainRoutes }
+export { router as mainRouter }
