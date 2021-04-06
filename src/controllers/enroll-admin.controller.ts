@@ -11,7 +11,6 @@ import { adminExists } from "~/utils/wallet.util"
 import { getOrgAdminUsername, isAdminOrderer } from "~/utils/organization.util"
 import { getHashedPassword, getGeneratedPassword } from "~/utils/password.util"
 import { logger } from "~/utils/logger.util"
-import { signAndGetJwt } from "~/utils/jwt.util"
 
 // Enroll admins for org1 or org2 or org3.
 // Prerequisite: orderer admin must be enrolled first.
