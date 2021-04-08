@@ -3,7 +3,6 @@ class FisheryProductLot {
     private readonly _id: string,
     private readonly _weight: number,
     private readonly _commodityType: string,
-    private readonly _createdAt: Date
   ) {}
 
   get id(): string {
@@ -16,10 +15,6 @@ class FisheryProductLot {
 
   get commodityType(): string {
     return this._commodityType
-  }
-
-  get createdAt(): Date {
-    return this._createdAt
   }
 }
 

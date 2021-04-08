@@ -12,13 +12,12 @@ class CaptureActivity extends Activity {
     _activityListId: string,
     _currentLot: FisheryProductLot,
     _location: GPSLocation,
-    _createdAt: Date,
     _owner: User,
     private readonly _vessel: Vessel,
     private readonly _harbor: Harbor
   ) {
     super(_id, _parentIds, _activityListId,
-      _currentLot,  _location, _createdAt, _owner)
+      _currentLot,  _location, _owner)
   }
 
   get vessel() : Vessel {

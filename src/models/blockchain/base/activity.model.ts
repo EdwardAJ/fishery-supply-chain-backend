@@ -9,7 +9,6 @@ abstract class Activity {
     protected readonly _activityListId: string,
     protected readonly _currentLot: FisheryProductLot,
     protected readonly _location: GPSLocation,
-    protected readonly _createdAt: Date,
     protected readonly _owner: User
   ){}
   
@@ -31,10 +30,6 @@ abstract class Activity {
 
   get location(): GPSLocation {
     return this._location
-  }
-
-  get createdAt(): Date {
-    return this._createdAt
   }
 
   get owner(): User {

@@ -1,4 +1,5 @@
 import { OrgNames, OrgDomains, OrgMspIds } from "~/constants/organization.constant"
+import { OrgCredentialsInterface } from "~/interfaces/organization.interface"
 
 const getOrgAdminUsername = (orgName: string): string => {
   switch (orgName) {
@@ -16,6 +17,27 @@ const getOrgAdminUsername = (orgName: string): string => {
     }
     case OrgNames.ORG_ORDERER: {
       return process.env.ORDERER_ADMIN as string
+    }
+    default: return ""
+  }
+}
+
+const getOrgName = (orgAdminUsername: string): string => {
+  switch (orgAdminUsername) {
+    case process.env.ORG1_ADMIN: {
+      return OrgNames.ORG_1
+    }
+    case process.env.ORG2_ADMIN: {
+      return OrgNames.ORG_2
+    }
+    case process.env.ORG3_ADMIN: {
+      return OrgNames.ORG_3
+    }
+    case process.env.ORG4_ADMIN: {
+      return OrgNames.ORG_4
+    }
+    case process.env.ORDERER_ADMIN: {
+      return OrgNames.ORG_ORDERER
     }
     default: return ""
   }
@@ -95,11 +117,27 @@ const isAdminOrderer = (ordererAdminUsername: string): boolean => {
   return process.env.ORDERER_ADMIN === ordererAdminUsername
 }
 
+const isAdminOrg1 = (org1AdminUsername: string): boolean => {
+  return process.env.ORG1_ADMIN === org1AdminUsername
+}
+
+const getOrgCredentials = (orgName: string): OrgCredentialsInterface => {
+  return {
+    adminUsername: getOrgAdminUsername(orgName),
+    password: getOrgPassword(orgName),
+    domain: getOrgDomain(orgName),
+    mspId: getOrgMspId(orgName)
+  }
+}
+
 export {
   getOrgAdminUsername,
+  getOrgName,
   getOrgDomain,
   getOrgMspId,
+  getOrgCredentials,
   getOrgConnectionFileName,
   getOrgPassword,
-  isAdminOrderer
+  isAdminOrderer,
+  isAdminOrg1
 }
