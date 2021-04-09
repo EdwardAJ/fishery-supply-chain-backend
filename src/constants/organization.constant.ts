@@ -23,8 +23,14 @@ enum OrgMspIds {
   ORG_ORDERER = "OrdererMSP"
 }
 
+enum OrgRoles {
+  ADMIN = "admin",
+  USER = "user"
+}
+
 export {
   OrgNames,
   OrgDomains,
-  OrgMspIds
+  OrgMspIds,
+  OrgRoles
 }

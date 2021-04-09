@@ -1,8 +1,10 @@
-interface AdminInterface {
+interface UserInterface {
   username: string
-  hashed_password: string
+  hashed_password: string,
+  role: string,
+  organization: string
 }
 
 export {
-  AdminInterface
+  UserInterface
 }

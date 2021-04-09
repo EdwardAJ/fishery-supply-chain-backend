@@ -1,6 +1,6 @@
 import { Request, Response as ExpressResponse } from "express"
 import { Response } from "~/models/response.model"
-import { getAdminByUsername } from "~/services/admin.service"
+import { getUserByUsername } from "~/services/user.service"
 import { logger } from "~/utils/logger.util"
 import { arePasswordsSame } from "~/utils/password.util"
 import { signAndGetJwt } from "~/utils/jwt.util"
@@ -14,7 +14,7 @@ const login = async (req: Request, res: ExpressResponse):
     if (!username || !password)
       return sendErrorResponse(res, "Username or password is required")
 
-    const admin = await getAdminByUsername(username)
+    const admin = await getUserByUsername(username)
     if (!admin) return sendErrorResponse(res, "Admin not found", Codes.UNAUTHORIZED)
     
     const { hashed_password: hashedPassword } = admin

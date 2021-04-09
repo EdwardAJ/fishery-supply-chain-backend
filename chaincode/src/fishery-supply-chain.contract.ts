@@ -1,11 +1,10 @@
 import { Context, Contract } from "fabric-contract-api"
-import { logger } from "~/utils/logger.util"
 
 export class FisherySupplyChainContract extends Contract {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async initLedger(context: Context): Promise<void> {
-    logger.info("Ledger is being initialized")
+    console.log("Ledger is being initialized")
   }
 
   public async createActivity(context: Context, activityId: string, activityJson: string): Promise<void> {

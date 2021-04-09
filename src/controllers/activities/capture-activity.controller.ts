@@ -11,21 +11,20 @@ import { FisheryProductLot } from "~/models/blockchain/base/fishery-product-lot.
 
 import { getGeneratedUuid } from "~/utils/uuid.util"
 import { logger } from "~/utils/logger.util"
-import { getOrgName, isAdminOrg1 } from "~/utils/organization.util"
-import { adminExists } from "~/utils/wallet.util"
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { invoke } from "~/services/invoke.service"
+import { getUserByUsername } from "~/services/user.service"
 
 const captureFisheryProduct = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
-      const org1AdminUsername = req.headers["username"] as string
-      const isCurrentUserAnOrg1Admin =
-        isAdminOrg1(org1AdminUsername) && await adminExists(org1AdminUsername)
+      const username = req.headers["username"] as string
 
-      if (!isCurrentUserAnOrg1Admin)
+      const user = await getUserByUsername(username)
+      if (!user)
         return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
-      
+
+      const { organization: orgName } = user
       const {
         location: { latitude, longitude },
         fishery_product: {weight, commodity_type: commodityType},
@@ -33,7 +32,6 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
         harbor: { id: harborId, name: harborName }
       } = req.body
 
-      const orgName = getOrgName(org1AdminUsername)
       const captureActivity = new CaptureActivity(
         getGeneratedUuid(),
         null,
@@ -42,12 +40,12 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
           getGeneratedUuid(), weight, commodityType
         ),
         new GPSLocation(latitude, longitude),
-        new User(org1AdminUsername, orgName),
+        new User(username, orgName),
         new Vessel(vesselId, vesselName),
         new Harbor(harborId, harborName)
       )
 
-      await invoke(orgName, "FisherySupplyChainContract", "createActivity", captureActivity)
+      await invoke(orgName, username, "basic", "createActivity", captureActivity)
       return sendSuccessResponse(res, "Captured!", { activity: captureActivity })
     } catch (error) {
       logger.error(error)

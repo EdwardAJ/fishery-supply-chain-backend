@@ -106,11 +106,20 @@ const getOrgMspId = (orgName: string): string => {
   }
 }
 
+// Remove "MSP" characters (last three characters) from orgMspId, 
+// then lowercase the string
+const getOrgNumber = (orgMspId: string): string => {
+  return orgMspId.slice(0, -3).toLowerCase()
+}
+
 const getOrgConnectionFileName = (orgMspId: string): string => {
-  // Remove "MSP" characters (last three characters) from orgMspId, 
-  // then lowercase the string
-  const orgNumber = orgMspId.slice(0, -3).toLowerCase()
+  const orgNumber = getOrgNumber(orgMspId)
   return `connection-${orgNumber}.json`
+}
+
+const getOrgAffiliation = (orgMspId: string): string => {
+  const orgNumber = getOrgNumber(orgMspId)
+  return `${orgNumber}.department1`
 }
 
 const isAdminOrderer = (ordererAdminUsername: string): boolean => {
@@ -119,6 +128,22 @@ const isAdminOrderer = (ordererAdminUsername: string): boolean => {
 
 const isAdminOrg1 = (org1AdminUsername: string): boolean => {
   return process.env.ORG1_ADMIN === org1AdminUsername
+}
+
+const isAdminOrg2 = (org2AdminUsername: string): boolean => {
+  return process.env.ORG2_ADMIN === org2AdminUsername
+}
+
+const isAdminOrg3 = (org3AdminUsername: string): boolean => {
+  return process.env.ORG3_ADMIN === org3AdminUsername
+}
+
+const isAdminOrg4 = (org4AdminUsername: string): boolean => {
+  return process.env.ORG4_ADMIN === org4AdminUsername
+}
+
+const isAdminOfOrganization = (adminUsername: string): boolean => {
+  return isAdminOrg1(adminUsername) || isAdminOrg2(adminUsername) || isAdminOrg3(adminUsername) || isAdminOrg4(adminUsername)
 }
 
 const getOrgCredentials = (orgName: string): OrgCredentialsInterface => {
@@ -135,9 +160,14 @@ export {
   getOrgName,
   getOrgDomain,
   getOrgMspId,
+  getOrgAffiliation,
   getOrgCredentials,
   getOrgConnectionFileName,
   getOrgPassword,
   isAdminOrderer,
-  isAdminOrg1
+  isAdminOrg1,
+  isAdminOrg2,
+  isAdminOrg3,
+  isAdminOrg4,
+  isAdminOfOrganization
 }

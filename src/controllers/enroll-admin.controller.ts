@@ -1,9 +1,11 @@
 import { Request, Response as ExpressResponse } from "express"
 
 import { Codes } from "~/constants/http/code.constant"
+import { OrgRoles } from "~/constants/organization.constant"
+
 import { Response } from "~/models/response.model"
 
-import { insertAdmin } from "~/services/admin.service"
+import { insertUser } from "~/services/user.service"
 import { enrollAdminToBlockchain } from "~/services/enroll-admin.service"
 
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
@@ -11,6 +13,7 @@ import { adminExists } from "~/utils/wallet.util"
 import { getOrgAdminUsername, isAdminOrderer } from "~/utils/organization.util"
 import { getHashedPassword, getGeneratedPassword } from "~/utils/password.util"
 import { logger } from "~/utils/logger.util"
+
 
 // Enroll admins for org1 or org2 or org3.
 // Prerequisite: orderer admin must be enrolled first.
@@ -32,7 +35,7 @@ const enrollAdmin = async (req: Request, res: ExpressResponse):
     const generatedPassword = getGeneratedPassword()
     const hashedGeneratedPassword = await getHashedPassword(generatedPassword)
     
-    await insertAdmin(orgAdminUsername, hashedGeneratedPassword)
+    await insertUser(orgAdminUsername, hashedGeneratedPassword, OrgRoles.ADMIN, orgName)
     return sendSuccessResponse(res, `${orgAdminUsername} successfully enrolled!`, {
       password: generatedPassword
     })

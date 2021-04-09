@@ -11,9 +11,9 @@ import fs from "fs"
 import path from "path"
 
 import database from "~/database"
-import { insertAdmin } from "~/services/admin.service"
+import { OrgNames, OrgRoles } from "~/constants/organization.constant"
+import { insertUser } from "~/services/user.service"
 import { getHashedPassword, getGeneratedPassword } from "~/utils/password.util"
-import { signAndGetJwt } from "~/utils/jwt.util"
 
 const enrollOrdererAdmin = async (ordererAdminUsername: string) => {
   try {
@@ -69,7 +69,7 @@ const main = async () => {
     console.log("generated password: ", generatedPassword)
 
     const hashedGeneratedPassword = await getHashedPassword(generatedPassword)
-    await insertAdmin(ordererAdminUsername, hashedGeneratedPassword)
+    await insertUser(ordererAdminUsername, hashedGeneratedPassword, OrgRoles.USER, OrgNames.ORG_ORDERER)
     process.exit(0)
 
   } catch (error) {

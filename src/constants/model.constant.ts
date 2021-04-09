@@ -1,5 +1,5 @@
 enum ModelNames {
-  ADMIN = "admin"
+  USER = "user"
 }
 
 export {
