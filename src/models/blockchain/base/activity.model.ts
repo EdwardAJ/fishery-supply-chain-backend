@@ -4,36 +4,41 @@ import { User } from "./user.model"
 
 abstract class Activity {
   constructor (
-    protected readonly _id: string,
-    protected readonly _parentIds: string[] | null,
-    protected readonly _activityListId: string,
-    protected readonly _currentLot: FisheryProductLot,
-    protected readonly _location: GPSLocation,
-    protected readonly _owner: User
+    protected readonly id: string,
+    protected readonly parentIds: string[] | null,
+    protected readonly activityListId: string,
+    protected readonly currentLot: FisheryProductLot,
+    protected readonly location: GPSLocation,
+    protected readonly owner: User,
+    protected readonly createdAt: string
   ){}
   
-  get id(): string {
-    return this._id
+  get Id(): string {
+    return this.id
   }
 
-  get parentIds(): string[] | null {
-    return this._parentIds
+  get ParentIds(): string[] | null {
+    return this.parentIds
   }
 
-  get activityListId(): string {
-    return this._activityListId
+  get ActivityListId(): string {
+    return this.activityListId
   }
 
-  get currentLot(): FisheryProductLot {
-    return this._currentLot
+  get CurrentLot(): FisheryProductLot {
+    return this.currentLot
   }
 
-  get location(): GPSLocation {
-    return this._location
+  get Location(): GPSLocation {
+    return this.location
   }
 
-  get owner(): User {
-    return this._owner
+  get Owner(): User {
+    return this.owner
+  }
+
+  get CreatedAt(): string {
+    return this.createdAt
   }
 }
 

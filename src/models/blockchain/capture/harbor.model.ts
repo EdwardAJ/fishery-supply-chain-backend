@@ -1,15 +1,15 @@
 class Harbor {
   constructor (
-    private readonly _id: string,
-    private readonly _name: string
+    private readonly id: string,
+    private readonly name: string
   ){}
 
-  get id(): string { 
-    return this._id
+  get Id(): string { 
+    return this.id
   }
 
-  get name(): string {
-    return this._name
+  get Name(): string {
+    return this.name
   }
 }
 

@@ -14,6 +14,7 @@ import { logger } from "~/utils/logger.util"
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { invoke } from "~/services/invoke.service"
 import { getUserByUsername } from "~/services/user.service"
+import { OrgNames } from "~/constants/organization.constant"
 
 const captureFisheryProduct = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
@@ -21,10 +22,9 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
       const username = req.headers["username"] as string
 
       const user = await getUserByUsername(username)
-      if (!user)
+      if (!user || user.organization !== OrgNames.ORG_1)
         return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
 
-      const { organization: orgName } = user
       const {
         location: { latitude, longitude },
         fishery_product: {weight, commodity_type: commodityType},
@@ -40,12 +40,13 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
           getGeneratedUuid(), weight, commodityType
         ),
         new GPSLocation(latitude, longitude),
-        new User(username, orgName),
+        new User(username, user.organization),
+        new Date().toISOString(),
         new Vessel(vesselId, vesselName),
-        new Harbor(harborId, harborName)
+        new Harbor(harborId, harborName),
       )
 
-      await invoke(orgName, username, "basic", "createActivity", captureActivity)
+      await invoke(user.organization, username, "basic", "createActivity", captureActivity)
       return sendSuccessResponse(res, "Captured!", { activity: captureActivity })
     } catch (error) {
       logger.error(error)

@@ -1,15 +1,15 @@
 class GPSLocation {
   constructor(
-    private readonly _latitude: number,
-    private readonly _longitude: number
+    private readonly latitude: number,
+    private readonly longitude: number
   ) {}
 
-  get latitude(): number {
-    return this._latitude
+  get Latitude(): number {
+    return this.latitude
   }
 
-  get longitude(): number {
-    return this._longitude
+  get Longitude(): number {
+    return this.longitude
   }
 }
 

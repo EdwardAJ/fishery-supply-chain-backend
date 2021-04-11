@@ -10,6 +10,7 @@ import { registerUserToBlockchain } from "~/services/register-user.service"
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { isAdminOfOrganization } from "~/utils/organization.util"
 import { logger } from "~/utils/logger.util"
+import { getHashedPassword } from "~/utils/password.util"
 
 
 // Prerequisite: org admin must be enrolled first.
@@ -24,7 +25,9 @@ const registerUser = async (req: Request, res: ExpressResponse):
     const { username, org_name: orgName } = req.body
     const userPassword = await registerUserToBlockchain(orgName, username)
 
-    await insertUser(username, userPassword, OrgRoles.USER, orgName)
+    const hashedPassword = await getHashedPassword(userPassword)
+    await insertUser(username, hashedPassword, OrgRoles.USER, orgName)
+
     return sendSuccessResponse(res, `${username} successfully registered!`, {
       password: userPassword
     })

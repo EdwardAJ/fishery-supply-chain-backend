@@ -1,4 +1,4 @@
-class Vessel {
+class Storage {
   constructor (
     private readonly id: string,
     private readonly name: string
@@ -14,5 +14,5 @@ class Vessel {
 }
 
 export {
-  Vessel
+  Storage
 }

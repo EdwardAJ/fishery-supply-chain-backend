@@ -1,20 +1,20 @@
 class FisheryProductLot {
   constructor (
-    private readonly _id: string,
-    private readonly _weight: number,
-    private readonly _commodityType: string,
+    private readonly id: string,
+    private readonly weight: number,
+    private readonly commodityType: string,
   ) {}
 
-  get id(): string {
-    return this._id
+  get Id(): string {
+    return this.id
   }
 
-  get weight(): number {
-    return this._weight
+  get Weight(): number {
+    return this.weight
   }
 
-  get commodityType(): string {
-    return this._commodityType
+  get CommodityType(): string {
+    return this.commodityType
   }
 }
 

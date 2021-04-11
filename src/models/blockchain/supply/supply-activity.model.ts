@@ -1,11 +1,12 @@
 import { GPSLocation } from "../base/gps-location.model"
-import { Harbor } from "./harbor.model"
-import { Vessel } from "./vessel.model"
+
 import { Activity } from "../base/activity.model"
 import { User } from "../base/user.model"
 import { FisheryProductLot } from "../base/fishery-product-lot.model"
+import { Supplier } from "./supplier.model"
+import { Storage } from "./storage.model"
 
-class CaptureActivity extends Activity {
+class SupplyActivity extends Activity {
   constructor (
     id: string,
     parentIds: string[] | null,
@@ -14,22 +15,22 @@ class CaptureActivity extends Activity {
     location: GPSLocation,
     owner: User,
     createdAt: string,
-    private readonly vessel: Vessel,
-    private readonly harbor: Harbor
+    private readonly supplier: Supplier,
+    private readonly storage: Storage
   ) {
     super(id, parentIds, activityListId,
       currentLot,  location, owner, createdAt)
   }
 
-  get Vessel() : Vessel {
-    return this.vessel
+  get Supplier(): Supplier {
+    return this.supplier
   }
 
-  get Harbor(): Harbor {
-    return this.harbor
+  get Storage(): Storage {
+    return this.storage
   }
 }
 
 export {
-  CaptureActivity
+  SupplyActivity
 }
