@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { FisherySupplyChainContract } from "./fishery-supply-chain.contract"
-export { FisherySupplyChainContract } from "./fishery-supply-chain.contract"
+import { ActivitiesChainsContract } from "./actvities-chains-contract"
+import { ProductLotsContract } from "./product-lots.contract"
+export { ActivitiesChainsContract } from "./actvities-chains-contract"
+export { ProductLotsContract } from "./product-lots.contract"
 
-export const contracts: any[] = [FisherySupplyChainContract]
+export const contracts: any[] = [ActivitiesChainsContract, ProductLotsContract]

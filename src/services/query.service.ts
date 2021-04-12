@@ -12,7 +12,7 @@ import { logger } from "~/utils/logger.util"
 const query = async (
     orgName: string, username: string,
     contractName: string, methodName: string,
-    activityId: string
+    stateKey: string
   ): Promise<any> => {
 
   const { domain, mspId } = getOrgCredentials(orgName)
@@ -32,14 +32,14 @@ const query = async (
 
   // TODO: change "channel1" to use process.env 
   const network = await gateway.getNetwork("channel1")
-  const contract = network.getContract(contractName)
-  logger.info(`Querying ${methodName} with params: %O`, activityId)
-  const result = await contract.evaluateTransaction(methodName, activityId)
+  const contract = network.getContract("basic", contractName)
+  logger.info(`Querying ${methodName} with params: %O`, stateKey)
+  const result = await contract.evaluateTransaction(methodName, stateKey)
   logger.info(`Getting transaction: ${result}`)
 
   gateway.disconnect()
 
-  return JSON.parse(result.toString())
+  return result
 }
 
 export {

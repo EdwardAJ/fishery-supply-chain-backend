@@ -4,14 +4,13 @@
 
 import { Gateway } from "fabric-network"
 import { getConnectionInfo, getWallet } from "~/utils/wallet.util"
-import { Activity } from "~/models/blockchain/base/activity.model"
 import { getOrgCredentials } from "~/utils/organization.util"
 import { logger } from "~/utils/logger.util"
 
 const invoke = async (
     orgName: string, username: string,
-    chainCodeName: string, methodName: string,
-    activity: Activity
+    contractName: string, methodName: string,
+    stateKey: string, stateValue: string
   ): Promise<void> => {
 
   const { domain, mspId } = getOrgCredentials(orgName)
@@ -31,9 +30,9 @@ const invoke = async (
 
   // TODO: change "channel1" to use process.env 
   const network = await gateway.getNetwork("channel1")
-  const contract = network.getContract(chainCodeName)
-  logger.info(`Submitting transaction to ${methodName} with params: %O`, activity)
-  await contract.submitTransaction(methodName, activity.Id, JSON.stringify(activity))
+  const contract = network.getContract("basic", contractName)
+  logger.info(`Submitting transaction to ${methodName} with params: %O`, stateValue)
+  await contract.submitTransaction(methodName, stateKey, stateValue)
   logger.info("Transaction has been submitted")
 
   gateway.disconnect()

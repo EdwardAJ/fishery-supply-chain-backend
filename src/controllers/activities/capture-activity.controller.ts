@@ -15,6 +15,7 @@ import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { invoke } from "~/services/invoke.service"
 import { getUserByUsername } from "~/services/user.service"
 import { OrgNames } from "~/constants/organization.constant"
+import { ActivitiesChain } from "~/models/blockchain/base/activities-chain.model"
 
 const captureFisheryProduct = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
@@ -32,21 +33,40 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
         harbor: { id: harborId, name: harborName }
       } = req.body
 
+      const activitiesChainId = getGeneratedUuid()
+      const currentLot = new FisheryProductLot(
+        getGeneratedUuid(), weight, commodityType, activitiesChainId
+      )
+
       const captureActivity = new CaptureActivity(
-        getGeneratedUuid(),
-        null,
-        getGeneratedUuid(),
-        new FisheryProductLot(
-          getGeneratedUuid(), weight, commodityType
-        ),
-        new GPSLocation(latitude, longitude),
-        new User(username, user.organization),
-        new Date().toISOString(),
+        {
+          id: getGeneratedUuid(),
+          parentIds: null,
+          currentLot,
+          location: new GPSLocation(latitude, longitude),
+          owner: new User(username, user.organization),
+          createdAt: new Date().toISOString(),
+        },
         new Vessel(vesselId, vesselName),
         new Harbor(harborId, harborName),
       )
 
-      await invoke(user.organization, username, "basic", "createActivity", captureActivity)
+      const activitiesChain = new ActivitiesChain(
+        activitiesChainId, [captureActivity]
+      )
+
+      await invoke(
+        user.organization, username,
+        "ProductLotsContract", "createProductLot",
+        currentLot.Id, JSON.stringify(currentLot),
+      )
+
+      await invoke(
+        user.organization, username,
+        "ActivitiesChainsContract", "createActivitiesChain",
+        activitiesChain.Id, JSON.stringify(activitiesChain)
+      )
+
       return sendSuccessResponse(res, "Captured!", { activity: captureActivity })
     } catch (error) {
       logger.error(error)

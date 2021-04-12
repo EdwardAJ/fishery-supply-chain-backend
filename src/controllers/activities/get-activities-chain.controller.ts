@@ -7,7 +7,7 @@ import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { getUserByUsername } from "~/services/user.service"
 import { query } from "~/services/query.service"
 
-const getActivitiesByLotId = async (req: Request, res: ExpressResponse):
+const getActivitiesChainByLotId = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
       const { lotId } = req.params
@@ -20,11 +20,18 @@ const getActivitiesByLotId = async (req: Request, res: ExpressResponse):
       if (!user) return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
 
       const { organization: orgName } = user
-      const activities =
-        await query(orgName, username, "basic", "getActivities", JSON.stringify({
-          selector: { currentLot: { id: lotId } }
-        }))
-      return sendSuccessResponse(res, "activities", activities)
+
+      const productLotString = await query(orgName, username, "ProductLotsContract", "getProductLot", lotId)
+      const productLot = JSON.parse(productLotString.toString())
+      if (!productLot) {
+        return sendErrorResponse(res, "Product lot does not exist")
+      }
+
+      const { activitiesChainId } = productLot
+      const activitiesChain =
+        await query(orgName, username, "ActivitiesChainsContract", "getActivitiesChainHistory", activitiesChainId)
+      
+      return sendSuccessResponse(res, "activities", JSON.parse(activitiesChain.toString()))
     } catch (error) {
       logger.error(error)
       return sendErrorResponse(res, error.message)
@@ -32,5 +39,5 @@ const getActivitiesByLotId = async (req: Request, res: ExpressResponse):
 }
 
 export {
-  getActivitiesByLotId
+  getActivitiesChainByLotId
 }

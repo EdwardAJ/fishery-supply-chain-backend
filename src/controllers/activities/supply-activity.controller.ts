@@ -1,88 +1,93 @@
-import { Response } from "~/models/response.model"
-import { Request, Response as ExpressResponse } from "express"
+// import { Response } from "~/models/response.model"
+// import { Request, Response as ExpressResponse } from "express"
 
-import { Codes } from "~/constants/http/code.constant"
-import { User } from "~/models/blockchain/base/user.model"
-import { GPSLocation } from "~/models/blockchain/base/gps-location.model"
-import { FisheryProductLot } from "~/models/blockchain/base/fishery-product-lot.model"
+// import { Codes } from "~/constants/http/code.constant"
+// import { User } from "~/models/blockchain/base/user.model"
+// import { GPSLocation } from "~/models/blockchain/base/gps-location.model"
+// import { FisheryProductLot } from "~/models/blockchain/base/fishery-product-lot.model"
 
-import { getGeneratedUuid } from "~/utils/uuid.util"
-import { logger } from "~/utils/logger.util"
-import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
-import { invoke } from "~/services/invoke.service"
-import { getUserByUsername } from "~/services/user.service"
-import { OrgNames } from "~/constants/organization.constant"
-import { query } from "~/services/query.service"
-import { SupplyActivity } from "~/models/blockchain/supply/supply-activity.model"
-import { Storage } from "~/models/blockchain/supply/storage.model"
-import { Supplier } from "~/models/blockchain/supply/supplier.model"
+// import { getGeneratedUuid } from "~/utils/uuid.util"
+// import { logger } from "~/utils/logger.util"
+// import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
+// import { invoke } from "~/services/invoke.service"
+// import { getUserByUsername } from "~/services/user.service"
+// import { OrgNames } from "~/constants/organization.constant"
+// import { query } from "~/services/query.service"
+// import { SupplyActivity } from "~/models/blockchain/supply/supply-activity.model"
+// import { Storage } from "~/models/blockchain/supply/storage.model"
+// import { Supplier } from "~/models/blockchain/supply/supplier.model"
 
-const supplyFisheryProduct = async (req: Request, res: ExpressResponse):
-  Promise<ExpressResponse<Response>> => {
-    try {
-      const username = req.headers["username"] as string
-      const user = await getUserByUsername(username)
-      if (!user || user.organization !== OrgNames.ORG_2)
-        return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
+// Specifying the type in the payload
+// type = NORMAL: handle one lotId payload, normal supply chain
+// type = SPLIT: split case: get multiple new lots information, make lotIds based on it, then split
+// type = COMBINE: combine case: merge multiple lotIds to one
 
-      const {
-        location: { latitude, longitude },
-        supplier: { id: supplierId, name: supplierName },
-        storage: { id: storageId, name: storageName },
-        lot: { ids : currentLotIds, new_fishery_product: newLot }
-      } = req.body
+// const supplyFisheryProduct = async (req: Request, res: ExpressResponse):
+//   Promise<ExpressResponse<Response>> => {
+//     try {
+//       const username = req.headers["username"] as string
+//       const user = await getUserByUsername(username)
+//       if (!user || user.organization !== OrgNames.ORG_2)
+//         return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
 
-      const parentActivityIds: string[] = []
-      const currentLots: FisheryProductLot[] = []
-      const activityListIds: string[] = []
+//       const {
+//         location: { latitude, longitude },
+//         supplier: { id: supplierId, name: supplierName },
+//         storage: { id: storageId, name: storageName },
+//         lot: { ids : currentLotIds, new_fishery_product: newLot }
+//       } = req.body
 
-      // TODO: remove the activityListIds
-      // CURRENT_ASSUMPTION: user can combine the lots from the same activitiesListId
-      await currentLotIds.map(async (lotId: string) => {
-        const activitiesWithLotId = 
-          await query(user.organization, username, "basic", "getActivities", JSON.stringify({
-            selector: { currentLot: { id: lotId } }
-          }))
+//       const parentActivityIds: string[] = []
+//       const currentLots: FisheryProductLot[] = []
+//       const activityListIds: string[] = []
 
-          if (!activitiesWithLotId || !activitiesWithLotId.length)
-            return sendErrorResponse(res, "Previous activities do not exist")
+//       // TODO: remove the activityListIds
+//       // CURRENT_ASSUMPTION: user can combine the lots from the same activitiesListId
+//       await currentLotIds.map(async (lotId: string) => {
+//         const activitiesWithLotId = 
+//           await query(user.organization, username, "basic", "getActivities", JSON.stringify({
+//             selector: { currentLot: { id: lotId } }
+//           }))
 
-          const { activityListId, currentLot, id } = activitiesWithLotId[0].Record
-          parentActivityIds.push(id)
-          currentLots.push(currentLot)
-          activityListIds.push(activityListId)
-      })
+//           if (!activitiesWithLotId || !activitiesWithLotId.length)
+//             return sendErrorResponse(res, "Previous activities do not exist")
 
-      let newProductLot: FisheryProductLot
+//           const { activityListId, currentLot, id } = activitiesWithLotId[0].Record
+//           parentActivityIds.push(id)
+//           currentLots.push(currentLot)
+//           activityListIds.push(activityListId)
+//       })
 
-      // If user wants to join multiple lot ids, a new lot information must be provided
-      if (currentLotIds.length > 1) {
-        if (!newLot) return sendErrorResponse(res, "Please provide new lot information")
-        newProductLot = new FisheryProductLot(getGeneratedUuid(), newLot.weight, newLot.commodityType)
-      } else {
-        newProductLot = newLot
-          ? new FisheryProductLot(getGeneratedUuid(), newLot.weight, newLot.commodityType)
-          : currentLots[0]
-      }
+//       let newProductLot: FisheryProductLot
+
+//       // If user wants to join multiple lot ids, a new lot information must be provided
+//       if (currentLotIds.length > 1) {
+//         if (!newLot) return sendErrorResponse(res, "Please provide new lot information")
+//         newProductLot = new FisheryProductLot(getGeneratedUuid(), newLot.weight, newLot.commodityType)
+//       } else {
+//         newProductLot = newLot
+//           ? new FisheryProductLot(getGeneratedUuid(), newLot.weight, newLot.commodityType)
+//           : currentLots[0]
+//       }
       
-      const supplyActivity = new SupplyActivity(
-        getGeneratedUuid(), parentActivityIds, activityListIds[0],
-        newProductLot, new GPSLocation(latitude, longitude),
-        new User(username, user.organization),
-        new Date().toISOString(),
-        new Supplier(supplierId, supplierName),
-        new Storage(storageId, storageName)
-      )
+//       const supplyActivity = new SupplyActivity(
+//         getGeneratedUuid(), parentActivityIds, activityListIds[0],
+//         newProductLot, new GPSLocation(latitude, longitude),
+//         new User(username, user.organization),
+//         new Date().toISOString(),
+//         new Supplier(supplierId, supplierName),
+//         new Storage(storageId, storageName)
+//       )
 
-      await invoke(user.organization, username, "basic", "createActivity", supplyActivity)
-      return sendSuccessResponse(res, "Supplied!", { activity: supplyActivity })
+//       await invoke(user.organization, username, "basic", "createActivity", supplyActivity)
+//       return sendSuccessResponse(res, "Supplied!", { activity: supplyActivity })
 
-    } catch (error) {
-      logger.error(error)
-      return sendErrorResponse(res, error.message)
-    }
-}
+//     } catch (error) {
+//       logger.error(error)
+//       return sendErrorResponse(res, error.message)
+//     }
+// }
 
-export {
-  supplyFisheryProduct
-}
+// export {
+//   supplyFisheryProduct
+// }

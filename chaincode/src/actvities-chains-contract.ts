@@ -3,20 +3,22 @@
 
 import { Context, Contract } from "fabric-contract-api"
 
-export class FisherySupplyChainContract extends Contract {
+// Contract to store multiple activities chain
+export class ActivitiesChainsContract extends Contract {
 
-  public async createActivity(context: Context, activityId: string, activityJson: string): Promise<void> {
-    context.stub.putState(activityId, Buffer.from(activityJson))
+	public async createActivitiesChain
+		(context: Context, activitiesChainId: string, actvitiesChainJson: string): Promise<void> {
+    context.stub.putState(activitiesChainId, Buffer.from(actvitiesChainJson))
   }
 
-  public async getActivities (context: Context, queryString: string): Promise<any> {
-    const resultsIterator = await context.stub.getQueryResult(queryString)
-    const results = await this.GetAllResults(resultsIterator, false)
+  public async getActivitiesChainHistory (context: Context, activitiesChainId: string): Promise<any> {
+    const resultsIterator = await context.stub.getHistoryForKey(activitiesChainId)
+    const results = await this.getAllResults(resultsIterator, true)
     return JSON.stringify(results)
   }
 
   // Taken from asset-transfer-ledger-queries
-  public async GetAllResults(iterator: any, isHistory: boolean): Promise<any> {
+  public async getAllResults(iterator: any, isHistory: boolean): Promise<any> {
 		const allResults = []
 		let res = await iterator.next()
 		while (!res.done) {
@@ -49,12 +51,4 @@ export class FisherySupplyChainContract extends Contract {
 		iterator.close()
 		return allResults
 	}
-
-  // TODO: change getActivityById to getActivitiesByFisheryProductLotId
-  // this is just a sample
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public async getActivityById(context: Context, activityId: string): Promise<any> {
-    const activity = await context.stub.getState(activityId)
-    return activity.toString()
-  }
 }
