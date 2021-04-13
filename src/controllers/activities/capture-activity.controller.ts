@@ -34,13 +34,15 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
       } = req.body
 
       const activitiesChainId = getGeneratedUuid()
+      const captureActivityId = getGeneratedUuid()
+
       const currentLot = new FisheryProductLot(
-        getGeneratedUuid(), weight, commodityType, activitiesChainId
+        getGeneratedUuid(), weight, commodityType, activitiesChainId, captureActivityId
       )
 
       const captureActivity = new CaptureActivity(
         {
-          id: getGeneratedUuid(),
+          id: captureActivityId,
           parentIds: null,
           currentLot,
           location: new GPSLocation(latitude, longitude),
@@ -56,16 +58,12 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
       )
 
       await invoke(
-        user.organization, username,
-        "ProductLotsContract", "createProductLot",
-        currentLot.Id, JSON.stringify(currentLot),
-      )
+        user, "ProductLotsContract", "createProductLot",
+        currentLot.Id, JSON.stringify(currentLot))
 
       await invoke(
-        user.organization, username,
-        "ActivitiesChainsContract", "createActivitiesChain",
-        activitiesChain.Id, JSON.stringify(activitiesChain)
-      )
+        user, "ActivitiesChainsContract", "createActivitiesChain",
+        activitiesChain.Id, JSON.stringify(activitiesChain))
 
       return sendSuccessResponse(res, "Captured!", { activity: captureActivity })
     } catch (error) {

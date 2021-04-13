@@ -6,14 +6,16 @@ import { Gateway } from "fabric-network"
 import { getConnectionInfo, getWallet } from "~/utils/wallet.util"
 import { getOrgCredentials } from "~/utils/organization.util"
 import { logger } from "~/utils/logger.util"
+import { UserInterface } from "~/interfaces/user.interface"
 
 const invoke = async (
-    orgName: string, username: string,
-    contractName: string, methodName: string,
+    user: UserInterface, contractName: string, methodName: string,
     stateKey: string, stateValue: string
   ): Promise<void> => {
 
+  const { organization: orgName, username } = user
   const { domain, mspId } = getOrgCredentials(orgName)
+  
   const ccp = getConnectionInfo(domain, mspId)
   const wallet = await getWallet()
 

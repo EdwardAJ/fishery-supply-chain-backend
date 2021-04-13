@@ -1,5 +1,5 @@
 import { UserModel } from "~/models/user.model"
-import { UserInterface } from "~/interfaces/admin.interface"
+import { UserInterface } from "~/interfaces/user.interface"
 
 const insertUser =
   async (username: string, hashedPassword: string, role: string, organization: string):Promise<void> => {

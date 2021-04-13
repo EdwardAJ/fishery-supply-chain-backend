@@ -3,7 +3,8 @@ class FisheryProductLot {
     private readonly id: string,
     private readonly weight: number,
     private readonly commodityType: string,
-    private readonly activitiesChainId: string
+    private readonly activitiesChainId: string,
+    private readonly activityId: string
   ) {}
 
   get Id(): string {
@@ -20,6 +21,10 @@ class FisheryProductLot {
 
   get ActivitiesChainId(): string {
     return this.activitiesChainId
+  }
+
+  get ActivityId(): string {
+    return this.activityId
   }
 }
 
