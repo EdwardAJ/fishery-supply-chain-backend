@@ -25,10 +25,10 @@ const getCurrentLots = async (
   currentLotIds: string[], user: UserInterface
 ): Promise<FisheryProductLot[]> => {
   const currentLots: FisheryProductLot[] = []
-  currentLotIds.map(async (lotId: string) => {
+  await Promise.all(currentLotIds.map(async (lotId: string) => {
     const productLot = await getProductLotFromBlockchain(user, lotId)
     currentLots.push(productLot)
-  })
+  }))
   return currentLots
 }
 

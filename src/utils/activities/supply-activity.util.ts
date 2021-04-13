@@ -45,14 +45,14 @@ const splitLotsAndGetActivities = async (
   const newProductLots: FisheryProductLot[] =
     getNewProductLots(newLots, activitiesChainId, supplyActivityId)
 
-  newProductLots.map(async (productLot: FisheryProductLot) => {
+  await Promise.all(newProductLots.map(async (productLot: FisheryProductLot) => {
     await invoke(user, "ProductLotsContract", "createProductLot",
       productLot.Id, JSON.stringify(productLot))
 
     supplyActivities.push(
       getSupplyActivity(req, supplyActivityId, parentActivityIds, productLot, user)
     )
-  })
+  }))
 
   return supplyActivities
 }

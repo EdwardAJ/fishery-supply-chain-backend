@@ -65,7 +65,8 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
       return sendSuccessResponse(res, "Captured!", { activity: captureActivity })
     } catch (error) {
       logger.error(error)
-      return sendErrorResponse(res, error.message)
+      console.log("error code: ", error.code)
+      return sendErrorResponse(res, error.message, error.code)
     }
 }
 
