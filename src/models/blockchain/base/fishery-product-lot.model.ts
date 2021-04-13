@@ -1,11 +1,22 @@
+import { ProductLotInterface } from "~/interfaces/product-lot.interface"
+
 class FisheryProductLot {
+  private readonly id: string
+  private readonly weight: number
+  private readonly commodityType: string
+  private readonly activitiesChainId: string
+  private readonly activityId: string
+
   constructor (
-    private readonly id: string,
-    private readonly weight: number,
-    private readonly commodityType: string,
-    private readonly activitiesChainId: string,
-    private readonly activityId: string
-  ) {}
+    { id, weight, commodityType,
+      activitiesChainId, activityId }: ProductLotInterface
+  ) {
+    this.id = id
+    this.weight = weight
+    this.commodityType = commodityType
+    this.activitiesChainId = activitiesChainId
+    this.activityId = activityId
+  }
 
   get Id(): string {
     return this.id

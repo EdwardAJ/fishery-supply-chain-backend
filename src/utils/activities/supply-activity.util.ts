@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { FisheryProductLot } from "~/models/blockchain/base/fishery-product-lot.model"
+ import { FisheryProductLot } from "~/models/blockchain/base/fishery-product-lot.model"
 import { SupplyActivity } from "~/models/blockchain/supply/supply-activity.model"
-import { query } from "~/services/query.service"
-import { getGeneratedUuid } from "../uuid.util"
 import { Request } from "express"
 import { Supplier } from "~/models/blockchain/supply/supplier.model"
 import { Storage } from "~/models/blockchain/supply/storage.model"
@@ -11,59 +8,7 @@ import { GPSLocation } from "~/models/blockchain/base/gps-location.model"
 import { invoke } from "~/services/invoke.service"
 import { ActivitiesChain } from "~/models/blockchain/base/activities-chain.model"
 import { UserInterface } from "~/interfaces/user.interface"
-
-const validateLotInformation = async (currentLotIds: string[], newLots: any): Promise<void> => {
-  if (!currentLotIds?.length)
-    throw new Error("Please provide current lot information")
-
-  if (currentLotIds.length > 1) {
-    if (!newLots?.length) {
-      throw new Error("Please provide new lot information")
-    }        
-  }
-}
-
-
-const getCurrentLots =
-  async (currentLotIds: string[], user: UserInterface): Promise<FisheryProductLot[]> => {
-  // Multiple currentLotIds mean that the user wants to combine multiple lots to one lot.
-  // The activitiesChainId of every currentLotId inside currentLotIds must be the same.
-  const currentLots: FisheryProductLot[] = []
-  currentLotIds.map(async (lotId: string) => {
-    const productLotString = 
-      await query(
-        user.organization, user.username, "ProductLotsContract", "getProductLot", lotId
-      )
-    
-    const productLot = JSON.parse(productLotString.toString())
-    if (!productLot) throw new Error("Current lot id does not exist")
-    currentLots.push(productLot)
-  })
-  return currentLots
-}
-
-const getParentActivityIds = (currentLots: FisheryProductLot[]): string[] => {
-  const parentActivityIds: string[] = []
-  currentLots.map(({ ActivityId }) => {
-    parentActivityIds.push(ActivityId)
-  })
-  return parentActivityIds
-}
-
-const getNewProductLots = (
-  newLots: any, activitiesChainId: string, supplyActivityId: string
-): FisheryProductLot[] => {
-
-  const newProductLots: FisheryProductLot[] = []
-  newLots.map((newLot: any) => {
-    newProductLots.push(
-      new FisheryProductLot(
-        getGeneratedUuid(), newLot.weight, newLot.commodityType,
-        activitiesChainId, supplyActivityId))
-  })
-
-  return newProductLots
-}
+import { getNewProductLots } from "./product-lot.util"
 
 const getSupplyActivity = 
   (req: Request, supplyActivityId: string, parentActivityIds: string[],
@@ -137,10 +82,6 @@ const updateActivitiesChain = async (
 }
 
 export {
-  validateLotInformation,
-  getCurrentLots,
-  getParentActivityIds,
-  getNewProductLots,
   getSupplyActivity,
   splitLotsAndGetActivities,
   updateLotAndGetActivities,

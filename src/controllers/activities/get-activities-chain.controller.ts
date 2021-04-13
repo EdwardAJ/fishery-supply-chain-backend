@@ -4,8 +4,9 @@ import { Request, Response as ExpressResponse } from "express"
 import { Codes } from "~/constants/http/code.constant"
 import { logger } from "~/utils/logger.util"
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
-import { getUserByUsername } from "~/services/user.service"
 import { query } from "~/services/query.service"
+import { getAndValidateUser } from "~/utils/user.util"
+import { getProductLotFromBlockchain } from "~/utils/activities/product-lot.util"
 
 const getActivitiesChainByLotId = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
@@ -16,25 +17,18 @@ const getActivitiesChainByLotId = async (req: Request, res: ExpressResponse):
       // TODO: remove authentication method, automatically assign user to any organization
       // to see activities
       const username = req.headers["username"] as string
-      const user = await getUserByUsername(username)
-      if (!user) return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
+      const user = await getAndValidateUser(username)
 
-      const { organization: orgName } = user
-
-      const productLotString = await query(orgName, username, "ProductLotsContract", "getProductLot", lotId)
-      const productLot = JSON.parse(productLotString.toString())
-      if (!productLot) {
-        return sendErrorResponse(res, "Product lot does not exist")
-      }
-
-      const { activitiesChainId } = productLot
+      const productLot = await getProductLotFromBlockchain(user, lotId)
       const activitiesChain =
-        await query(orgName, username, "ActivitiesChainsContract", "getActivitiesChainHistory", activitiesChainId)
+        await query(
+          user, "ActivitiesChainsContract", "getActivitiesChainHistory",
+          productLot.ActivitiesChainId)
       
       return sendSuccessResponse(res, "activities", JSON.parse(activitiesChain.toString()))
     } catch (error) {
       logger.error(error)
-      return sendErrorResponse(res, error.message)
+      return sendErrorResponse(res, error.message, error.code ?? Codes.BAD_REQUEST)
     }
 }
 

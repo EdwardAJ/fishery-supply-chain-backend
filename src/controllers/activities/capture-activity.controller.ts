@@ -1,7 +1,6 @@
 import { Response } from "~/models/response.model"
 import { Request, Response as ExpressResponse } from "express"
 
-import { Codes } from "~/constants/http/code.constant"
 import { CaptureActivity } from "~/models/blockchain/capture/capture-activity.model"
 import { User } from "~/models/blockchain/base/user.model"
 import { Vessel } from "~/models/blockchain/capture/vessel.model"
@@ -13,18 +12,15 @@ import { getGeneratedUuid } from "~/utils/uuid.util"
 import { logger } from "~/utils/logger.util"
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { invoke } from "~/services/invoke.service"
-import { getUserByUsername } from "~/services/user.service"
 import { OrgNames } from "~/constants/organization.constant"
 import { ActivitiesChain } from "~/models/blockchain/base/activities-chain.model"
+import { getAndValidateUser } from "~/utils/user.util"
 
 const captureFisheryProduct = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
       const username = req.headers["username"] as string
-
-      const user = await getUserByUsername(username)
-      if (!user || user.organization !== OrgNames.ORG_1)
-        return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
+      const user = await getAndValidateUser(username, OrgNames.ORG_1)
 
       const {
         location: { latitude, longitude },
@@ -37,7 +33,8 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
       const captureActivityId = getGeneratedUuid()
 
       const currentLot = new FisheryProductLot(
-        getGeneratedUuid(), weight, commodityType, activitiesChainId, captureActivityId
+        { id: getGeneratedUuid(), weight, commodityType,
+          activitiesChainId, activityId: captureActivityId }
       )
 
       const captureActivity = new CaptureActivity(

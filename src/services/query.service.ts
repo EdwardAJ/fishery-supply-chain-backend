@@ -7,14 +7,14 @@ import { Gateway } from "fabric-network"
 import { getConnectionInfo, getWallet } from "~/utils/wallet.util"
 import { getOrgCredentials } from "~/utils/organization.util"
 import { logger } from "~/utils/logger.util"
+import { UserInterface } from "~/interfaces/user.interface"
 
 // TODO: refactor
 const query = async (
-    orgName: string, username: string,
-    contractName: string, methodName: string,
-    stateKey: string
-  ): Promise<any> => {
+  user: UserInterface, contractName: string, methodName: string, stateKey: string
+): Promise<any> => {
 
+  const { username, organization: orgName } = user
   const { domain, mspId } = getOrgCredentials(orgName)
   const ccp = getConnectionInfo(domain, mspId)
   const wallet = await getWallet()
