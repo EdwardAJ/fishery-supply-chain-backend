@@ -2,14 +2,16 @@ import { Harbor } from "./harbor.model"
 import { Vessel } from "./vessel.model"
 import { Activity } from "../base/activity.model"
 import { ActivityInterface } from "~/interfaces/activity.interface"
+import { GPSLocation } from "../base/gps-location.model"
 
 class CaptureActivity extends Activity {
   constructor (
     baseActivityData: ActivityInterface,
     private readonly vessel: Vessel,
-    private readonly harbor: Harbor
+    private readonly harbor: Harbor,
+    private readonly location: GPSLocation
   ) {
-    super(baseActivityData)
+    super(baseActivityData, "Penangkapan")
   }
 
   get Vessel() : Vessel {
@@ -18,6 +20,10 @@ class CaptureActivity extends Activity {
 
   get Harbor(): Harbor {
     return this.harbor
+  }
+
+  get Location(): GPSLocation {
+    return this.location
   }
 }
 

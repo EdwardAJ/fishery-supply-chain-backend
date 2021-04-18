@@ -4,7 +4,6 @@ import { UserInterface } from "~/interfaces/user.interface"
 import { ProductLotInterface } from "~/interfaces/product-lot.interface"
 import { query } from "~/services/query.service"
 
-
 const validateLotInformation = async (
   currentLotIds: string[], newLots: ProductLotInterface[]
 ): Promise<void> => {
@@ -49,18 +48,24 @@ const getParentActivityIds = (currentLots: FisheryProductLot[]): string[] => {
 }
 
 const getNewProductLots = (
-  newLots: ProductLotInterface[], activitiesChainId: string, supplyActivityId: string
+  newLots: ProductLotInterface[], activitiesChainId: string
 ): FisheryProductLot[] => {
 
   const newProductLots: FisheryProductLot[] = []
-  newLots.map(({ weight, commodityType }) => {
-    newProductLots.push(
-      new FisheryProductLot(
-        { id: getGeneratedUuid(), weight, commodityType,
-        activitiesChainId, activityId: supplyActivityId }))
+  newLots.map((newLot) => {
+    newProductLots.push(getNewProductLot(newLot, activitiesChainId))
   })
 
   return newProductLots
+}
+
+const getNewProductLot = (
+  newLot: ProductLotInterface, activitiesChainId: string
+): FisheryProductLot => {
+  const { weight, commodityType } = newLot
+  return new FisheryProductLot(
+    { id: getGeneratedUuid(), weight, commodityType,
+    activitiesChainId, activityId: getGeneratedUuid() })
 }
 
 export {
@@ -68,5 +73,6 @@ export {
   getCurrentLots,
   getProductLotFromBlockchain,
   getParentActivityIds,
+  getNewProductLot,
   getNewProductLots
 }

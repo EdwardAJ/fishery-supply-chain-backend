@@ -1,15 +1,15 @@
 class User {
   constructor (
-    private readonly username: string,
-    private readonly organizationId: string
+    private readonly username: string | null,
+    private readonly organizationName: string
   ) {}
 
-  get Username(): string {
+  get Username(): string | null {
     return this.username
   }
 
-  get OrganizationId(): string {
-    return this.organizationId
+  get OrganizationName(): string {
+    return this.organizationName
   }
 }
 

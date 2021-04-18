@@ -26,7 +26,7 @@ const enrollAdmin = async (req: Request, res: ExpressResponse):
     if (!isCurrentUserAnOrdererAdmin)
       return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
 
-    const orgName = req.body.org_name
+    const orgName = req.body.orgName
     const orgAdminUsername = getOrgAdminUsername(orgName)
     if (orgAdminUsername === "")
       return sendErrorResponse(res, "Admin username not found")

@@ -1,6 +1,6 @@
 import { Identity } from "../base/identity.model"
 
-class Vessel extends Identity {
+class ProcessTo extends Identity {
   constructor (
     id: string, name: string
   ){
@@ -8,7 +8,6 @@ class Vessel extends Identity {
   }
 }
 
-
 export {
-  Vessel
+  ProcessTo
 }

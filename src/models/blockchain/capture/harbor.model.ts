@@ -1,15 +1,10 @@
-class Harbor {
+import { Identity } from "../base/identity.model"
+
+class Harbor extends Identity {
   constructor (
-    private readonly id: string,
-    private readonly name: string
-  ){}
-
-  get Id(): string { 
-    return this.id
-  }
-
-  get Name(): string {
-    return this.name
+    id: string, name: string
+  ){
+    super(id, name)
   }
 }
 

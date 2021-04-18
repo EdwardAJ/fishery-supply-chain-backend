@@ -1,41 +1,34 @@
 import { ActivityInterface } from "~/interfaces/activity.interface"
 import { FisheryProductLot } from "./fishery-product-lot.model"
-import { GPSLocation } from "./gps-location.model"
+import { Identity } from "./identity.model"
 import { User } from "./user.model"
 
-abstract class Activity {
-  protected readonly id: string
+abstract class Activity extends Identity {
   protected readonly parentIds: string[] | null
   protected readonly currentLot: FisheryProductLot
-  protected readonly location: GPSLocation
   protected readonly owner: User
   protected readonly createdAt: string
 
   constructor (
-    { id, parentIds, currentLot, location, owner, createdAt }: ActivityInterface
+    {
+      id, parentIds,
+      currentLot, owner, createdAt
+    }: ActivityInterface,
+    name: string
   ){
-    this.id = id
+    super(id, name)
     this.parentIds = parentIds
     this.currentLot = currentLot
-    this.location = location
     this.owner = owner
     this.createdAt = createdAt
   }
   
-  get Id(): string {
-    return this.id
-  }
-
   get ParentIds(): string[] | null {
     return this.parentIds
   }
 
   get CurrentLot(): FisheryProductLot {
     return this.currentLot
-  }
-
-  get Location(): GPSLocation {
-    return this.location
   }
 
   get Owner(): User {

@@ -12,9 +12,6 @@ const getOrgAdminUsername = (orgName: string): string => {
     case OrgNames.ORG_3: {
       return process.env.ORG3_ADMIN as string
     }
-    case OrgNames.ORG_4: {
-      return process.env.ORG4_ADMIN as string
-    }
     case OrgNames.ORG_ORDERER: {
       return process.env.ORDERER_ADMIN as string
     }
@@ -32,9 +29,6 @@ const getOrgName = (orgAdminUsername: string): string => {
     }
     case process.env.ORG3_ADMIN: {
       return OrgNames.ORG_3
-    }
-    case process.env.ORG4_ADMIN: {
-      return OrgNames.ORG_4
     }
     case process.env.ORDERER_ADMIN: {
       return OrgNames.ORG_ORDERER
@@ -54,9 +48,6 @@ const getOrgPassword = (orgName: string): string => {
     case OrgNames.ORG_3: {
       return process.env.ORG3_PASSWORD as string
     }
-    case OrgNames.ORG_4: {
-      return process.env.ORG4_PASSWORD as string
-    }
     case OrgNames.ORG_ORDERER: {
       return process.env.ORDERER_PASSWORD as string
     }
@@ -75,9 +66,6 @@ const getOrgDomain = (orgName: string): string => {
     case OrgNames.ORG_3: {
       return OrgDomains.ORG_3
     }
-    case OrgNames.ORG_4: {
-      return OrgDomains.ORG_4
-    }
     case OrgNames.ORG_ORDERER: {
       return OrgDomains.ORG_ORDERER
     }
@@ -95,9 +83,6 @@ const getOrgMspId = (orgName: string): string => {
     }
     case OrgNames.ORG_3: {
       return OrgMspIds.ORG_3
-    }
-    case OrgNames.ORG_4: {
-      return OrgMspIds.ORG_4
     }
     case OrgNames.ORG_ORDERER: {
       return OrgMspIds.ORG_ORDERER
@@ -138,12 +123,12 @@ const isAdminOrg3 = (org3AdminUsername: string): boolean => {
   return process.env.ORG3_ADMIN === org3AdminUsername
 }
 
-const isAdminOrg4 = (org4AdminUsername: string): boolean => {
-  return process.env.ORG4_ADMIN === org4AdminUsername
+const isAdminOfOrganization = (adminUsername: string): boolean => {
+  return isAdminOrg1(adminUsername) || isAdminOrg2(adminUsername) || isAdminOrg3(adminUsername)
 }
 
-const isAdminOfOrganization = (adminUsername: string): boolean => {
-  return isAdminOrg1(adminUsername) || isAdminOrg2(adminUsername) || isAdminOrg3(adminUsername) || isAdminOrg4(adminUsername)
+const isOrgNameExist = (orgName: string): boolean => {
+  return orgName === OrgNames.ORG_1 || orgName === OrgNames.ORG_2 || orgName === OrgNames.ORG_3
 }
 
 const getOrgCredentials = (orgName: string): OrgCredentialsInterface => {
@@ -168,6 +153,6 @@ export {
   isAdminOrg1,
   isAdminOrg2,
   isAdminOrg3,
-  isAdminOrg4,
+  isOrgNameExist,
   isAdminOfOrganization
 }

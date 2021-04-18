@@ -22,7 +22,7 @@ const registerUser = async (req: Request, res: ExpressResponse):
     if (!isAdminOfOrganization(adminUsername))
       return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
 
-    const { username, org_name: orgName } = req.body
+    const { username, orgName } = req.body
     const userPassword = await registerUserToBlockchain(orgName, username)
 
     const hashedPassword = await getHashedPassword(userPassword)

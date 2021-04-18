@@ -14,15 +14,16 @@ const login = async (req: Request, res: ExpressResponse):
     if (!username || !password)
       return sendErrorResponse(res, "Username or password is required")
 
-    const admin = await getUserByUsername(username)
-    if (!admin) return sendErrorResponse(res, "Admin not found", Codes.UNAUTHORIZED)
+    const user = await getUserByUsername(username)
+    if (!user) return sendErrorResponse(res, "User not found", Codes.UNAUTHORIZED)
     
-    const { hashed_password: hashedPassword } = admin
+    const { hashed_password: hashedPassword, organization } = user
     if (!await arePasswordsSame(password, hashedPassword))
       return sendErrorResponse(res, "Wrong password", Codes.UNAUTHORIZED)
 
     return sendSuccessResponse(res, "Login success!", {
-      token: signAndGetJwt(username)
+      token: signAndGetJwt(username),
+      organization
     })
   } catch (error) {
     logger.error(error)

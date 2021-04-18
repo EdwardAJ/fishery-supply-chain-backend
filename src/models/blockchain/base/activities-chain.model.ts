@@ -3,15 +3,15 @@ import { Activity } from "./activity.model"
 class ActivitiesChain {
   constructor (
     protected readonly id: string,
-    protected readonly activityList: Activity[]
+    protected readonly activities: Activity[]
   ){}
   
   get Id(): string {
     return this.id
   }
 
-  get ActivityList(): Activity[] {
-    return this.activityList
+  get Activities(): Activity[] {
+    return this.activities
   }
 }
 

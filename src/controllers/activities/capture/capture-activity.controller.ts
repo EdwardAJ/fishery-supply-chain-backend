@@ -24,7 +24,7 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
 
       const {
         location: { latitude, longitude },
-        fishery_product: {weight, commodity_type: commodityType},
+        fisheryProduct: {weight, commodityType},
         vessel: { id: vesselId, name: vesselName },
         harbor: { id: harborId, name: harborName }
       } = req.body
@@ -42,12 +42,12 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
           id: captureActivityId,
           parentIds: null,
           currentLot,
-          location: new GPSLocation(latitude, longitude),
           owner: new User(username, user.organization),
           createdAt: new Date().toISOString(),
         },
         new Vessel(vesselId, vesselName),
         new Harbor(harborId, harborName),
+        new GPSLocation(latitude, longitude)
       )
 
       const activitiesChain = new ActivitiesChain(
@@ -62,10 +62,11 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
         user, "ActivitiesChainsContract", "createActivitiesChain",
         activitiesChain.Id, JSON.stringify(activitiesChain))
 
+      // TODO: save the activity to MongoDB
+
       return sendSuccessResponse(res, "Captured!", { activity: captureActivity })
     } catch (error) {
       logger.error(error)
-      console.log("error code: ", error.code)
       return sendErrorResponse(res, error.message, error.code)
     }
 }
