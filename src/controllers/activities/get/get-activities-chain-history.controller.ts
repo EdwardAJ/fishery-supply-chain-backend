@@ -21,8 +21,7 @@ const getActivitiesChainHistoryByLotId = async (req: Request, res: ExpressRespon
 
       const productLot = await getProductLotFromBlockchain(user, lotId)
       const activitiesChainHistoryBuffer =
-        await query(
-          user, "ActivitiesChainsContract", "getActivitiesChainHistory",
+        await query(user, "ActivitiesChainsContract", "getActivitiesChainHistory",
           productLot.ActivitiesChainId)
       
       return sendSuccessResponse(res, "activities",

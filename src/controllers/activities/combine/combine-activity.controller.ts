@@ -10,9 +10,7 @@ import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { getAndValidateUser } from "~/utils/user.util"
 import { createOrUpdateActivitiesChain } from "~/utils/activities/activity.util"
 import { getGeneratedUuid } from "~/utils/uuid.util"
-import { getProductLotAndEnsureOwnership, getNewProductLot } from "~/utils/activities/product-lot.util"
-
-import { invoke } from "~/services/invoke.service"
+import { createOrUpdateProductLot, getProductLotAndEnsureOwnership, getNewProductLot } from "~/utils/activities/product-lot.util"
 
 const combine = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
@@ -48,21 +46,18 @@ const combine = async (req: Request, res: ExpressResponse):
       }
 
       const newProductLot = getNewProductLot(newLot, newActivitiesChainId)
-      await invoke(user, "ProductLotsContract", "createProductLot",
-        newProductLot.Id, JSON.stringify(newProductLot)
-      )
-
       const combineActivity = new CombineActivity({
-        id: getGeneratedUuid(),
+        id: newProductLot.ActivityId,
         parentIds: activityIds,
         owner: new User(user.username, user.organization),
         createdAt: new Date().toISOString(),
-        currentLot: newProductLot,
+        lot: newProductLot,
       }, parentActivitiesChainIds)
 
+      await createOrUpdateProductLot(newProductLot, user)
       await createOrUpdateActivitiesChain(newActivitiesChainId, [combineActivity], user)
-      return sendSuccessResponse(res, "Combined!", { activity: combineActivity })
 
+      return sendSuccessResponse(res, "Combined!", { activity: combineActivity })
     } catch (error) {
       logger.error(error)
       return sendErrorResponse(res, error.message, error.code ?? Codes.BAD_REQUEST)

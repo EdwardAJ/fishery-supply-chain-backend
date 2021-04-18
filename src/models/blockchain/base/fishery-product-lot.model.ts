@@ -5,7 +5,7 @@ class FisheryProductLot {
   private readonly weight: number
   private readonly commodityType: string
   private readonly activitiesChainId: string
-  private readonly activityId: string
+  private activityId: string
 
   constructor (
     { id, weight, commodityType,
@@ -18,24 +18,28 @@ class FisheryProductLot {
     this.activityId = activityId
   }
 
-  get Id(): string {
+  get Id (): string {
     return this.id
   }
 
-  get Weight(): number {
+  get Weight (): number {
     return this.weight
   }
 
-  get CommodityType(): string {
+  get CommodityType (): string {
     return this.commodityType
   }
 
-  get ActivitiesChainId(): string {
+  get ActivitiesChainId (): string {
     return this.activitiesChainId
   }
 
-  get ActivityId(): string {
+  get ActivityId (): string {
     return this.activityId
+  }
+
+  set ActivityId (activityId: string) {
+    this.activityId = activityId
   }
 }
 

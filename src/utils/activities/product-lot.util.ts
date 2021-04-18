@@ -4,12 +4,13 @@ import { Codes } from "~/constants/http/code.constant"
 import { CustomError } from "~/models/error/custom-error.model"
 
 import { UserInterface } from "~/interfaces/user.interface"
-import { ProductLotInterface } from "~/interfaces/product-lot.interface"
+import { ProductLotInterface, ProductLotRequestBodyInterface } from "~/interfaces/product-lot.interface"
 
 import { query } from "~/services/query.service"
 
 import { getGeneratedUuid } from "../uuid.util"
 import { getActivitiesChain, isOwnerOfActivity } from "./activity.util"
+import { invoke } from "~/services/invoke.service"
 
 const getProductLotFromBlockchain =
   async (user: UserInterface, lotId: string): Promise<FisheryProductLot> => {
@@ -32,7 +33,7 @@ const getNewProductLots = (
 }
 
 const getNewProductLot = (
-  newLot: ProductLotInterface, activitiesChainId: string
+  newLot: ProductLotRequestBodyInterface, activitiesChainId: string
 ): FisheryProductLot => {
   const { weight, commodityType } = newLot
   return new FisheryProductLot(
@@ -45,7 +46,7 @@ const getProductLotAndEnsureOwnership = async (
 ): Promise<FisheryProductLot> => {
   const productLot = await getProductLotFromBlockchain(user, currentLotId)
   if (!productLot) { throw new Error("Product lot not found!") }
-  
+
   const { ActivitiesChainId: activitiesChainId, ActivityId: activityId } = productLot
 
   if (!await isOwnerOfLot(activitiesChainId, activityId, user)) {
@@ -61,10 +62,19 @@ const isOwnerOfLot = async (
   return isOwnerOfActivity(activitiesChain, activityId, user)
 }
 
+const createOrUpdateProductLot = async (
+  currentProductLot: FisheryProductLot, user: UserInterface): Promise<void> => {
+  await invoke(user, "ProductLotsContract", "createOrUpdateProductLot",
+    currentProductLot.Id, JSON.stringify(currentProductLot)
+  )
+}
+
+
 export {
   getProductLotFromBlockchain,
   getProductLotAndEnsureOwnership,
   isOwnerOfLot,
   getNewProductLot,
-  getNewProductLots
+  getNewProductLots,
+  createOrUpdateProductLot
 }

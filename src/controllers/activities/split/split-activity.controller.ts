@@ -7,10 +7,12 @@ import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 
 import { getAndValidateUser } from "~/utils/user.util"
 import {  createOrUpdateActivitiesChain } from "~/utils/activities/activity.util"
-import { getNewProductLots, getProductLotAndEnsureOwnership } from "~/utils/activities/product-lot.util"
+import {
+  createOrUpdateProductLot, getNewProductLots,
+  getProductLotAndEnsureOwnership
+} from "~/utils/activities/product-lot.util"
 import { SplitActivity } from "~/models/blockchain/split/split-activity.model"
 import { User } from "~/models/blockchain/base/user.model"
-import { invoke } from "~/services/invoke.service"
 
 const split = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
@@ -30,21 +32,18 @@ const split = async (req: Request, res: ExpressResponse):
       const splitActivities: SplitActivity[] = []
 
       await Promise.all(newProductLots.map(async (newProductLot) => {
-        // Save new product lot information
-        await invoke(user, "ProductLotsContract", "createProductLot",
-          newProductLot.Id, JSON.stringify(newProductLot)
-        )
         splitActivities.push(
           new SplitActivity(
             {
               id: newProductLot.ActivityId,
               parentIds: [activityId],
-              currentLot: newProductLot,
+              lot: newProductLot,
               owner: new User(user.username, user.organization),
               createdAt: new Date().toISOString(),
             }
           )
         )
+        await createOrUpdateProductLot(newProductLot, user)
       }))
 
       await createOrUpdateActivitiesChain(activitiesChainId, splitActivities, user)

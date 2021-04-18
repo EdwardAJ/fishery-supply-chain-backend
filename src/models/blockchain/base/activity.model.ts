@@ -5,20 +5,20 @@ import { User } from "./user.model"
 
 abstract class Activity extends Identity {
   protected readonly parentIds: string[] | null
-  protected readonly currentLot: FisheryProductLot
+  protected readonly lot: FisheryProductLot
   protected readonly owner: User
   protected readonly createdAt: string
 
   constructor (
     {
       id, parentIds,
-      currentLot, owner, createdAt
+      lot, owner, createdAt
     }: ActivityInterface,
     name: string
   ){
     super(id, name)
     this.parentIds = parentIds
-    this.currentLot = currentLot
+    this.lot = lot
     this.owner = owner
     this.createdAt = createdAt
   }
@@ -27,8 +27,8 @@ abstract class Activity extends Identity {
     return this.parentIds
   }
 
-  get CurrentLot(): FisheryProductLot {
-    return this.currentLot
+  get Lot(): FisheryProductLot {
+    return this.lot
   }
 
   get Owner(): User {

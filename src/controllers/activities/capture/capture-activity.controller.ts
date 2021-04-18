@@ -8,15 +8,13 @@ import { User } from "~/models/blockchain/base/user.model"
 import { Vessel } from "~/models/blockchain/capture/vessel.model"
 import { Harbor } from "~/models/blockchain/capture/harbor.model"
 import { GPSLocation } from "~/models/blockchain/base/gps-location.model"
-import { FisheryProductLot } from "~/models/blockchain/base/fishery-product-lot.model"
 
 import { getGeneratedUuid } from "~/utils/uuid.util"
 import { logger } from "~/utils/logger.util"
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { getAndValidateUser } from "~/utils/user.util"
 import { createOrUpdateActivitiesChain } from "~/utils/activities/activity.util"
-
-import { invoke } from "~/services/invoke.service"
+import { createOrUpdateProductLot, getNewProductLot } from "~/utils/activities/product-lot.util"
 
 const capture = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
@@ -32,18 +30,13 @@ const capture = async (req: Request, res: ExpressResponse):
       } = req.body
 
       const activitiesChainId = getGeneratedUuid()
-      const captureActivityId = getGeneratedUuid()
 
-      const currentLot = new FisheryProductLot(
-        { id: getGeneratedUuid(), weight, commodityType,
-          activitiesChainId, activityId: captureActivityId }
-      )
-
+      const newProductLot = getNewProductLot({weight, commodityType}, activitiesChainId)
       const captureActivity = new CaptureActivity(
         {
-          id: captureActivityId,
+          id: newProductLot.ActivityId,
           parentIds: null,
-          currentLot,
+          lot: newProductLot,
           owner: new User(username, user.organization),
           createdAt: new Date().toISOString(),
         },
@@ -52,11 +45,8 @@ const capture = async (req: Request, res: ExpressResponse):
         new GPSLocation(latitude, longitude)
       )
 
-      await invoke(
-        user, "ProductLotsContract", "createProductLot",
-        currentLot.Id, JSON.stringify(currentLot))
-      
-        createOrUpdateActivitiesChain(activitiesChainId, [captureActivity], user)
+      await createOrUpdateProductLot(newProductLot, user)
+      await createOrUpdateActivitiesChain(activitiesChainId, [captureActivity], user)
 
       // TODO: save the activity to MongoDB
 

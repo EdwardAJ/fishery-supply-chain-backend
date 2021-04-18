@@ -26,7 +26,7 @@ const getProcessActivity =
     {
       id: processActivityId,
       parentIds: parentActivityIds,
-      currentLot: productLot,
+      lot: productLot,
       owner: new User(user.username, user.organization),
       createdAt: new Date().toISOString(),
     },

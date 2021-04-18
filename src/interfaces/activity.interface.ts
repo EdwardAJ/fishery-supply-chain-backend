@@ -5,7 +5,7 @@ import { User } from "~/models/blockchain/base/user.model"
 interface ActivityInterface {
   id: string;
   parentIds: string[] | null;
-  currentLot: FisheryProductLot;
+  lot: FisheryProductLot;
   owner: User;
   createdAt: string
 }
