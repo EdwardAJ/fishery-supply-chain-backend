@@ -24,8 +24,8 @@ const combine = async (req: Request, res: ExpressResponse):
       }
 
       const activitiesChainIdSet: Set<string> = new Set()
-      const activityIds = []
-
+      const activityIds: string[] = []
+      
       for (const currentLotId of currentLotIds) {
         const { ActivitiesChainId: activitiesChainId, ActivityId: activityId } = 
           await getProductLotAndEnsureOwnership(currentLotId, user)
@@ -41,7 +41,7 @@ const combine = async (req: Request, res: ExpressResponse):
       if (activitiesChainIdSet.size === 1) {
         // Get first element
         const iterator = activitiesChainIdSet.values()
-        newActivitiesChainId = iterator.next().value()
+        newActivitiesChainId = iterator.next().value
         parentActivitiesChainIds = null
       }
 

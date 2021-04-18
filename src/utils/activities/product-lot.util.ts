@@ -45,8 +45,6 @@ const getProductLotAndEnsureOwnership = async (
   currentLotId: string, user: UserInterface
 ): Promise<FisheryProductLot> => {
   const productLot = await getProductLotFromBlockchain(user, currentLotId)
-  if (!productLot) { throw new Error("Product lot not found!") }
-
   const { ActivitiesChainId: activitiesChainId, ActivityId: activityId } = productLot
 
   if (!await isOwnerOfLot(activitiesChainId, activityId, user)) {

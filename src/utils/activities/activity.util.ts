@@ -3,6 +3,7 @@ import { UserInterface } from "~/interfaces/user.interface"
 import { ActivitiesChain } from "~/models/blockchain/base/activities-chain.model"
 import { Activity } from "~/models/blockchain/base/activity.model"
 import { invoke } from "~/services/invoke.service"
+import { ActivitesChainFromBlockchainInterface } from "~/interfaces/blockchain/activities-chain.interface"
 
 const createOrUpdateActivitiesChain = async (
   activitiesChainId: string, activities: Activity[], user: UserInterface): Promise<void> => {
@@ -13,21 +14,22 @@ const createOrUpdateActivitiesChain = async (
   )
 }
 
-const getActivitiesChain = 
-  async (activitiesChainId: string, user: UserInterface): Promise<ActivitiesChain> => {
+const getActivitiesChain = async (activitiesChainId: string, user: UserInterface):
+Promise<ActivitesChainFromBlockchainInterface> => {
   const activitiesChainBuffer =
     await query(user, "ActivitiesChainsContract", "getCurrentActivitiesChain", activitiesChainId)
   return JSON.parse(activitiesChainBuffer.toString())
 }
 
 const isOwnerOfActivity = (
-  activitiesChain: ActivitiesChain, activityId: string, user: UserInterface): boolean => {
-  for (const activity of activitiesChain.Activities) {
-    const {Id, Owner: { OrganizationName }} = activity
-    if (Id === activityId && OrganizationName === user.organization) {
+  activitiesChain: ActivitesChainFromBlockchainInterface,
+  activityId: string, user: UserInterface): boolean => {
+  for (const activity of activitiesChain.activities) {
+    const {id, owner: { organizationName }} = activity
+    if (id === activityId && organizationName === user.organization) {
         return true
     }
-  }
+  } 
   return false
 }
 

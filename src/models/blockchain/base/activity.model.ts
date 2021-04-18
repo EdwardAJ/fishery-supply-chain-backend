@@ -3,7 +3,7 @@ import { FisheryProductLot } from "./fishery-product-lot.model"
 import { Identity } from "./identity.model"
 import { User } from "./user.model"
 
-abstract class Activity extends Identity {
+class Activity extends Identity {
   protected readonly parentIds: string[] | null
   protected readonly lot: FisheryProductLot
   protected readonly owner: User
