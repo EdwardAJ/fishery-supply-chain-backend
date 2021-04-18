@@ -1,6 +1,8 @@
 import { Response } from "~/models/response.model"
 import { Request, Response as ExpressResponse } from "express"
 
+import { OrgNames } from "~/constants/organization.constant"
+
 import { CaptureActivity } from "~/models/blockchain/capture/capture-activity.model"
 import { User } from "~/models/blockchain/base/user.model"
 import { Vessel } from "~/models/blockchain/capture/vessel.model"
@@ -11,12 +13,12 @@ import { FisheryProductLot } from "~/models/blockchain/base/fishery-product-lot.
 import { getGeneratedUuid } from "~/utils/uuid.util"
 import { logger } from "~/utils/logger.util"
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
-import { invoke } from "~/services/invoke.service"
-import { OrgNames } from "~/constants/organization.constant"
-import { ActivitiesChain } from "~/models/blockchain/base/activities-chain.model"
 import { getAndValidateUser } from "~/utils/user.util"
+import { createOrUpdateActivitiesChain } from "~/utils/activities/activity.util"
 
-const captureFisheryProduct = async (req: Request, res: ExpressResponse):
+import { invoke } from "~/services/invoke.service"
+
+const capture = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
       const username = req.headers["username"] as string
@@ -50,17 +52,11 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
         new GPSLocation(latitude, longitude)
       )
 
-      const activitiesChain = new ActivitiesChain(
-        activitiesChainId, [captureActivity]
-      )
-
       await invoke(
         user, "ProductLotsContract", "createProductLot",
         currentLot.Id, JSON.stringify(currentLot))
-
-      await invoke(
-        user, "ActivitiesChainsContract", "createActivitiesChain",
-        activitiesChain.Id, JSON.stringify(activitiesChain))
+      
+        createOrUpdateActivitiesChain(activitiesChainId, [captureActivity], user)
 
       // TODO: save the activity to MongoDB
 
@@ -72,5 +68,5 @@ const captureFisheryProduct = async (req: Request, res: ExpressResponse):
 }
 
 export {
-  captureFisheryProduct
+  capture
 }

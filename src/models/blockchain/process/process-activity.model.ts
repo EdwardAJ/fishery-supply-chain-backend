@@ -13,7 +13,7 @@ class ProcessActivity extends Activity {
     private readonly processTo: ProcessTo,
     private readonly location: GPSLocation
   ) {
-    super(baseActivityData)
+    super(baseActivityData, "Pengolahan")
   }
 
   get Supplier(): Supplier {

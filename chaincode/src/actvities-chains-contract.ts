@@ -6,7 +6,7 @@ import { Context, Contract } from "fabric-contract-api"
 // Contract to store multiple activities chain
 export class ActivitiesChainsContract extends Contract {
 
-	public async createActivitiesChain
+	public async createOrUpdateActivitiesChain
 		(context: Context, activitiesChainId: string, actvitiesChainJson: string): Promise<void> {
     context.stub.putState(activitiesChainId, Buffer.from(actvitiesChainJson))
   }

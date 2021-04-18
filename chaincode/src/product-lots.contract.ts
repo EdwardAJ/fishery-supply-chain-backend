@@ -6,7 +6,7 @@ import { Context, Contract } from "fabric-contract-api"
 // Contract to store product lots
 export class ProductLotsContract extends Contract {
 
-	public async createProductLot
+	public async createOrUpdateProductLot
 		(context: Context, productLotId: string, productLotJson: string): Promise<void> {
     context.stub.putState(productLotId, Buffer.from(productLotJson))
   }

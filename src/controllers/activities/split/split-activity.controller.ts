@@ -6,8 +6,8 @@ import { logger } from "~/utils/logger.util"
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 
 import { getAndValidateUser } from "~/utils/user.util"
-import {  getProductLotAndEnsureOwnership, updateActivitiesChain } from "~/utils/activities/activity.util"
-import { getNewProductLots } from "~/utils/activities/product-lot.util"
+import {  createOrUpdateActivitiesChain } from "~/utils/activities/activity.util"
+import { getNewProductLots, getProductLotAndEnsureOwnership } from "~/utils/activities/product-lot.util"
 import { SplitActivity } from "~/models/blockchain/split/split-activity.model"
 import { User } from "~/models/blockchain/base/user.model"
 import { invoke } from "~/services/invoke.service"
@@ -47,7 +47,7 @@ const split = async (req: Request, res: ExpressResponse):
         )
       }))
 
-      await updateActivitiesChain(activitiesChainId, splitActivities, user)
+      await createOrUpdateActivitiesChain(activitiesChainId, splitActivities, user)
       return sendSuccessResponse(res, "Splitted!", { activities: splitActivities })
 
     } catch (error) {

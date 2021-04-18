@@ -8,7 +8,7 @@ import { query } from "~/services/query.service"
 import { getAndValidateUser } from "~/utils/user.util"
 import { getProductLotFromBlockchain } from "~/utils/activities/product-lot.util"
 
-const getActivitiesChainByLotId = async (req: Request, res: ExpressResponse):
+const getActivitiesChainHistoryByLotId = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
       const { lotId } = req.params
@@ -20,12 +20,13 @@ const getActivitiesChainByLotId = async (req: Request, res: ExpressResponse):
       const user = await getAndValidateUser(username)
 
       const productLot = await getProductLotFromBlockchain(user, lotId)
-      const activitiesChain =
+      const activitiesChainHistoryBuffer =
         await query(
           user, "ActivitiesChainsContract", "getActivitiesChainHistory",
           productLot.ActivitiesChainId)
       
-      return sendSuccessResponse(res, "activities", JSON.parse(activitiesChain.toString()))
+      return sendSuccessResponse(res, "activities",
+        JSON.parse(activitiesChainHistoryBuffer.toString()))
     } catch (error) {
       logger.error(error)
       return sendErrorResponse(res, error.message, error.code ?? Codes.BAD_REQUEST)
@@ -33,5 +34,5 @@ const getActivitiesChainByLotId = async (req: Request, res: ExpressResponse):
 }
 
 export {
-  getActivitiesChainByLotId
+  getActivitiesChainHistoryByLotId
 }

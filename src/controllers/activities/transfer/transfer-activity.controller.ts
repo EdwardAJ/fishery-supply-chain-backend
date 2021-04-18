@@ -7,12 +7,13 @@ import { User } from "~/models/blockchain/base/user.model"
 import { logger } from "~/utils/logger.util"
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { getAndValidateUser } from "~/utils/user.util"
-import { getProductLotAndEnsureOwnership, updateActivitiesChain } from "~/utils/activities/activity.util"
+import { createOrUpdateActivitiesChain } from "~/utils/activities/activity.util"
 import { getGeneratedUuid } from "~/utils/uuid.util"
 
 import { invoke } from "~/services/invoke.service"
 import { TransferActivity } from "~/models/blockchain/transfer/transfer-activity.model"
 import { isOrgNameExist } from "~/utils/organization.util"
+import { getProductLotAndEnsureOwnership } from "~/utils/activities/product-lot.util"
 
 const transfer = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
@@ -25,7 +26,7 @@ const transfer = async (req: Request, res: ExpressResponse):
       if (!currentLotId) {
         throw new Error("Please provide lot information")
       }
-      
+
       if (!isOrgNameExist(toOrganization)) {
         return sendErrorResponse(res, "Organization does not exist!")
       }
@@ -45,7 +46,8 @@ const transfer = async (req: Request, res: ExpressResponse):
         currentLot: currentProductLot,
       }, new User(user.username, user.organization))
 
-      await updateActivitiesChain(currentProductLot.ActivitiesChainId, [transferActivity], user)
+      await createOrUpdateActivitiesChain(
+        currentProductLot.ActivitiesChainId, [transferActivity], user)
       return sendSuccessResponse(res, "Transferred!", { activity: transferActivity })
 
     } catch (error) {

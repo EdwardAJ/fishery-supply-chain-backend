@@ -8,9 +8,9 @@ import { User } from "~/models/blockchain/base/user.model"
 import { logger } from "~/utils/logger.util"
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { getAndValidateUser } from "~/utils/user.util"
-import { getProductLotAndEnsureOwnership, updateActivitiesChain } from "~/utils/activities/activity.util"
+import { createOrUpdateActivitiesChain } from "~/utils/activities/activity.util"
 import { getGeneratedUuid } from "~/utils/uuid.util"
-import { getNewProductLot } from "~/utils/activities/product-lot.util"
+import { getProductLotAndEnsureOwnership, getNewProductLot } from "~/utils/activities/product-lot.util"
 
 import { invoke } from "~/services/invoke.service"
 
@@ -60,7 +60,7 @@ const combine = async (req: Request, res: ExpressResponse):
         currentLot: newProductLot,
       }, parentActivitiesChainIds)
 
-      await updateActivitiesChain(newActivitiesChainId, [combineActivity], user)
+      await createOrUpdateActivitiesChain(newActivitiesChainId, [combineActivity], user)
       return sendSuccessResponse(res, "Combined!", { activity: combineActivity })
 
     } catch (error) {
