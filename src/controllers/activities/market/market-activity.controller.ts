@@ -3,11 +3,8 @@ import { Codes } from "~/constants/http/code.constant"
 
 import { Response } from "~/models/response.model"
 import { User } from "~/models/blockchain/base/user.model"
-import { ProcessActivity } from "~/models/blockchain/process/process-activity.model"
-import { Supplier } from "~/models/blockchain/process/supplier.model"
-import { ProcessTo } from "~/models/blockchain/process/process-to.model"
 import { GPSLocation } from "~/models/blockchain/base/gps-location.model"
-import { Storage } from "~/models/blockchain/process/storage.model"
+import { MarketTo } from "~/models/blockchain/market/market-to.model"
 
 import { logger } from "~/utils/logger.util"
 import { createOrUpdateActivitiesChain } from "~/utils/activities/activity.util"
@@ -17,48 +14,42 @@ import { getAndValidateUser } from "~/utils/user.util"
 import { getGeneratedUuid } from "~/utils/uuid.util"
 
 import { OrgNames } from "~/constants/organization.constant"
+import { MarketActivity } from "~/models/blockchain/market/market-activity.model"
 
-
-const process = async (req: Request, res: ExpressResponse):
+const market = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
       const username = req.headers["username"] as string
-      const user = await getAndValidateUser(username, OrgNames.ORG_2)
+      const user = await getAndValidateUser(username, OrgNames.ORG_3)
 
       const {
         currentLot: { id: currentLotId },
-        supplier: { id: supplierId, name: supplierName },
-        storage: { id: storageId, name: storageName },
-        processTo: { id: processToId, name: processToName },
         location: { latitude, longitude },
+        marketTo: { id: marketToId, name: marketToName }
       } = req.body
 
-      if (!currentLotId || !supplierId || !supplierName ||
-          !storageId || !storageName || !processToId ||
-          !processToName || !latitude || !longitude) {
+      if (!currentLotId || !latitude || !longitude || !marketToId || !marketToName) {
         throw new Error("Please provide sufficient information")
       }
 
       const currentProductLot = await getProductLotAndEnsureOwnership(currentLotId, user)
       currentProductLot.ActivityId = getGeneratedUuid()
 
-      const processActivity = new ProcessActivity({
+      const marketActivity = new MarketActivity({
           id: currentProductLot.ActivityId,
           parentIds: [currentProductLot.ActivityId],
           owner: new User(user.username, user.organization),
           createdAt: new Date().toISOString(),
           lot: currentProductLot,
         },
-        new Supplier(supplierId, supplierName),
-        new Storage(storageId, storageName),
-        new ProcessTo(processToId, processToName),
+        new MarketTo(marketToId, marketToName),
         new GPSLocation(latitude, longitude)
       )
 
       await createOrUpdateProductLot(currentProductLot, user)
       await createOrUpdateActivitiesChain(
-        currentProductLot.ActivitiesChainId, [processActivity], user)
-      return sendSuccessResponse(res, "Processed!", { activity: processActivity })
+        currentProductLot.ActivitiesChainId, [marketActivity], user)
+      return sendSuccessResponse(res, "Processed!", { activity: marketActivity })
 
     } catch (error) {
       logger.error(error)
@@ -67,5 +58,5 @@ const process = async (req: Request, res: ExpressResponse):
 }
 
 export {
-  process
+  market
 }

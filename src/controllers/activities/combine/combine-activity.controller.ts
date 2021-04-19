@@ -33,9 +33,9 @@ const combine = async (req: Request, res: ExpressResponse):
         activityIds.push(activityId)
       }
 
-      // If the activitiesChainIdSet size is only 1, then the
-      // newActivitiesChainId should be the same as the parent's
-      // newActivitiesChainId (first element of set). Otherwise, make a new one.
+      /* If the activitiesChainIdSet size is only 1, then the newActivitiesChainId
+         should be the same as the parent's newActivitiesChainId (first element of set).
+         Otherwise, make a new one. */
       let newActivitiesChainId = getGeneratedUuid()
       let parentActivitiesChainIds: string[] | null = [...activitiesChainIdSet]
       if (activitiesChainIdSet.size === 1) {
