@@ -269,8 +269,10 @@ function networkUp() {
   export ORDERER_PASSWORD=$(cat ${PWD}/../../.env | grep ORDERER_PASSWORD= | cut -d '=' -f2)
   export ORG1_PASSWORD=$(cat ${PWD}/../../.env | grep ORG1_PASSWORD= | cut -d '=' -f2)
   export ORG2_PASSWORD=$(cat ${PWD}/../../.env | grep ORG2_PASSWORD= | cut -d '=' -f2)
+  export ORG3_PASSWORD=$(cat ${PWD}/../../.env | grep ORG3_PASSWORD= | cut -d '=' -f2)
   export ORG1_ADMIN=$(cat ${PWD}/../../.env | grep ORG1_ADMIN= | cut -d '=' -f2)
   export ORG2_ADMIN=$(cat ${PWD}/../../.env | grep ORG2_ADMIN= | cut -d '=' -f2)
+  export ORG3_ADMIN=$(cat ${PWD}/../../.env | grep ORG3_ADMIN= | cut -d '=' -f2)
   export ORDERER_ADMIN=$(cat ${PWD}/../../.env | grep ORDERER_ADMIN= | cut -d '=' -f2)
 
   # generate artifacts if they don't exist

@@ -133,6 +133,12 @@ function Org3Up () {
 
 # Generate the needed certificates, the genesis block and start the network.
 function addOrg3 () {
+
+  export ORG3_PASSWORD=$(cat ${PWD}/../../../.env | grep ORG3_PASSWORD= | cut -d '=' -f2)
+  echo $ORG3_PASSWORD
+  export ORG3_ADMIN=$(cat ${PWD}/../../../.env | grep ORG3_ADMIN= | cut -d '=' -f2)
+  echo $ORG3_ADMIN
+
   # If the test network is not up, abort
   if [ ! -d ../organizations/ordererOrganizations ]; then
     fatalln "ERROR: Please, run ./network.sh up createChannel first."

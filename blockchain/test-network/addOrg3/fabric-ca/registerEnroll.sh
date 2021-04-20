@@ -10,9 +10,10 @@ function createOrg3 {
 	mkdir -p ../organizations/peerOrganizations/org3.example.com/
 
 	export FABRIC_CA_CLIENT_HOME=${PWD}/../organizations/peerOrganizations/org3.example.com/
-
+  echo $ORG3_ADMIN
+  echo $ORG3_PASSWORD
   set -x
-  fabric-ca-client enroll -u https://admin:adminpw@localhost:11054 --caname ca-org3 --tls.certfiles ${PWD}/fabric-ca/org3/tls-cert.pem
+  fabric-ca-client enroll -u https://${ORG3_ADMIN}:${ORG3_PASSWORD}@localhost:11054 --caname ca-org3 --tls.certfiles ${PWD}/fabric-ca/org3/tls-cert.pem
   { set +x; } 2>/dev/null
 
   echo 'NodeOUs:

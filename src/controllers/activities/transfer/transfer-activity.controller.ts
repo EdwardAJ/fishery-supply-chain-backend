@@ -27,11 +27,14 @@ const transfer = async (req: Request, res: ExpressResponse):
       }
 
       const currentProductLot = await getProductLotAndEnsureOwnership(currentLotId, user)
-      currentProductLot.ActivityId = getGeneratedUuid()
+      const parentActivityId = currentProductLot.ActivityId
+
+      const newActivityId = getGeneratedUuid()
+      currentProductLot.ActivityId = newActivityId
 
       const transferActivity = new TransferActivity({
-        id: currentProductLot.ActivityId,
-        parentIds: [currentProductLot.ActivityId],
+        id: newActivityId,
+        parentIds: [parentActivityId],
         owner: new User(null, toOrganization),
         createdAt: new Date().toISOString(),
         lot: currentProductLot,
