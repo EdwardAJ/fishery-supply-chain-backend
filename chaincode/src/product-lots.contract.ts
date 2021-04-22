@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Context, Contract } from "fabric-contract-api"
+import { getAllHistoryResults, readState } from "./utils/util"
 
 // Contract to store product lots
 export class ProductLotsContract extends Contract {
@@ -12,16 +13,13 @@ export class ProductLotsContract extends Contract {
   }
 
   public async getProductLot (context: Context, productLotId: string): Promise<any> {
-    const productLot = await this.readState(context, productLotId)
+    const productLot = await readState(context, productLotId)
     return JSON.stringify(productLot)
   }
 
-  // Taken from asset-transfer-events
-  public async readState (context: Context, productLotId: string) {
-    const productLotBuffer = await context.stub.getState(productLotId) // get the asset from chaincode state
-    if (!productLotBuffer || productLotBuffer.length === 0) {
-      throw new Error(`The lot ${productLotId} does not exist`)
-    }
-    return JSON.parse(productLotBuffer.toString())
+  public async getProductLotsByQuery(context: Context, queryString: string): Promise<any> {
+    const resultsIterator = await context.stub.getQueryResult(queryString)
+    const results = await getAllHistoryResults(resultsIterator)
+    return results
   }
 }

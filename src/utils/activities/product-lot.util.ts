@@ -46,7 +46,6 @@ const getProductLotAndEnsureOwnership = async (
 ): Promise<FisheryProductLot> => {
   const productLot = await getProductLotFromBlockchain(user, currentLotId)
   const { ActivitiesChainId: activitiesChainId, ActivityId: activityId } = productLot
-  console.log("product lot %O", productLot)
   if (!await isOwnerOfLot(activitiesChainId, activityId, user)) {
     throw new CustomError("Forbidden!", Codes.FORBIDDEN)
   }
@@ -57,7 +56,6 @@ const isOwnerOfLot = async (
   activitiesChainId: string, activityId: string, user: UserInterface
 ): Promise<boolean> => {
   const activitiesChain = await getActivitiesChain(activitiesChainId, user)
-  console.log("activitiesChain: %O", activitiesChain)
   return isOwnerOfActivity(activitiesChain, activityId, user)
 }
 
