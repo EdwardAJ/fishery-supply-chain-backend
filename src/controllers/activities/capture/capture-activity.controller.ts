@@ -30,8 +30,11 @@ const capture = async (req: Request, res: ExpressResponse):
       } = req.body
 
       const activitiesChainId = getGeneratedUuid()
+      console.log("activitiesChainId: ", activitiesChainId)
 
       const newProductLot = getNewProductLot({weight, commodityType}, activitiesChainId)
+      console.log("activityId: ", newProductLot.ActivityId)
+      console.log("lotId: ", newProductLot.Id)
       const captureActivity = new CaptureActivity(
         {
           id: newProductLot.ActivityId,
@@ -47,8 +50,6 @@ const capture = async (req: Request, res: ExpressResponse):
 
       await createOrUpdateProductLot(newProductLot, user)
       await createOrUpdateActivitiesChain(activitiesChainId, [captureActivity], user)
-
-      // TODO: save the activity to MongoDB
 
       return sendSuccessResponse(res, "Captured!", { activity: captureActivity })
     } catch (error) {

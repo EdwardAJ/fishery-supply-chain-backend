@@ -8,7 +8,7 @@ export class ProductLotsContract extends Contract {
 
 	public async createOrUpdateProductLot
 		(context: Context, productLotId: string, productLotJson: string): Promise<void> {
-    context.stub.putState(productLotId, Buffer.from(productLotJson))
+    await context.stub.putState(productLotId, Buffer.from(productLotJson))
   }
 
   public async getProductLot (context: Context, productLotId: string): Promise<any> {

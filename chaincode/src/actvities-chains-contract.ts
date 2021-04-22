@@ -8,7 +8,7 @@ export class ActivitiesChainsContract extends Contract {
 
 	public async createOrUpdateActivitiesChain
 		(context: Context, activitiesChainId: string, actvitiesChainJson: string): Promise<void> {
-    context.stub.putState(activitiesChainId, Buffer.from(actvitiesChainJson))
+    await context.stub.putState(activitiesChainId, Buffer.from(actvitiesChainJson))
   }
 
   public async getActivitiesChainHistory (context: Context, activitiesChainId: string): Promise<any> {

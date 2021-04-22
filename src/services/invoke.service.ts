@@ -22,7 +22,7 @@ const invoke = async (
   // Check to see if we've already enrolled the user.
   const identity = await wallet.get(username)
   if (!identity) {
-  logger.error(`Identity ${username} does not exist`)
+    logger.error(`Identity ${username} does not exist`)
     throw new Error(`An identity for the user ${username} does not exist in the wallet`)
   }
 
