@@ -4,6 +4,7 @@ import { ActivitiesChain } from "~/models/blockchain/base/activities-chain.model
 import { Activity } from "~/models/blockchain/base/activity.model"
 import { invoke } from "~/services/invoke.service"
 import { ActivitesChainFromBlockchainInterface } from "~/interfaces/blockchain/activities-chain.interface"
+import { getProductLotFromBlockchain } from "./product-lot.util"
 
 const createOrUpdateActivitiesChain = async (
   activitiesChainId: string, activities: Activity[], user: UserInterface): Promise<void> => {

@@ -8,24 +8,35 @@ import { query } from "~/services/query.service"
 import { getAndValidateUser } from "~/utils/user.util"
 import { getProductLotFromBlockchain } from "~/utils/activities/product-lot.util"
 
-const getActivitiesChainHistoryByLotId = async (req: Request, res: ExpressResponse):
+const getActivitiesChainHistory = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
-      const { lotId } = req.params
-      if (!lotId) return sendErrorResponse(res, "Please provide lot ID!")
+      const { lotId, chainId } = req.query
+      if (!lotId && !chainId) {
+        return sendErrorResponse(res, "Please provide ID!")
+      }
 
       // TODO: remove authentication method, automatically assign user to any organization
       // to see activities
       const username = req.headers["username"] as string
       const user = await getAndValidateUser(username)
 
-      const productLot = await getProductLotFromBlockchain(user, lotId)
+      let activitiesChainId = ""
+      if (lotId) {
+        const productLot = await getProductLotFromBlockchain(user, lotId.toString())
+        activitiesChainId = productLot.ActivitiesChainId
+      } else if (chainId) {
+        activitiesChainId = chainId.toString()
+      }
+
       const activitiesChainHistoryBuffer =
-        await query(user, "ActivitiesChainsContract", "getActivitiesChainHistory",
-          productLot.ActivitiesChainId)
+        await query(
+          user, "ActivitiesChainsContract", "getActivitiesChainHistory",
+          activitiesChainId)
       
       return sendSuccessResponse(res, "activities",
         JSON.parse(activitiesChainHistoryBuffer.toString()))
+      
     } catch (error) {
       logger.error(error)
       return sendErrorResponse(res, error.message, error.code ?? Codes.BAD_REQUEST)
@@ -33,5 +44,5 @@ const getActivitiesChainHistoryByLotId = async (req: Request, res: ExpressRespon
 }
 
 export {
-  getActivitiesChainHistoryByLotId
+  getActivitiesChainHistory
 }

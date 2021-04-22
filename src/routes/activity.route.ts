@@ -2,7 +2,7 @@ import express from "express"
 
 import { authorizeToken } from "~/middleware/authorizeToken"
 import { capture } from "~/controllers/activities/capture/capture-activity.controller"
-import { getActivitiesChainHistoryByLotId } from "~/controllers/activities/get/get-activities-chain-history.controller"
+import { getActivitiesChainHistory } from "~/controllers/activities/get/get-activities-chain-history.controller"
 import { split } from "~/controllers/activities/split/split-activity.controller"
 import { combine } from "~/controllers/activities/combine/combine-activity.controller"
 import { transfer } from "~/controllers/activities/transfer/transfer-activity.controller"
@@ -16,7 +16,7 @@ router.post("/combine", authorizeToken, combine)
 router.post("/transfer", authorizeToken, transfer)
 router.post("/process", authorizeToken, process)
 router.post("/market", authorizeToken, market)
-router.get("/:lotId", authorizeToken, getActivitiesChainHistoryByLotId)
+router.get("/", authorizeToken, getActivitiesChainHistory)
 
 export {
   router as activityRouter
