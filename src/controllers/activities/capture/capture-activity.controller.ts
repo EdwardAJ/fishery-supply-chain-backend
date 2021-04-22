@@ -30,11 +30,13 @@ const capture = async (req: Request, res: ExpressResponse):
       } = req.body
 
       const activitiesChainId = getGeneratedUuid()
-      console.log("activitiesChainId: ", activitiesChainId)
-
       const newProductLot = getNewProductLot({weight, commodityType}, activitiesChainId)
-      console.log("activityId: ", newProductLot.ActivityId)
-      console.log("lotId: ", newProductLot.Id)
+      const harbor = new Harbor(harborId, harborName)
+      const vessel = new Vessel(vesselId, vesselName)
+
+      newProductLot.Harbor = harbor
+      newProductLot.Vessel = vessel
+
       const captureActivity = new CaptureActivity(
         {
           id: newProductLot.ActivityId,
@@ -43,8 +45,7 @@ const capture = async (req: Request, res: ExpressResponse):
           owner: new User(username, user.organization),
           createdAt: new Date().toISOString(),
         },
-        new Vessel(vesselId, vesselName),
-        new Harbor(harborId, harborName),
+        harbor, vessel,
         new GPSLocation(latitude, longitude)
       )
 

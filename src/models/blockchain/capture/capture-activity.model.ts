@@ -7,8 +7,8 @@ import { GPSLocation } from "../base/gps-location.model"
 class CaptureActivity extends Activity {
   constructor (
     baseActivityData: ActivityInterface,
-    private readonly vessel: Vessel,
     private readonly harbor: Harbor,
+    private readonly vessel: Vessel,
     private readonly location: GPSLocation
   ) {
     super(baseActivityData, "Penangkapan")
