@@ -2,7 +2,6 @@ import { Request, Response as ExpressResponse } from "express"
 import { Codes } from "~/constants/http/code.constant"
 
 import { Response } from "~/models/response.model"
-import { User } from "~/models/blockchain/base/user.model"
 import { ProcessActivity } from "~/models/blockchain/process/process-activity.model"
 import { Supplier } from "~/models/blockchain/process/supplier.model"
 import { ProcessTo } from "~/models/blockchain/process/process-to.model"
@@ -48,7 +47,6 @@ const process = async (req: Request, res: ExpressResponse):
       const processActivity = new ProcessActivity({
           id: newActivityId,
           parentIds: [parentActivityId],
-          owner: new User(user.username, user.organization),
           createdAt: new Date().toISOString(),
           lot: currentProductLot,
         },

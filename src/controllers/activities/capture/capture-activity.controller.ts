@@ -30,7 +30,10 @@ const capture = async (req: Request, res: ExpressResponse):
       } = req.body
 
       const activitiesChainId = getGeneratedUuid()
-      const newProductLot = getNewProductLot({weight, commodityType}, activitiesChainId)
+      const newProductLot = getNewProductLot(
+        {weight, commodityType}, activitiesChainId,
+        new User(username, user.organization)
+      )
       const harbor = new Harbor(harborId, harborName)
       const vessel = new Vessel(vesselId, vesselName)
 
@@ -42,7 +45,6 @@ const capture = async (req: Request, res: ExpressResponse):
           id: newProductLot.ActivityId,
           parentIds: null,
           lot: newProductLot,
-          owner: new User(username, user.organization),
           createdAt: new Date().toISOString(),
         },
         harbor, vessel,

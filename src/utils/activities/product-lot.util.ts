@@ -9,8 +9,8 @@ import { ProductLotInterface, ProductLotRequestBodyInterface } from "~/interface
 import { query } from "~/services/query.service"
 
 import { getGeneratedUuid } from "../uuid.util"
-import { getActivitiesChain, isOwnerOfActivity } from "./activity.util"
 import { invoke } from "~/services/invoke.service"
+import { User } from "~/models/blockchain/base/user.model"
 
 const getProductLotFromBlockchain =
   async (user: UserInterface, lotId: string): Promise<FisheryProductLot> => {
@@ -21,23 +21,23 @@ const getProductLotFromBlockchain =
 }
 
 const getNewProductLots = (
-  newLots: ProductLotInterface[], activitiesChainId: string
+  newLots: ProductLotInterface[], activitiesChainId: string, owner: User
 ): FisheryProductLot[] => {
 
   const newProductLots: FisheryProductLot[] = []
   newLots.map((newLot) => {
-    newProductLots.push(getNewProductLot(newLot, activitiesChainId))
+    newProductLots.push(getNewProductLot(newLot, activitiesChainId, owner))
   })
 
   return newProductLots
 }
 
 const getNewProductLot = (
-  newLot: ProductLotRequestBodyInterface, activitiesChainId: string
+  newLot: ProductLotRequestBodyInterface, activitiesChainId: string, owner: User
 ): FisheryProductLot => {
   const { weight, commodityType } = newLot
   return new FisheryProductLot(
-    { id: getGeneratedUuid(), weight, commodityType,
+    { id: getGeneratedUuid(), weight, commodityType, owner,
     activitiesChainId, activityId: getGeneratedUuid() })
 }
 
@@ -45,18 +45,10 @@ const getProductLotAndEnsureOwnership = async (
   currentLotId: string, user: UserInterface
 ): Promise<FisheryProductLot> => {
   const productLot = await getProductLotFromBlockchain(user, currentLotId)
-  const { ActivitiesChainId: activitiesChainId, ActivityId: activityId } = productLot
-  if (!await isOwnerOfLot(activitiesChainId, activityId, user)) {
+  if (productLot.Owner.OrganizationName !== user.organization) {
     throw new CustomError("Forbidden!", Codes.FORBIDDEN)
   }
   return productLot
-}
-
-const isOwnerOfLot = async (
-  activitiesChainId: string, activityId: string, user: UserInterface
-): Promise<boolean> => {
-  const activitiesChain = await getActivitiesChain(activitiesChainId, user)
-  return isOwnerOfActivity(activitiesChain, activityId, user)
 }
 
 const createOrUpdateProductLot = async (
@@ -70,7 +62,6 @@ const createOrUpdateProductLot = async (
 export {
   getProductLotFromBlockchain,
   getProductLotAndEnsureOwnership,
-  isOwnerOfLot,
   getNewProductLot,
   getNewProductLots,
   createOrUpdateProductLot

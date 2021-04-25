@@ -45,11 +45,15 @@ const combine = async (req: Request, res: ExpressResponse):
         parentActivitiesChainIds = null
       }
 
-      const newProductLot = getNewProductLot(newLot, newActivitiesChainId)
+      const newProductLot =
+        getNewProductLot(
+          newLot, newActivitiesChainId,
+          new User(user.username, user.organization)
+        )
+      
       const combineActivity = new CombineActivity({
         id: newProductLot.ActivityId,
         parentIds: activityIds,
-        owner: new User(user.username, user.organization),
         createdAt: new Date().toISOString(),
         lot: newProductLot,
       }, parentActivitiesChainIds)

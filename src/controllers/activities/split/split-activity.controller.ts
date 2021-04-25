@@ -28,7 +28,9 @@ const split = async (req: Request, res: ExpressResponse):
       const { ActivitiesChainId: activitiesChainId, ActivityId: activityId } = 
         await getProductLotAndEnsureOwnership(currentLotId, user)
  
-      const newProductLots = getNewProductLots(newLots, activitiesChainId)
+      const newProductLots = getNewProductLots(
+        newLots, activitiesChainId, new User(user.username, user.organization))
+      
       const splitActivities: SplitActivity[] = []
 
       await Promise.all(newProductLots.map(async (newProductLot) => {
@@ -38,7 +40,6 @@ const split = async (req: Request, res: ExpressResponse):
               id: newProductLot.ActivityId,
               parentIds: [activityId],
               lot: newProductLot,
-              owner: new User(user.username, user.organization),
               createdAt: new Date().toISOString(),
             }
           )

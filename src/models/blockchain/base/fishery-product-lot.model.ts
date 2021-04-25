@@ -1,16 +1,18 @@
 import { ProductLotInterface } from "~/interfaces/product-lot.interface"
 import { Harbor } from "../capture/harbor.model"
 import { Vessel } from "../capture/vessel.model"
+import { User } from "./user.model"
 
 class FisheryProductLot {
   private readonly id: string
   private readonly weight: number
   private readonly commodityType: string
+  private readonly owner: User
   private readonly activitiesChainId: string
   private activityId: string
 
   constructor (
-    { id, weight, commodityType,
+    { id, weight, commodityType, owner,
       activitiesChainId, activityId }: ProductLotInterface,
     private harbor?: Harbor,
     private vessel?: Vessel
@@ -18,6 +20,7 @@ class FisheryProductLot {
     this.id = id
     this.weight = weight
     this.commodityType = commodityType
+    this.owner = owner
     this.activitiesChainId = activitiesChainId
     this.activityId = activityId
   }
@@ -32,6 +35,10 @@ class FisheryProductLot {
 
   get CommodityType (): string {
     return this.commodityType
+  }
+
+  get Owner (): User {
+    return this.owner
   }
 
   get ActivitiesChainId (): string {

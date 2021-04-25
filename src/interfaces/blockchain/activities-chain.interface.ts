@@ -1,13 +1,13 @@
 interface ActivitesChainFromBlockchainInterface {
-  id: string;
+  id: string
   activities: ActivityInterfaceFromBlockchain[]
 }
 
 interface ActivityInterfaceFromBlockchain {
-  id: string;
-  parentIds: string[] | null;
+  id: string
+  parentIds: string[] | null
   owner: {
-    username: string,
+    username: string
     organizationName: string
   }
   createdAt: string

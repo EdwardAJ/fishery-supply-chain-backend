@@ -2,7 +2,6 @@ import { Request, Response as ExpressResponse } from "express"
 import { Codes } from "~/constants/http/code.constant"
 
 import { Response } from "~/models/response.model"
-import { User } from "~/models/blockchain/base/user.model"
 import { GPSLocation } from "~/models/blockchain/base/gps-location.model"
 import { MarketTo } from "~/models/blockchain/market/market-to.model"
 
@@ -41,7 +40,6 @@ const market = async (req: Request, res: ExpressResponse):
       const marketActivity = new MarketActivity({
           id: newActivityId,
           parentIds: [parentActivityId],
-          owner: new User(user.username, user.organization),
           createdAt: new Date().toISOString(),
           lot: currentProductLot,
         },
