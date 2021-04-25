@@ -11,6 +11,7 @@ import { getAndValidateUser } from "~/utils/user.util"
 import { createOrUpdateActivitiesChain } from "~/utils/activities/activity.util"
 import { getGeneratedUuid } from "~/utils/uuid.util"
 import { createOrUpdateProductLot, getProductLotAndEnsureOwnership, getNewProductLot } from "~/utils/activities/product-lot.util"
+import { ParentInterface } from "~/interfaces/parent.interface"
 
 const combine = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
@@ -23,26 +24,27 @@ const combine = async (req: Request, res: ExpressResponse):
         throw new Error("Please provide lot information")
       }
 
-      const activitiesChainIdSet: Set<string> = new Set()
+      let parents: ParentInterface[] | null = []
       const activityIds: string[] = []
-      
+      const activitiesChainIdSet: Set<string> = new Set()
+
       for (const currentLotId of currentLotIds) {
         const { ActivitiesChainId: activitiesChainId, ActivityId: activityId } = 
           await getProductLotAndEnsureOwnership(currentLotId, user)
         activitiesChainIdSet.add(activitiesChainId)
         activityIds.push(activityId)
+        parents.push({ activityId, activitiesChainId })
       }
 
       /* If the activitiesChainIdSet size is only 1, then the newActivitiesChainId
          should be the same as the parent's newActivitiesChainId (first element of set).
          Otherwise, make a new one. */
       let newActivitiesChainId = getGeneratedUuid()
-      let parentActivitiesChainIds: string[] | null = [...activitiesChainIdSet]
       if (activitiesChainIdSet.size === 1) {
         // Get first element
         const iterator = activitiesChainIdSet.values()
         newActivitiesChainId = iterator.next().value
-        parentActivitiesChainIds = null
+        parents = null
       }
 
       const newProductLot =
@@ -56,7 +58,7 @@ const combine = async (req: Request, res: ExpressResponse):
         parentIds: activityIds,
         createdAt: new Date().toISOString(),
         lot: newProductLot,
-      }, parentActivitiesChainIds)
+      }, parents)
 
       await createOrUpdateProductLot(newProductLot, user)
       await createOrUpdateActivitiesChain(newActivitiesChainId, [combineActivity], user)

@@ -1,16 +1,17 @@
 import { ActivityInterface } from "~/interfaces/activity.interface"
+import { ParentInterface } from "~/interfaces/parent.interface"
 import { Activity } from "../base/activity.model"
 
 class CombineActivity extends Activity {
   constructor (
     baseActivityData: ActivityInterface,
-    private readonly parentActivitiesChainIds: string[] | null
+    private readonly parents: ParentInterface[] | null
   ) {
     super(baseActivityData, "Gabung")
   }
 
-  get ParentActivitiesChainIds(): string[] | null {
-    return this.parentActivitiesChainIds
+  get Parents(): ParentInterface[] | null {
+    return this.parents
   }
 }
 

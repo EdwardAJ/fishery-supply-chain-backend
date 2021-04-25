@@ -34,17 +34,16 @@ const getActivitiesChainHistory = async (req: Request, res: ExpressResponse):
         activityId = requestActivityId.toString()
       }
 
-      // Fetch all activities by activiesChainId
-      const completeActivitiesChainBuffer =
+      const completeActivitiesChainHistoryBuffer =
         await query(
           user, "ActivitiesChainsContract", "getActivitiesChainHistory",
           activitiesChainId)
         
-      const completeActivitiesChain = JSON.parse(completeActivitiesChainBuffer.toString())
-      const activityChain = getActivityChain(completeActivitiesChain, activityId)
+      const completeActivitiesChainHistory = JSON.parse(completeActivitiesChainHistoryBuffer.toString())
+      const activityChain = getActivityChain(completeActivitiesChainHistory, activityId)
       
       return sendSuccessResponse(res, "Chain successfully fetched!", {
-        parentActivitiesChainIds: completeActivitiesChain.activities[0]?.parentActivitiesChainIds,
+        parents: completeActivitiesChainHistory[0].activities[0]?.parents,
         chain: activityChain
       })
       
