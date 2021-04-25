@@ -1,9 +1,9 @@
 interface ActivitesChainFromBlockchainInterface {
   id: string
-  activities: ActivityInterfaceFromBlockchain[]
+  activities: ActivityFromBlockchainInterface[]
 }
 
-interface ActivityInterfaceFromBlockchain {
+interface ActivityFromBlockchainInterface {
   id: string
   parentIds: string[] | null
   owner: {
@@ -14,5 +14,6 @@ interface ActivityInterfaceFromBlockchain {
 }
 
 export {
-  ActivitesChainFromBlockchainInterface
+  ActivitesChainFromBlockchainInterface,
+  ActivityFromBlockchainInterface
 }

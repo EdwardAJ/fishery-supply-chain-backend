@@ -7,12 +7,13 @@ import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { query } from "~/services/query.service"
 import { getAndValidateUser } from "~/utils/user.util"
 import { getProductLotFromBlockchain } from "~/utils/activities/product-lot.util"
+import { getActivityChain } from "~/utils/activities/activity.util"
 
 const getActivitiesChainHistory = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
-      const { lotId, chainId } = req.query
-      if (!lotId && !chainId) {
+      const { lotId, chainId, activityId: requestActivityId } = req.query
+      if (!lotId && !(chainId && requestActivityId)) {
         return sendErrorResponse(res, "Please provide ID!")
       }
 
@@ -22,20 +23,30 @@ const getActivitiesChainHistory = async (req: Request, res: ExpressResponse):
       const user = await getAndValidateUser(username)
 
       let activitiesChainId = ""
+      let activityId = ""
       if (lotId) {
-        const productLot = await getProductLotFromBlockchain(user, lotId.toString())
-        activitiesChainId = productLot.ActivitiesChainId
-      } else if (chainId) {
+        const { ActivitiesChainId, ActivityId } =
+          await getProductLotFromBlockchain(user, lotId.toString())
+        activitiesChainId = ActivitiesChainId
+        activityId = ActivityId
+      } else if (chainId && requestActivityId) {
         activitiesChainId = chainId.toString()
+        activityId = requestActivityId.toString()
       }
 
-      const activitiesChainHistoryBuffer =
+      // Fetch all activities by activiesChainId
+      const completeActivitiesChainBuffer =
         await query(
           user, "ActivitiesChainsContract", "getActivitiesChainHistory",
           activitiesChainId)
+        
+      const completeActivitiesChain = JSON.parse(completeActivitiesChainBuffer.toString())
+      const activityChain = getActivityChain(completeActivitiesChain, activityId)
       
-      return sendSuccessResponse(res, "activities",
-        JSON.parse(activitiesChainHistoryBuffer.toString()))
+      return sendSuccessResponse(res, "Chain successfully fetched!", {
+        parentActivitiesChainIds: completeActivitiesChain.activities[0]?.parentActivitiesChainIds,
+        chain: activityChain
+      })
       
     } catch (error) {
       logger.error(error)

@@ -1,25 +1,22 @@
 import { ActivityInterface } from "~/interfaces/activity.interface"
 import { FisheryProductLot } from "./fishery-product-lot.model"
 import { Identity } from "./identity.model"
-import { User } from "./user.model"
 
 class Activity extends Identity {
   protected readonly parentIds: string[] | null
   protected readonly lot: FisheryProductLot
-  protected readonly owner: User
   protected readonly createdAt: string
 
   constructor (
     {
       id, parentIds,
-      lot, owner, createdAt
+      lot, createdAt
     }: ActivityInterface,
     name: string
   ){
     super(id, name)
     this.parentIds = parentIds
     this.lot = lot
-    this.owner = owner
     this.createdAt = createdAt
   }
   
@@ -29,10 +26,6 @@ class Activity extends Identity {
 
   get Lot(): FisheryProductLot {
     return this.lot
-  }
-
-  get Owner(): User {
-    return this.owner
   }
 
   get CreatedAt(): string {
