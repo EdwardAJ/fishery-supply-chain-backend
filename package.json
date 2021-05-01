@@ -1,0 +1,50 @@
+{
+  "name": "fishery-supply-chain-backend",
+  "version": "1.0.0",
+  "description": "Backend for Hyperledger Fabric-based fishery supply chain blockchain application.",
+  "main": "index.js",
+  "repository": "git@github.com:EdwardAJ/fishery-supply-chain-backend.git",
+  "author": "EdwardAJ <13517115@std.stei.itb.ac.id>",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node-dev --respawn -r tsconfig-paths/register src/index.ts",
+    "enroll-orderer-admin": "ts-node -r tsconfig-paths/register src/scripts/enroll-orderer-admin.ts",
+    "lint": "eslint '*/**/*.{js,ts,tsx}'",
+    "lint-fix": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/cors": "^2.8.10",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.11",
+    "@types/generate-password": "^1.5.1",
+    "@types/jsonwebtoken": "^8.5.1",
+    "@types/morgan": "^1.9.2",
+    "@types/node": "^14.14.37",
+    "@types/uuid": "^8.3.0",
+    "@types/winston": "^2.4.4",
+    "@typescript-eslint/eslint-plugin": "^4.19.0",
+    "@typescript-eslint/parser": "^4.19.0",
+    "babel-plugin-root-import": "^6.6.0",
+    "eslint": "^7.23.0",
+    "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.6",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "arraybuffer-to-string": "^1.0.2",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "fabric-ca-client": "^2.2.5",
+    "fabric-network": "^2.2.5",
+    "generate-password": "^1.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.12.3",
+    "morgan": "^1.10.0",
+    "uuid": "^8.3.2",
+    "winston": "^3.3.3"
+  }
+}
