@@ -20,7 +20,7 @@ const transfer = async (req: Request, res: ExpressResponse):
       const username = req.headers["username"] as string
       const user = await getAndValidateUser(username)
 
-      const { currentLot: { id: currentLotId }, toOrganization } = req.body
+      const { currentLot: { id: currentLotId }, toUsername, toOrganization } = req.body
       if (!currentLotId) { throw new Error("Please provide lot information") }
       if (!isOrgNameExist(toOrganization)) {
         return sendErrorResponse(res, "Organization does not exist!")
@@ -35,10 +35,11 @@ const transfer = async (req: Request, res: ExpressResponse):
       const transferActivity = new TransferActivity({
         id: newActivityId,
         parentIds: [parentActivityId],
-        owner: new User(null, toOrganization),
         createdAt: new Date().toISOString(),
         lot: currentProductLot,
       }, new User(user.username, user.organization))
+
+      currentProductLot.Owner = new User(toUsername, toOrganization)
 
       await createOrUpdateProductLot(currentProductLot, user)
       await createOrUpdateActivitiesChain(

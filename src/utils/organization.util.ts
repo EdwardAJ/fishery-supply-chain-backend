@@ -123,8 +123,11 @@ const isAdminOrg3 = (org3AdminUsername: string): boolean => {
   return process.env.ORG3_ADMIN === org3AdminUsername
 }
 
-const isAdminOfOrganization = (adminUsername: string): boolean => {
-  return isAdminOrg1(adminUsername) || isAdminOrg2(adminUsername) || isAdminOrg3(adminUsername)
+const getAdminOrganization = (adminUsername: string): string | null => {
+  if (isAdminOrg1(adminUsername)) return OrgNames.ORG_1
+  if (isAdminOrg2(adminUsername)) return OrgNames.ORG_2
+  if (isAdminOrg3(adminUsername)) return OrgNames.ORG_3
+  return null
 }
 
 const isOrgNameExist = (orgName: string): boolean => {
@@ -154,5 +157,5 @@ export {
   isAdminOrg2,
   isAdminOrg3,
   isOrgNameExist,
-  isAdminOfOrganization
+  getAdminOrganization
 }

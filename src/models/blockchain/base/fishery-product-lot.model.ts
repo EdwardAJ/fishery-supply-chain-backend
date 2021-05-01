@@ -7,7 +7,7 @@ class FisheryProductLot {
   private readonly id: string
   private readonly weight: number
   private readonly commodityType: string
-  private readonly owner: User
+  private owner: User
   private readonly activitiesChainId: string
   private activityId: string
 
@@ -39,6 +39,10 @@ class FisheryProductLot {
 
   get Owner (): User {
     return this.owner
+  }
+
+  set Owner (owner: User) {
+    this.owner = owner
   }
 
   get ActivitiesChainId (): string {

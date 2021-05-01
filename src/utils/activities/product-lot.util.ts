@@ -11,13 +11,20 @@ import { query } from "~/services/query.service"
 import { getGeneratedUuid } from "../uuid.util"
 import { invoke } from "~/services/invoke.service"
 import { User } from "~/models/blockchain/base/user.model"
+import { ProductLotFromBlockchainInterface } from "~/interfaces/blockchain/product-lot.interface"
 
 const getProductLotFromBlockchain =
   async (user: UserInterface, lotId: string): Promise<FisheryProductLot> => {
   const productLotBuffer = await query(user, "ProductLotsContract", "getProductLot", lotId)
-  const productLotJson: ProductLotInterface = JSON.parse(productLotBuffer.toString())
+  const productLotJson: ProductLotFromBlockchainInterface = JSON.parse(productLotBuffer.toString())
   if (!productLotJson) throw new Error("Current lot id does not exist")
-  return new FisheryProductLot(productLotJson)
+  const { id, weight, commodityType, activitiesChainId, activityId, owner } = productLotJson
+  return new FisheryProductLot({
+    id, weight, commodityType,
+    activitiesChainId,
+    activityId,
+    owner: new User(owner.username, owner.organizationName)
+  })
 }
 
 const getNewProductLots = (
@@ -45,7 +52,10 @@ const getProductLotAndEnsureOwnership = async (
   currentLotId: string, user: UserInterface
 ): Promise<FisheryProductLot> => {
   const productLot = await getProductLotFromBlockchain(user, currentLotId)
-  if (productLot.Owner.OrganizationName !== user.organization) {
+  if (
+    productLot.Owner.OrganizationName !== user.organization ||
+    productLot.Owner.Username !== user.username
+  ) {
     throw new CustomError("Forbidden!", Codes.FORBIDDEN)
   }
   return productLot

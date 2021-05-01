@@ -43,7 +43,6 @@ const getActivitiesChainHistory = async (req: Request, res: ExpressResponse):
       const activityChain = getActivityChain(completeActivitiesChainHistory, activityId)
       
       return sendSuccessResponse(res, "Chain successfully fetched!", {
-        parents: completeActivitiesChainHistory[0].activities[0]?.parents,
         chain: activityChain
       })
       

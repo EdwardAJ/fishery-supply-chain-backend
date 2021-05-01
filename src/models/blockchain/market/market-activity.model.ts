@@ -1,19 +1,19 @@
 import { ActivityInterface } from "~/interfaces/activity.interface"
 import { Activity } from "../base/activity.model"
 import { GPSLocation } from "../base/gps-location.model"
-import { ProcessTo } from "../process/process-to.model"
+import { MarketTo } from "../market/market-to.model"
 
 class MarketActivity extends Activity {
   constructor (
     baseActivityData: ActivityInterface,
-    private readonly processTo: ProcessTo,
+    private readonly marketTo: MarketTo,
     private readonly location: GPSLocation
   ) {
     super(baseActivityData, "Pasarkan")
   }
 
-  get ProcessTo(): ProcessTo {
-    return this.processTo
+  get MarketTo(): MarketTo {
+    return this.marketTo
   }
 
   get Location(): GPSLocation {

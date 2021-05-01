@@ -8,7 +8,7 @@ import { insertUser } from "~/services/user.service"
 import { registerUserToBlockchain } from "~/services/register-user.service"
 
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
-import { isAdminOfOrganization } from "~/utils/organization.util"
+import { getAdminOrganization } from "~/utils/organization.util"
 import { logger } from "~/utils/logger.util"
 import { getHashedPassword } from "~/utils/password.util"
 
@@ -19,10 +19,15 @@ const registerUser = async (req: Request, res: ExpressResponse):
   try {
     const adminUsername = req.headers["username"] as string
 
-    if (!isAdminOfOrganization(adminUsername))
+    const adminOrganization = getAdminOrganization(adminUsername)
+    if (!adminOrganization)
       return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
 
     const { username, orgName } = req.body
+    if (adminOrganization !== orgName) {
+      return sendErrorResponse(res, "Forbidden!", Codes.FORBIDDEN)
+    }
+
     const userPassword = await registerUserToBlockchain(orgName, username)
 
     const hashedPassword = await getHashedPassword(userPassword)

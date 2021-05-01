@@ -16,6 +16,7 @@ import { getAndValidateUser } from "~/utils/user.util"
 import { getGeneratedUuid } from "~/utils/uuid.util"
 
 import { OrgNames } from "~/constants/organization.constant"
+import { User } from "~/models/blockchain/base/user.model"
 
 
 const process = async (req: Request, res: ExpressResponse):
@@ -39,6 +40,8 @@ const process = async (req: Request, res: ExpressResponse):
       }
 
       const currentProductLot = await getProductLotAndEnsureOwnership(currentLotId, user)
+      currentProductLot.Owner = new User(user.username, user.organization)
+      
       const parentActivityId = currentProductLot.ActivityId
 
       const newActivityId = getGeneratedUuid()

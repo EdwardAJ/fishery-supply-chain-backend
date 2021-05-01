@@ -14,6 +14,7 @@ import { getGeneratedUuid } from "~/utils/uuid.util"
 
 import { OrgNames } from "~/constants/organization.constant"
 import { MarketActivity } from "~/models/blockchain/market/market-activity.model"
+import { User } from "~/models/blockchain/base/user.model"
 
 const market = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
@@ -32,6 +33,8 @@ const market = async (req: Request, res: ExpressResponse):
       }
 
       const currentProductLot = await getProductLotAndEnsureOwnership(currentLotId, user)
+      currentProductLot.Owner = new User(user.username, user.organization)
+
       const parentActivityId = currentProductLot.ActivityId
 
       const newActivityId = getGeneratedUuid()
