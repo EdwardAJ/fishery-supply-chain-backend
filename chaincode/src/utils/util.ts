@@ -26,12 +26,12 @@ async function getAllHistoryResults(iterator: any): Promise<any> {
 }
 
 // Taken from asset-transfer-events
-async function readState (context: Context, productLotId: string): Promise<any> {
-  const productLotBuffer = await context.stub.getState(productLotId) // get the asset from chaincode state
-  if (!productLotBuffer || productLotBuffer.length === 0) {
-    throw new Error(`The lot ${productLotId} does not exist`)
+async function readState (context: Context, key: string): Promise<any> {
+  const buffer = await context.stub.getState(key) // get the asset from chaincode state
+  if (!buffer || buffer.length === 0) {
+    throw new Error(`The ${key} does not exist`)
   }
-  return JSON.parse(productLotBuffer.toString())
+  return JSON.parse(buffer.toString())
 }
 
 export {
