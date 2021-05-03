@@ -1,21 +1,22 @@
+import { TokenInterface } from "../base/token.interface";
+
 interface LoginRequestInterface {
   username: string
   password: string
 }
 
-interface EnrollAdminRequestInterface {
+interface EnrollRequestInterface extends TokenInterface {
   username: string
   organization: string
 }
 
-interface RegisterUserRequestInterface extends EnrollAdminRequestInterface {
-  adminUsername: string
+interface RegisterUserRequestInterface extends EnrollRequestInterface {
   password: string
 }
 
 export {
   RegisterUserRequestInterface,
   LoginRequestInterface,
-  EnrollAdminRequestInterface
+  EnrollRequestInterface
 }
 

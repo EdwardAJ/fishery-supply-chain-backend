@@ -2,62 +2,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Context, Contract } from "fabric-contract-api"
-import { RegisterUserRequestInterface, LoginRequestInterface, EnrollAdminRequestInterface } from "./interfaces/request/auth-request.interface"
+import { RegisterUserRequestInterface, LoginRequestInterface, EnrollRequestInterface } from "./interfaces/request/auth-request.interface"
 import { User } from "./models/base/user.model"
-import { OrgRoles } from "./constants/organization.constant"
+import { OrgMspIdMap, OrgRoles } from "./constants/organization.constant"
 import { arePasswordsSame, getGeneratedPassword, getHashedPassword } from "./utils/password.util"
 import { readState } from "./utils/util"
-import { signAndGetJwt } from "./utils/jwt.util"
+import { signAndGetJwt, verifyJwtAndGetUsername } from "./utils/jwt.util"
+import { ClientIdentity } from "fabric-shim"
 
 
 export class UsersContract extends Contract {
-	public async createUser (context: Context, username: string,
+	public async createUser (
+    context: Context, username: string,
     organization: string,role: string, hashedPassword: string
   ): Promise<void> {
     const user = { username, organization, role, hashedPassword }
     await context.stub.putState(username, Buffer.from(JSON.stringify(user)))
   }
 
-  public async enrollAdmin (
-    context: Context, requestBody: EnrollAdminRequestInterface
-  ): Promise<string> {
-    const { username, organization } = requestBody || {}
-    if (!username || !organization) throw new Error("Please provide credentials!")
+  public isAuthorized (context: Context, organization: string) {
+    const clientId = new ClientIdentity(context.stub)
+    const mspId = clientId.getMSPID()
 
-    const generatedPassword = getGeneratedPassword()
-    const hashedPassword = await getHashedPassword(generatedPassword)
-    await this.createUser(context, username, hashedPassword, OrgRoles.ADMIN, organization)
-    return generatedPassword
-  }
+    clientId.getAttributeValue("username")
 
-  public async registerUser (
-    context: Context, adminUsername: string, requestBody: RegisterUserRequestInterface
-  ): Promise<void> {
-    const { username, organization, password } = requestBody || {}
-    const adminUser = await this.getUserByUsername(context, adminUsername)
-    if (!adminUser || adminUser?.Organization !== organization)
-      throw new Error("Forbidden!")
-
-    const hashedPassword = await getHashedPassword(password)
-    await this.createUser(context, username, hashedPassword, OrgRoles.USER, organization)
-    return
-  }
-
-  public async login (context: Context, requestBody: LoginRequestInterface): Promise<string> {
-    const { username, password } = requestBody || {}
-    if (!username || !password)
-      throw new Error("Username or password is required")
-    
-    const { HashedPassword, Organization, Role } = await this.getUserByUsername(context, username)
-    if (!await arePasswordsSame(password, HashedPassword)) {
-      throw new Error("Wrong password")
-    }
-
-    return JSON.stringify({
-      token: signAndGetJwt(username),
-      organization: Organization,
-      role: Role
-    })
+    if (OrgMspIdMap[organization] === undefined) throw new Error ("Forbidden!")
+    if (mspId !== OrgMspIdMap[organization]) throw new Error ("Forbidden!")
   }
 
   public async getUserByUsername (context: Context, username: string): Promise<User> {

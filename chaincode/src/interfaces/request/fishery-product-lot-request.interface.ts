@@ -1,5 +1,5 @@
 interface FisheryProductLotRequestInterface {
-  weight: number,
+  weight: number
   commodityType: string
 }
 

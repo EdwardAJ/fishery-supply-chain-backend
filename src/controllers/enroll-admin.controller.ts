@@ -13,6 +13,7 @@ import { adminExists } from "~/utils/wallet.util"
 import { getOrgAdminUsername, isAdminOrderer } from "~/utils/organization.util"
 import { getHashedPassword, getGeneratedPassword } from "~/utils/password.util"
 import { logger } from "~/utils/logger.util"
+import { registerUserToBlockchain } from "~/services/register-user.service"
 
 
 // Enroll admins for org1 or org2 or org3.
@@ -31,11 +32,10 @@ const enrollAdmin = async (req: Request, res: ExpressResponse):
     if (orgAdminUsername === "")
       return sendErrorResponse(res, "Admin username not found")
 
-    await enrollAdminToBlockchain(orgName)
     const generatedPassword = getGeneratedPassword()
-    const hashedGeneratedPassword = await getHashedPassword(generatedPassword)
-    
-    await insertUser(orgAdminUsername, hashedGeneratedPassword, OrgRoles.ADMIN, orgName)
+    const hashedPassword = await getHashedPassword(generatedPassword)
+
+    await registerUserToBlockchain(orgName, orgAdminUsername, hashedPassword, true)
     return sendSuccessResponse(res, `${orgAdminUsername} successfully enrolled!`, {
       password: generatedPassword
     })

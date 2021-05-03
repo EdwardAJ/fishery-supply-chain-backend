@@ -1,5 +1,5 @@
 interface LocationInterface {
-  latitude: number,
+  latitude: number
   longitude: number
 }
 

@@ -27,7 +27,9 @@ const enrollAdminToBlockchain = async (orgName: string): Promise<void> => {
 
   // Enroll the admin user, and import the new identity into the wallet.
   logger.info(`Enrolling admin ${adminUsername}...`)
-  const { certificate, key } = await ca.enroll({ enrollmentID: adminUsername, enrollmentSecret: password})
+  const { certificate, key } =
+    await ca.enroll({ enrollmentID: adminUsername, enrollmentSecret: password })
+
   const x509Identity: X509Identity = {
       credentials: {
           certificate,
