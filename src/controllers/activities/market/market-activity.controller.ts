@@ -33,7 +33,7 @@ const market = async (req: Request, res: ExpressResponse):
       }
 
       const currentProductLot = await getProductLotAndEnsureOwnership(currentLotId, user)
-      currentProductLot.Owner = new User(user.username, user.organization)
+      currentProductLot.Owner = new User(null, null)
 
       const parentActivityId = currentProductLot.ActivityId
 
