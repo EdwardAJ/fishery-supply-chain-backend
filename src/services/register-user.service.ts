@@ -4,13 +4,19 @@
 
 import FabricCAServices from "fabric-ca-client"
 import { X509Identity } from "fabric-network"
-import { getOrgCredentials, getOrgAffiliation, getOrgAdminUsername } from "~/utils/organization.util"
+import { getOrgCredentials, getOrgAffiliation } from "~/utils/organization.util"
 import { logger } from "~/utils/logger.util"
 import { getConnectionInfo, getWallet } from "~/utils/wallet.util"
-import { OrgNames, OrgRoles } from "~/constants/organization.constant"
+import { OrgRoles } from "~/constants/organization.constant"
+
+/*
+ * In case of isOrderer = true, then:
+ * The identity of user is identity of organization admin
+ * The identity of admin is identity of orderer admin
+ */
 
 const registerUserToBlockchain = async (
-  orgName: string, username: string, hashedPassword: string, isOrderer?: boolean
+  orgName: string, username: string, hashedPassword: string, role: string = OrgRoles.USER
 ): Promise<void> => {
   const orgCredential = getOrgCredentials(orgName)
   const ccp = getConnectionInfo(orgCredential.domain, orgCredential.mspId)
@@ -24,37 +30,35 @@ const registerUserToBlockchain = async (
       throw new Error(`An identity for the user ${username} already exists in the wallet`)
   }
 
-  let adminIdentity = null
-  let adminUsername = orgCredential.adminUsername
-  if (isOrderer) {
-    adminUsername = getOrgAdminUsername(OrgNames.ORG_ORDERER)
-  }
-
-  adminIdentity = await wallet.get(adminUsername)
-  if (!adminIdentity) {
+  const blockchainAdminUsername = orgCredential.adminUsername
+  const blockchainAdminIdentity = await wallet.get(blockchainAdminUsername)
+  if (!blockchainAdminIdentity) {
     logger.error("Admin has not been enrolled!")
     throw new Error("Admin has not been enrolled!")
   }
 
-  const provider = wallet.getProviderRegistry().getProvider(adminIdentity.type)
-  const adminUser = await provider.getUserContext(adminIdentity, adminUsername)
+  const provider = wallet.getProviderRegistry().getProvider(blockchainAdminIdentity.type)
+  const blockchainAdmin = await provider.getUserContext(blockchainAdminIdentity, blockchainAdminUsername)
   logger.info(`Register username ${username}...`)
+  logger.info("orgCredential: %O", orgCredential)
 
-  await ca.register(
+  const secret = await ca.register(
     {
       affiliation: getOrgAffiliation(orgCredential.mspId),
       enrollmentID: username,
       role: "client",
       attrs: [
         { name: "username", value: username, ecert: true },
-        { name: "role", value: OrgRoles.USER, ecert: true },
+        { name: "role", value: role, ecert: true },
         { name: "hashedPassword", value: hashedPassword, ecert: true}
       ]
-  }, adminUser)
+  }, blockchainAdmin)
   
+  logger.info("enrolling...")
+
   const { certificate, key } = await ca.enroll({
     enrollmentID: username,
-    enrollmentSecret: hashedPassword,
+    enrollmentSecret: secret,
     attr_reqs: [
       { name: "username", optional: false },
       { name: "role", optional: false },

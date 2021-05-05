@@ -1,7 +1,7 @@
 interface UserInterface {
   username: string
-  hashed_password: string
-  role: string
+  hashed_password?: string
+  role?: string
   organization: string
 }
 

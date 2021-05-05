@@ -1,4 +1,5 @@
 import { Context } from "fabric-contract-api"
+import { Shim } from "fabric-shim"
 import { FisheryProductLotRequestInterface } from "../interfaces/request/fishery-product-lot-request.interface"
 import { FisheryProductLot } from "../models/base/fishery-product-lot.model"
 import { User } from "../models/base/user.model"
@@ -9,7 +10,9 @@ const createOrUpdateFisheryProductLot = async (
   context: Context,
   currentProductLot: FisheryProductLot
 ): Promise<void> => {
+  const logger = Shim.newLogger("createOrUpdateFisheryProductLot")
   const fisheryProductLotsContract = new ProductLotsContract()
+  logger.info(`Saving fisheryProductLotsContract: ${fisheryProductLotsContract}`)
   await fisheryProductLotsContract.createOrUpdateProductLot(context, currentProductLot.Id, JSON.stringify(currentProductLot))
 }
 

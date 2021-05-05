@@ -15,44 +15,54 @@ import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { getAndValidateUser } from "~/utils/user.util"
 import { createOrUpdateActivitiesChain } from "~/utils/activities/activity.util"
 import { createOrUpdateProductLot, getNewProductLot } from "~/utils/activities/product-lot.util"
+import { invoke } from "~/services/invoke.service"
 
 const capture = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
       const username = req.headers["username"] as string
-      const user = await getAndValidateUser(username, OrgNames.ORG_1)
+      const organization = req.headers["organization"] as string
 
-      const {
-        location: { latitude, longitude },
-        fisheryProduct: {weight, commodityType},
-        vessel: { id: vesselId, name: vesselName },
-        harbor: { id: harborId, name: harborName }
-      } = req.body
+      const captureActivityBuffer =
+        await invoke(
+          { username, organization }, "ActivitiesChainsContract", "capture",
+          JSON.stringify(req.body)
+        )
+      const captureActivity = JSON.parse(captureActivityBuffer.toString())
 
-      const activitiesChainId = getGeneratedUuid()
-      const newProductLot = getNewProductLot(
-        {weight, commodityType}, activitiesChainId,
-        new User(username, user.organization)
-      )
-      const harbor = new Harbor(harborId, harborName)
-      const vessel = new Vessel(vesselId, vesselName)
+      // const user = await getAndValidateUser(username, OrgNames.ORG_1)
 
-      newProductLot.Harbor = harbor
-      newProductLot.Vessel = vessel
+      // const {
+      //   location: { latitude, longitude },
+      //   fisheryProduct: {weight, commodityType},
+      //   vessel: { id: vesselId, name: vesselName },
+      //   harbor: { id: harborId, name: harborName }
+      // } = req.body
 
-      const captureActivity = new CaptureActivity(
-        {
-          id: newProductLot.ActivityId,
-          parentIds: null,
-          lot: newProductLot,
-          createdAt: new Date().toISOString(),
-        },
-        harbor, vessel,
-        new GPSLocation(latitude, longitude)
-      )
+      // const activitiesChainId = getGeneratedUuid()
+      // const newProductLot = getNewProductLot(
+      //   {weight, commodityType}, activitiesChainId,
+      //   new User(username, user.organization)
+      // )
+      // const harbor = new Harbor(harborId, harborName)
+      // const vessel = new Vessel(vesselId, vesselName)
 
-      await createOrUpdateProductLot(newProductLot, user)
-      await createOrUpdateActivitiesChain(activitiesChainId, [captureActivity], user)
+      // newProductLot.Harbor = harbor
+      // newProductLot.Vessel = vessel
+
+      // const captureActivity = new CaptureActivity(
+      //   {
+      //     id: newProductLot.ActivityId,
+      //     parentIds: null,
+      //     lot: newProductLot,
+      //     createdAt: new Date().toISOString(),
+      //   },
+      //   harbor, vessel,
+      //   new GPSLocation(latitude, longitude)
+      // )
+
+      // await createOrUpdateProductLot(newProductLot, user)
+      // await createOrUpdateActivitiesChain(activitiesChainId, [captureActivity], user)
 
       return sendSuccessResponse(res, "Captured!", { activity: captureActivity })
     } catch (error) {

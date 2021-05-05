@@ -15,6 +15,7 @@ const query = async (
 ): Promise<any> => {
 
   const { username, organization: orgName } = user
+  console.log("user: ", orgName)
   const { domain, mspId } = getOrgCredentials(orgName)
   const ccp = getConnectionInfo(domain, mspId)
   const wallet = await getWallet()

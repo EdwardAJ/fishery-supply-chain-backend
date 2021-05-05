@@ -7,7 +7,6 @@ const app = express()
 import morgan from "morgan"
 import cors from "cors"
 
-import database from "~/database"
 import { logger } from "~/utils/logger.util"
 import { mainRouter } from "~/routes"
 import { DEFAULT_PORT } from "~/constants/env.constant"
@@ -16,9 +15,6 @@ const main = async () => {
   logger.info("Initializing app...")
   
   try {
-    await database.init()
-    logger.info("MongoDB successfully connected")
-
     app.use(morgan("combined"))
     app.use(cors())
     app.use(express.json())

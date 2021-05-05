@@ -16,11 +16,13 @@ const authorizeToken = (req: Request, res: Response, next: NextFunction) => {
 
   jwt.verify(token, process.env.JWT_SECRET as string, (err, user: any) => {
     logger.info("Request sent by %O", user)
-    if (err || !user?.username) {
+    if (err || !user?.username || !user?.organization || !user?.role) {
       logger.error(`Error: ${err}`)
       return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
     }
     req.headers["username"] = user.username
+    req.headers["organization"] = user.organization
+    req.headers["role"] = user.role
     next()
   })
 }

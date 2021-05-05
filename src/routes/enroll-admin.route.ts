@@ -1,10 +1,10 @@
-import express from "express"
-import { enrollAdmin } from "~/controllers/enroll-admin.controller"
-import { authorizeToken } from "~/middleware/authorizeToken"
+// import express from "express"
+// // import { enrollAdmin } from "~/controllers/enroll-admin.controller"
+// import { authorizeToken } from "~/middleware/authorizeToken"
 
-const router = express.Router()
-router.post("/", authorizeToken, enrollAdmin)
+// const router = express.Router()
+// router.post("/", authorizeToken, enrollAdmin)
 
-export {
-  router as enrollAdminRouter
-}
+// export {
+//   router as enrollAdminRouter
+// }

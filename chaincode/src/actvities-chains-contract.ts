@@ -2,14 +2,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Context, Contract } from "fabric-contract-api"
+import { Shim } from "fabric-shim"
 import { OrgNames } from "./constants/organization.constant"
 import { CaptureRequestInterface } from "./interfaces/request/capture-request.interface"
 import { ActivitiesChain } from "./models/base/activities-chain.model"
 import { User } from "./models/base/user.model"
 import { CaptureActivity } from "./models/capture/capture-activity.model"
-import { createOrUpdateActivitiesChain } from "./utils/activity.util"
 import { createOrUpdateFisheryProductLot, getNewFisheryProductLot } from "./utils/fishery-product-lot.util"
-import { getAndValidateUser } from "./utils/user.util"
+import { isAuthorizedAndGetUser } from "./utils/user.util"
 import { getAllHistoryResults, readState } from "./utils/util"
 import { getGeneratedUuid } from "./utils/uuid.util"
 
@@ -32,16 +32,32 @@ export class ActivitiesChainsContract extends Contract {
     return JSON.stringify(currentActivitiesChain)
   }
   
-  public async capture(context: Context, username: string, requestBody: CaptureRequestInterface) {
-    const { location, fisheryProduct, vessel, harbor } = requestBody
+  public async capture(context: Context, requestBody: string) {
 
-    const user = await getAndValidateUser(context, username, OrgNames.ORG_1)
+    const logger = Shim.newLogger("capture")
+    logger.info(`Capture with requestBody: ${requestBody}`)
+  
+    const {
+      location,
+      fisheryProduct,
+      vessel,
+      harbor 
+    } = JSON.parse(requestBody) as CaptureRequestInterface
+
+    logger.info(`location: ${location}`)
+    logger.info(`fisheryProduct: ${fisheryProduct}`)
+    logger.info(`vessel: ${vessel}`)
+    logger.info(`harbor: ${harbor}`)
+
+    const user = isAuthorizedAndGetUser(context, OrgNames.ORG_1)
     const activitiesChainId = getGeneratedUuid()
 
     const newFisheryProductLot = getNewFisheryProductLot(
       fisheryProduct, activitiesChainId,
-      new User(username, user.Organization, user.Role)
+      new User(user.Username, user.Organization, user.Role)
     )
+
+    logger.info(`harbor: ${harbor}`)
 
     newFisheryProductLot.Harbor = harbor
     newFisheryProductLot.Vessel = vessel
@@ -57,8 +73,14 @@ export class ActivitiesChainsContract extends Contract {
       harbor, vessel, location
     )
 
+    logger.info(`Creating captureActivity: ${captureActivity}`)
+    
+
     const activitiesChain = new ActivitiesChain(activitiesChainId, [captureActivity])
+    logger.info(`Creating activitiesChain: ${activitiesChain}`)
     await createOrUpdateFisheryProductLot(context, newFisheryProductLot)
-    await createOrUpdateActivitiesChain(context, activitiesChain)
+    await this.createOrUpdateActivitiesChain(context, activitiesChainId, JSON.stringify(activitiesChain))
+
+    return JSON.stringify(captureActivity)
   }
 }

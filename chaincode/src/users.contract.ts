@@ -2,37 +2,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Context, Contract } from "fabric-contract-api"
-import { RegisterUserRequestInterface, LoginRequestInterface, EnrollRequestInterface } from "./interfaces/request/auth-request.interface"
-import { User } from "./models/base/user.model"
-import { OrgMspIdMap, OrgRoles } from "./constants/organization.constant"
-import { arePasswordsSame, getGeneratedPassword, getHashedPassword } from "./utils/password.util"
-import { readState } from "./utils/util"
-import { signAndGetJwt, verifyJwtAndGetUsername } from "./utils/jwt.util"
-import { ClientIdentity } from "fabric-shim"
+import { Shim } from "fabric-shim"
+import { LoginRequestInterface } from "./interfaces/request/auth-request.interface"
+import { arePasswordsSame } from "./utils/password.util"
+import { getUser } from "./utils/user.util"
 
 
 export class UsersContract extends Contract {
-	public async createUser (
-    context: Context, username: string,
-    organization: string,role: string, hashedPassword: string
-  ): Promise<void> {
-    const user = { username, organization, role, hashedPassword }
-    await context.stub.putState(username, Buffer.from(JSON.stringify(user)))
-  }
+  public async login(context: Context, requestBody: string): Promise<string> {
+    const logger = Shim.newLogger("login")
 
-  public isAuthorized (context: Context, organization: string) {
-    const clientId = new ClientIdentity(context.stub)
-    const mspId = clientId.getMSPID()
+    logger.debug("Login request: ", requestBody)
+    const { username, password } = JSON.parse(requestBody) as LoginRequestInterface
 
-    clientId.getAttributeValue("username")
+    logger.debug("Username: ", username)
+    logger.debug("Password: ", password)
+    if (!username || !password)
+      throw new Error("Username or password is required!")
+    
+    const user = getUser(context)
+    if (!await arePasswordsSame(password, user.HashedPassword))
+      throw new Error("Wrong password!")
 
-    if (OrgMspIdMap[organization] === undefined) throw new Error ("Forbidden!")
-    if (mspId !== OrgMspIdMap[organization]) throw new Error ("Forbidden!")
-  }
-
-  public async getUserByUsername (context: Context, username: string): Promise<User> {
-    const user = await readState(context, username)
-    const { username: name, organization, role, hashedPassword } = user
-    return new User(name, organization, role, hashedPassword)
+    return JSON.stringify(user)
   }
 }

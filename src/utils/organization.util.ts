@@ -1,7 +1,7 @@
 import { OrgNames, OrgDomains, OrgMspIds } from "~/constants/organization.constant"
 import { OrgCredentialsInterface } from "~/interfaces/organization.interface"
 
-const getOrgAdminUsername = (orgName: string): string => {
+const getBlockchainOrgAdminUsername = (orgName: string): string => {
   switch (orgName) {
     case OrgNames.ORG_1: {
       return process.env.ORG1_ADMIN as string
@@ -19,19 +19,16 @@ const getOrgAdminUsername = (orgName: string): string => {
   }
 }
 
-const getOrgName = (orgAdminUsername: string): string => {
-  switch (orgAdminUsername) {
-    case process.env.ORG1_ADMIN: {
-      return OrgNames.ORG_1
+const getAppOrgAdminUsername = (orgName: string): string => {
+  switch (orgName) {
+    case OrgNames.ORG_1: {
+      return process.env.APP_ADMIN_ORG1 as string
     }
-    case process.env.ORG2_ADMIN: {
-      return OrgNames.ORG_2
+    case OrgNames.ORG_2: {
+      return process.env.APP_ADMIN_ORG2 as string
     }
-    case process.env.ORG3_ADMIN: {
-      return OrgNames.ORG_3
-    }
-    case process.env.ORDERER_ADMIN: {
-      return OrgNames.ORG_ORDERER
+    case OrgNames.ORG_3: {
+      return process.env.APP_ADMIN_ORG3 as string
     }
     default: return ""
   }
@@ -94,6 +91,7 @@ const getOrgMspId = (orgName: string): string => {
 // Remove "MSP" characters (last three characters) from orgMspId, 
 // then lowercase the string
 const getOrgNumber = (orgMspId: string): string => {
+  console.log("mspId: ", orgMspId)
   return orgMspId.slice(0, -3).toLowerCase()
 }
 
@@ -107,26 +105,26 @@ const getOrgAffiliation = (orgMspId: string): string => {
   return `${orgNumber}.department1`
 }
 
-const isAdminOrderer = (ordererAdminUsername: string): boolean => {
-  return process.env.ORDERER_ADMIN === ordererAdminUsername
+// const isAdminOrderer = (ordererAdminUsername: string): boolean => {
+//   return process.env.ORDERER_ADMIN === ordererAdminUsername
+// }
+
+const isAppAdminOrg1 = (org1AppAdminUsername: string): boolean => {
+  return process.env.APP_ADMIN_ORG1 === org1AppAdminUsername
 }
 
-const isAdminOrg1 = (org1AdminUsername: string): boolean => {
-  return process.env.ORG1_ADMIN === org1AdminUsername
+const isAppAdminOrg2 = (org2AppAdminUsername: string): boolean => {
+  return process.env.APP_ADMIN_ORG2 === org2AppAdminUsername
 }
 
-const isAdminOrg2 = (org2AdminUsername: string): boolean => {
-  return process.env.ORG2_ADMIN === org2AdminUsername
+const isAppAdminOrg3 = (org3AppAdminUsername: string): boolean => {
+  return process.env.APP_ADMIN_ORG3 === org3AppAdminUsername
 }
 
-const isAdminOrg3 = (org3AdminUsername: string): boolean => {
-  return process.env.ORG3_ADMIN === org3AdminUsername
-}
-
-const getAdminOrganization = (adminUsername: string): string | null => {
-  if (isAdminOrg1(adminUsername)) return OrgNames.ORG_1
-  if (isAdminOrg2(adminUsername)) return OrgNames.ORG_2
-  if (isAdminOrg3(adminUsername)) return OrgNames.ORG_3
+const getAppAdminOrganization = (adminUsername: string): string | null => {
+  if (isAppAdminOrg1(adminUsername)) return OrgNames.ORG_1
+  if (isAppAdminOrg2(adminUsername)) return OrgNames.ORG_2
+  if (isAppAdminOrg3(adminUsername)) return OrgNames.ORG_3
   return null
 }
 
@@ -136,7 +134,7 @@ const isOrgNameExist = (orgName: string): boolean => {
 
 const getOrgCredentials = (orgName: string): OrgCredentialsInterface => {
   return {
-    adminUsername: getOrgAdminUsername(orgName),
+    adminUsername: getBlockchainOrgAdminUsername(orgName),
     password: getOrgPassword(orgName),
     domain: getOrgDomain(orgName),
     mspId: getOrgMspId(orgName)
@@ -144,18 +142,14 @@ const getOrgCredentials = (orgName: string): OrgCredentialsInterface => {
 }
 
 export {
-  getOrgAdminUsername,
-  getOrgName,
+  getBlockchainOrgAdminUsername,
+  getAppOrgAdminUsername,
   getOrgDomain,
   getOrgMspId,
   getOrgAffiliation,
   getOrgCredentials,
   getOrgConnectionFileName,
   getOrgPassword,
-  isAdminOrderer,
-  isAdminOrg1,
-  isAdminOrg2,
-  isAdminOrg3,
   isOrgNameExist,
-  getAdminOrganization
+  getAppAdminOrganization
 }

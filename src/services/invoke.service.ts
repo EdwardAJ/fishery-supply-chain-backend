@@ -10,8 +10,8 @@ import { UserInterface } from "~/interfaces/user.interface"
 
 const invoke = async (
     user: UserInterface, contractName: string, methodName: string,
-    stateKey: string, stateValue: string
-  ): Promise<void> => {
+    ...args: string[]
+  ): Promise<any> => {
 
   const { organization: orgName, username } = user
   const { domain, mspId } = getOrgCredentials(orgName)
@@ -33,11 +33,12 @@ const invoke = async (
   // TODO: change "channel1" to use process.env 
   const network = await gateway.getNetwork("channel1")
   const contract = network.getContract("basic", contractName)
-  logger.info(`Submitting transaction to ${methodName} with params: %O`, stateValue)
-  await contract.submitTransaction(methodName, stateKey, stateValue)
+  logger.info(`Submitting transaction to ${methodName} with args: %O`, ...args)
+  const result = await contract.submitTransaction(methodName, ...args)
   logger.info("Transaction has been submitted")
 
   gateway.disconnect()
+  return result
 }
 
 export {

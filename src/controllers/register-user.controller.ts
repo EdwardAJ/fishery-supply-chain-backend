@@ -1,14 +1,12 @@
 import { Request, Response as ExpressResponse } from "express"
 
 import { Codes } from "~/constants/http/code.constant"
-import { OrgRoles } from "~/constants/organization.constant"
 import { Response } from "~/models/response.model"
 
-import { insertUser } from "~/services/user.service"
 import { registerUserToBlockchain } from "~/services/register-user.service"
 
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
-import { getAdminOrganization } from "~/utils/organization.util"
+import { getAppAdminOrganization } from "~/utils/organization.util"
 import { logger } from "~/utils/logger.util"
 import { getGeneratedPassword, getHashedPassword } from "~/utils/password.util"
 
@@ -19,12 +17,12 @@ const registerUser = async (req: Request, res: ExpressResponse):
   try {
     const adminUsername = req.headers["username"] as string
 
-    const adminOrganization = getAdminOrganization(adminUsername)
-    if (!adminOrganization)
+    const appAdminOrganization = getAppAdminOrganization(adminUsername)
+    if (!appAdminOrganization)
       return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
 
     const { username, orgName } = req.body
-    if (adminOrganization !== orgName) {
+    if (appAdminOrganization !== orgName) {
       return sendErrorResponse(res, "Forbidden!", Codes.FORBIDDEN)
     }
 
@@ -32,7 +30,6 @@ const registerUser = async (req: Request, res: ExpressResponse):
     const hashedPassword = await getHashedPassword(generatedPassword)
   
     await registerUserToBlockchain(orgName, username, hashedPassword)
-
     return sendSuccessResponse(res, `${username} successfully registered!`, {
       password: generatedPassword
     })

@@ -14,8 +14,6 @@
   "devDependencies": {
     "@types/node": "^10.14.0",
     "@types/bcrypt": "^3.0.0",
-    "@types/generate-password": "^1.5.1",
-    "@types/jsonwebtoken": "^8.5.1",
     "@types/uuid": "^8.3.0",
     "ts-node": "^9.1.1",
     "tslint": "^5.12.1",
@@ -25,8 +23,6 @@
     "fabric-contract-api": "^2.2.1",
     "fabric-shim": "^2.2.1",
     "bcrypt": "^5.0.1",
-    "generate-password": "^1.6.0",
-    "jsonwebtoken": "^8.5.1",
     "uuid": "^8.3.2"
   }
 }

@@ -19,10 +19,10 @@ enum OrgMspIds {
 }
 
 const OrgMspIdMap = {
-  [OrgNames.ORG_1]: OrgMspIds.ORG_1,
-  [OrgNames.ORG_2]: OrgMspIds.ORG_2,
-  [OrgNames.ORG_3]: OrgMspIds.ORG_3,
-  [OrgNames.ORG_ORDERER]: OrgMspIds.ORG_ORDERER
+  [OrgMspIds.ORG_1]: OrgNames.ORG_1,
+  [OrgMspIds.ORG_2]: OrgNames.ORG_2,
+  [OrgMspIds.ORG_3]: OrgNames.ORG_3,
+  [OrgMspIds.ORG_ORDERER]: OrgNames.ORG_ORDERER
 }
 
 export {
