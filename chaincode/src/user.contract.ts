@@ -4,11 +4,10 @@
 import { Context, Contract } from "fabric-contract-api"
 import { Shim } from "fabric-shim"
 import { LoginRequestInterface } from "./interfaces/request/auth-request.interface"
-import { arePasswordsSame } from "./utils/password.util"
-import { getUser } from "./utils/user.util"
+import { getUser, comparePasswordAndHashedPassword } from "./utils/user.util"
 
 
-export class UsersContract extends Contract {
+export class UserContract extends Contract {
   public async login(context: Context, requestBody: string): Promise<string> {
     const logger = Shim.newLogger("login")
 
@@ -21,7 +20,10 @@ export class UsersContract extends Contract {
       throw new Error("Username or password is required!")
     
     const user = getUser(context)
-    if (!await arePasswordsSame(password, user.HashedPassword))
+    const arePasswordsSame = await comparePasswordAndHashedPassword(password, user.HashedPassword)
+
+    logger.debug("Are passwords same: ", arePasswordsSame)
+    if (!arePasswordsSame)
       throw new Error("Wrong password!")
 
     return JSON.stringify(user)

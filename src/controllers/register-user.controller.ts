@@ -6,30 +6,27 @@ import { Response } from "~/models/response.model"
 import { registerUserToBlockchain } from "~/services/register-user.service"
 
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
-import { getAppAdminOrganization } from "~/utils/organization.util"
 import { logger } from "~/utils/logger.util"
 import { getGeneratedPassword, getHashedPassword } from "~/utils/password.util"
+import { OrgRoles } from "~/constants/organization.constant"
 
 
 // Prerequisite: org admin must be enrolled first.
 const registerUser = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
   try {
-    const adminUsername = req.headers["username"] as string
+    const adminOrganization = req.headers["organization"] as string
+    const role = req.headers["role"] as string
 
-    const appAdminOrganization = getAppAdminOrganization(adminUsername)
-    if (!appAdminOrganization)
-      return sendErrorResponse(res, "Unauthorized", Codes.UNAUTHORIZED)
-
-    const { username, orgName } = req.body
-    if (appAdminOrganization !== orgName) {
+    const { username, organization } = req.body
+    if (adminOrganization !== organization || role !== OrgRoles.ADMIN) {
       return sendErrorResponse(res, "Forbidden!", Codes.FORBIDDEN)
     }
 
     const generatedPassword = getGeneratedPassword()
     const hashedPassword = await getHashedPassword(generatedPassword)
   
-    await registerUserToBlockchain(orgName, username, hashedPassword)
+    await registerUserToBlockchain(adminOrganization, username, hashedPassword)
     return sendSuccessResponse(res, `${username} successfully registered!`, {
       password: generatedPassword
     })

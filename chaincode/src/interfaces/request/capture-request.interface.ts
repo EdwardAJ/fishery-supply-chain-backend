@@ -7,7 +7,10 @@ interface CaptureRequestInterface {
   location: LocationInterface
   fisheryProduct: FisheryProductLotRequestInterface
   vessel: IdentityInterface
-  harbor: IdentityInterface
+  harbor: IdentityInterface,
+  newLotId: string,
+  captureActivityId: string,
+  createdAt: string
 }
 
 export {

@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node-dev --respawn -r tsconfig-paths/register src/index.ts",
-    "enroll-orderer-admin": "ts-node -r tsconfig-paths/register src/scripts/enroll-orderer-admin.ts",
+    "enroll-admin": "ts-node -r tsconfig-paths/register src/scripts/enroll-admin.ts",
     "lint": "eslint '*/**/*.{js,ts,tsx}'",
     "lint-fix": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },

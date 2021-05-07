@@ -3,7 +3,6 @@ import { FisheryProductLotRequestInterface } from "../request/fishery-product-lo
 
 interface FisheryProductLotInterface extends FisheryProductLotRequestInterface {
   id: string
-  activitiesChainId: string
   activityId: string
   owner: User
 }

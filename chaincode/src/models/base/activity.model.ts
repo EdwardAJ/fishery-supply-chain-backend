@@ -10,10 +10,7 @@ class Activity {
   protected readonly createdAt: string
 
   constructor (
-    {
-      id, name, parentIds,
-      lot, createdAt
-    }: ActivityInterface
+    { id, name, parentIds, lot, createdAt }: ActivityInterface
   ){
     this.id = id
     this.name = name

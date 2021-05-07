@@ -21,7 +21,6 @@ const main = async () => {
       await registerUserToBlockchain(organization, getAppOrgAdminUsername(organization), hashedPassword, OrgRoles.ADMIN)
       console.log(`${getAppOrgAdminUsername(organization)} password: ${generatedPassword}`)
     }
-
     process.exit(0) 
 
   } catch (error) {

@@ -35,13 +35,14 @@ const getUser = (context: Context): User => {
   return new User(username, organization, role, hashedPassword)
 }
 
-const arePasswordsSame =
+const comparePasswordAndHashedPassword =
   async (password: string, hashedPassword: string): Promise<boolean> => {
   return await compare(password, hashedPassword)
 }
 
+
 export {
   getUser,
   isAuthorizedAndGetUser,
-  arePasswordsSame
+  comparePasswordAndHashedPassword
 }

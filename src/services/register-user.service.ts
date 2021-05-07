@@ -39,8 +39,6 @@ const registerUserToBlockchain = async (
 
   const provider = wallet.getProviderRegistry().getProvider(blockchainAdminIdentity.type)
   const blockchainAdmin = await provider.getUserContext(blockchainAdminIdentity, blockchainAdminUsername)
-  logger.info(`Register username ${username}...`)
-  logger.info("orgCredential: %O", orgCredential)
 
   const secret = await ca.register(
     {
@@ -54,8 +52,6 @@ const registerUserToBlockchain = async (
       ]
   }, blockchainAdmin)
   
-  logger.info("enrolling...")
-
   const { certificate, key } = await ca.enroll({
     enrollmentID: username,
     enrollmentSecret: secret,

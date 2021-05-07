@@ -4,7 +4,7 @@
 import { Context } from "fabric-contract-api"
 
 // Taken from asset-transfer-ledger-queries
-async function getAllHistoryResults(iterator: any): Promise<any> {
+async function getAllResults(iterator: any): Promise<any> {
   const allResults = []
   let res = await iterator.next()
   while (!res.done) {
@@ -35,5 +35,5 @@ async function readState (context: Context, key: string): Promise<any> {
 }
 
 export {
-  getAllHistoryResults, readState
+  getAllResults, readState
 }

@@ -3,36 +3,34 @@ import { Shim } from "fabric-shim"
 import { FisheryProductLotRequestInterface } from "../interfaces/request/fishery-product-lot-request.interface"
 import { FisheryProductLot } from "../models/base/fishery-product-lot.model"
 import { User } from "../models/base/user.model"
-import { ProductLotsContract } from "../product-lots.contract"
+import { FisheryProductLotContract } from "../fishery-product-lot.contract"
 import { getGeneratedUuid } from "./uuid.util"
 
-const createOrUpdateFisheryProductLot = async (
-  context: Context,
-  currentProductLot: FisheryProductLot
-): Promise<void> => {
+const createOrUpdateLot = async (context: Context, currentLot: FisheryProductLot): Promise<void> => {
   const logger = Shim.newLogger("createOrUpdateFisheryProductLot")
-  const fisheryProductLotsContract = new ProductLotsContract()
-  logger.info(`Saving fisheryProductLotsContract: ${fisheryProductLotsContract}`)
-  await fisheryProductLotsContract.createOrUpdateProductLot(context, currentProductLot.Id, JSON.stringify(currentProductLot))
+  const fisheryProductLotContract = new FisheryProductLotContract()
+  logger.debug("Saving fisheryProductLotContract: %O", fisheryProductLotContract)
+  await fisheryProductLotContract.createOrUpdateLot(context, currentLot)
 }
 
-const getNewFisheryProductLot = (
+const getNewLot = (
   { weight, commodityType }: FisheryProductLotRequestInterface,
-  activitiesChainId: string,
+  lotId: string,
+  activityId: string,
   owner: User
 ): FisheryProductLot => {
   return new FisheryProductLot(
     {
-      id: getGeneratedUuid(),
+      id: lotId,
       weight,
       commodityType,
       owner,
-      activitiesChainId,
-      activityId: getGeneratedUuid()
-    })
+      activityId
+    }
+  )
 }
 
 export {
-  createOrUpdateFisheryProductLot,
-  getNewFisheryProductLot
+  createOrUpdateLot,
+  getNewLot
 }
