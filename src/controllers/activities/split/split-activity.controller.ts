@@ -5,49 +5,38 @@ import { Codes } from "~/constants/http/code.constant"
 import { logger } from "~/utils/logger.util"
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 
-import { getAndValidateUser } from "~/utils/user.util"
-import {  createOrUpdateActivitiesChain } from "~/utils/activities/activity.util"
-import {
-  createOrUpdateProductLot, getNewProductLots,
-  getProductLotAndEnsureOwnership
-} from "~/utils/activities/product-lot.util"
-import { SplitActivity } from "~/models/blockchain/split/split-activity.model"
-import { User } from "~/models/blockchain/base/user.model"
+import { getGeneratedUuid } from "~/utils/uuid.util"
+import { invoke } from "~/services/invoke.service"
 
 const split = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
       const username = req.headers["username"] as string
-      const user = await getAndValidateUser(username)
+      const organization = req.headers["organization"] as string
 
-      const { currentLot: { id: currentLotId }, newLots } = req.body
-      if (!currentLotId || !newLots?.length) {
-        throw new Error("Please provide lot information")
+      const { newLots } = req.body
+      if (!newLots.length) throw new Error("Please provide lot information")
+
+      const newLotIds = []
+      const newActivityIds = []
+
+      for (let lotIndex = 0; lotIndex < newLots.length; lotIndex++) {
+        newLotIds.push(getGeneratedUuid())
+        newActivityIds.push(getGeneratedUuid())
       }
 
-      const { ActivitiesChainId: activitiesChainId, ActivityId: activityId } = 
-        await getProductLotAndEnsureOwnership(currentLotId, user)
- 
-      const newProductLots = getNewProductLots(
-        newLots, activitiesChainId, new User(user.username, user.organization))
-      
-      const splitActivities: SplitActivity[] = []
-
-      await Promise.all(newProductLots.map(async (newProductLot) => {
-        splitActivities.push(
-          new SplitActivity(
-            {
-              id: newProductLot.ActivityId,
-              parentIds: [activityId],
-              lot: newProductLot,
-              createdAt: new Date().toISOString(),
-            }
-          )
+      const splitActivitiesBuffer =
+        await invoke(
+          { username, organization }, "ActivityContract", "split",
+          JSON.stringify({
+            ...req.body,
+            createdAt: new Date().toISOString(),
+            newLotIds,
+            newActivityIds
+          })
         )
-        await createOrUpdateProductLot(newProductLot, user)
-      }))
 
-      await createOrUpdateActivitiesChain(activitiesChainId, splitActivities, user)
+      const splitActivities = JSON.parse(splitActivitiesBuffer.toString())
       return sendSuccessResponse(res, "Splitted!", { activities: splitActivities })
 
     } catch (error) {

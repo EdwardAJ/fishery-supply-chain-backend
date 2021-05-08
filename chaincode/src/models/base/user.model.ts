@@ -2,7 +2,7 @@ class User {
   constructor (
     private readonly username: string,
     private readonly organization: string,
-    private readonly role: string,
+    private readonly role?: string,
     private readonly hashedPassword ?: string,
   ) {}
 

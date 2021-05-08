@@ -13,7 +13,7 @@ const capture = async (req: Request, res: ExpressResponse):
       const organization = req.headers["organization"] as string
 
       const newLotId = getGeneratedUuid()
-      const captureActivityId = getGeneratedUuid()
+      const newActivityId = getGeneratedUuid()
 
       const captureActivityBuffer =
         await invoke(
@@ -22,7 +22,7 @@ const capture = async (req: Request, res: ExpressResponse):
             ...req.body,
             createdAt: new Date().toISOString(),
             newLotId,
-            captureActivityId
+            newActivityId
           })
         )
 
