@@ -10,7 +10,6 @@ import { logger } from "~/utils/logger.util"
 import { getGeneratedPassword, getHashedPassword } from "~/utils/password.util"
 import { OrgRoles } from "~/constants/organization.constant"
 
-
 // Prerequisite: org admin must be enrolled first.
 const registerUser = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {

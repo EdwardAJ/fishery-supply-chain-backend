@@ -18,7 +18,7 @@ const getValidatedUserAndSplitRequest = (context: Context, requestBody: string):
 
 const validateSplitRequest = (splitRequest: SplitRequestInterface): void => {
   const { currentLot, newLots } = splitRequest
-  if (!currentLot?.id || !newLots.length) {
+  if (!currentLot.id || !newLots.length) {
     throw new Error("Please provide lot information")
   }
 }

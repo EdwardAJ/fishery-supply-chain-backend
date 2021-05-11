@@ -30,9 +30,7 @@ interface CombineRequestInterface extends ActivityRequestInterface {
 }
 
 interface SplitRequestInterface extends ActivityRequestInterface {
-  currentLot: {
-    id: string
-  }
+  currentLot: { id: string }
   newLots: FisheryProductLotInterface[]
   newLotIds: string[]
   newActivityIds: string[]
@@ -42,6 +40,22 @@ interface TransferRequestInterface extends ActivityRequestInterface {
   currentLot: { id: string }
   toUsername: string
   toOrganization: string
+  newActivityId: string
+}
+
+interface ProcessRequestInterface extends ActivityRequestInterface {
+  currentLot: { id: string }
+  supplier: IdentityInterface
+  storage: IdentityInterface
+  processTo: IdentityInterface
+  location: LocationInterface
+  newActivityId: string
+}
+
+interface MarketRequestInterface extends ActivityRequestInterface {
+  currentLot: { id: string }
+  location: LocationInterface
+  marketTo: IdentityInterface
   newActivityId: string
 }
 
@@ -58,6 +72,8 @@ export {
   SplitRequestInterface,
   TransferRequestInterface,
   FisheryProductLotRequestInterface,
-  CaptureRequestInterface
+  CaptureRequestInterface,
+  ProcessRequestInterface,
+  MarketRequestInterface
 }
 

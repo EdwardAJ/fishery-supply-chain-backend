@@ -16,6 +16,8 @@ import { getLotAndCaptureActivity, getValidatedUserAndCaptureRequest } from "./u
 import { getLotAndCombineActivity, getValidatedUserAndCombineRequest } from "./utils/activity/combine-activity.util"
 import { getValidatedUserAndSplitRequest } from "./utils/activity/split-activity.util"
 import { getLotAndTransferActivity, getValidatedUserAndTransferRequest } from "./utils/activity/transfer-activity.util"
+import { getLotAndProcessActivity, getValidatedUserAndProcessRequest } from "./utils/activity/process-activity.util"
+import { getLotAndMarketActivity, getValidatedUserAndMarketRequest } from "./utils/activity/market-activity.util"
 
 
 export class ActivityContract extends Contract {
@@ -69,8 +71,8 @@ export class ActivityContract extends Contract {
         const activity = activityQueue.shift()
         activityChain.unshift(activity)
         
-        if (activity?.ParentIds) {
-          for (const parentId of activity?.ParentIds) {
+        if (activity.ParentIds) {
+          for (const parentId of activity.ParentIds) {
             parentActivityIds.add(parentId)
           }
         }
@@ -90,7 +92,7 @@ export class ActivityContract extends Contract {
     return new Activity({ id, name, parentIds, lot, createdAt })
   }
 
-  public async getActivitiesByQuery(context: Context, queryString: string): Promise<any> {
+  public async getProductLotsByQuery(context: Context, queryString: string): Promise<any> {
     const resultsIterator = await context.stub.getQueryResult(queryString)
     const results = await getAllResults(resultsIterator)
     return results
@@ -99,6 +101,20 @@ export class ActivityContract extends Contract {
   public async capture (context: Context, requestBody: string): Promise<string> {
     const { request, user } = getValidatedUserAndCaptureRequest(context, requestBody)
     const { lot, activity } = getLotAndCaptureActivity(request, user)
+    await this.createOrUpdateLotAndCreateActivity(context, lot, activity)
+    return JSON.stringify(activity)
+  }
+
+  public async process (context: Context, requestBody: string): Promise<string> {
+    const { request, user } = getValidatedUserAndProcessRequest(context, requestBody)
+    const { lot, activity } = await getLotAndProcessActivity(context, request, user)
+    await this.createOrUpdateLotAndCreateActivity(context, lot, activity)
+    return JSON.stringify(activity)
+  }
+
+  public async market (context: Context, requestBody: string): Promise<string> {
+    const { request, user } = getValidatedUserAndMarketRequest(context, requestBody)
+    const { lot, activity } = await getLotAndMarketActivity(context, request, user)
     await this.createOrUpdateLotAndCreateActivity(context, lot, activity)
     return JSON.stringify(activity)
   }

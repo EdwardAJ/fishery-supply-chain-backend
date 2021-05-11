@@ -13,7 +13,7 @@ const validateTransferRequest = (
   if (!currentLotId || !toUsername || !toOrganization)
     throw new Error("Please provide lot information")
   
-  for (const organization in [OrgNames.ORG_1, OrgNames.ORG_2, OrgNames.ORG_3]) {
+  for (const organization of [OrgNames.ORG_1, OrgNames.ORG_2, OrgNames.ORG_3]) {
     if (toOrganization === organization) return
   }
   throw new Error("Organization does not exist!")

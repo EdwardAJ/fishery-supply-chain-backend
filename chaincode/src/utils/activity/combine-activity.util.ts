@@ -22,7 +22,7 @@ const getValidatedUserAndCombineRequest = (context: Context, requestBody: string
 
 const validateCombineRequest = (combineRequest: CombineRequestInterface): void => {
   const { currentLot, newLot: { weight, commodityType } } = combineRequest
-  if (!currentLot?.ids?.length || !weight || !commodityType) {
+  if (!currentLot.ids.length || !weight || !commodityType) {
     throw new Error("Please provide lot information")
   }
 }
@@ -45,7 +45,9 @@ const getLotAndCombineActivity =
   
   const parentActivityIds = await getParentActivityIds(context, currentLot.ids, user)
   const newLot = new FisheryProductLot({
-    id: newLotId, weight, commodityType, owner: user, activityId: newActivityId
+    id: newLotId, weight, commodityType,
+    owner: new User(user.Username, user.Organization),
+    activityId: newActivityId
   })
   const combineActivity = new CombineActivity({
     id: newActivityId, name: "Gabung", parentIds: parentActivityIds, createdAt, lot: newLot

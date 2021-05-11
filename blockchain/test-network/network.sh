@@ -347,6 +347,7 @@ function networkDown() {
     docker run --rm -v $(pwd):/data busybox sh -c 'cd /data && rm -rf addOrg4/fabric-ca/org4/msp addOrg4/fabric-ca/org4/tls-cert.pem addOrg4/fabric-ca/org4/ca-cert.pem addOrg4/fabric-ca/org4/IssuerPublicKey addOrg4/fabric-ca/org4/IssuerRevocationPublicKey addOrg4/fabric-ca/org4/fabric-ca-server.db'
     # remove channel and script artifacts
     docker run --rm -v $(pwd):/data busybox sh -c 'cd /data && rm -rf channel-artifacts log.txt *.tar.gz'
+    docker system prune --volumes -f
   fi
 }
 

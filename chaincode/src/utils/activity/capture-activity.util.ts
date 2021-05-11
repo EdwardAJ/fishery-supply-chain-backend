@@ -25,7 +25,8 @@ const getLotAndCaptureActivity =
   }: CaptureRequestInterface, user: User): LotAndActivityInterface => {
   
   const newLot = new FisheryProductLot({
-    id: newLotId, weight, commodityType, owner: user, activityId: newActivityId
+    id: newLotId, weight, commodityType, owner: new User(user.Username, user.Organization),
+    activityId: newActivityId
   })
   
   const captureActivity = new CaptureActivity(

@@ -17,7 +17,6 @@ const login = async (req: Request, res: ExpressResponse): Promise<ExpressRespons
     )
 
     const { role } = JSON.parse(userBuffer.toString())
-    logger.info("user: %O", role)
     return sendSuccessResponse(res, "Login success!", {
       token: signAndGetJwt({ username, organization, role }),
       organization,
