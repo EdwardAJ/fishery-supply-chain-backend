@@ -12,7 +12,7 @@ export class FisheryProductLotContract extends Contract {
 
   public async getLot (context: Context, lotId: string): Promise<FisheryProductLot> {
     const { id, weight, commodityType, activityId, owner } = await readState(context, lotId)
-    if (!owner) throw new Error("Lot does not exist!")
+    if (!weight || !commodityType) throw new Error("Lot does not exist!")
     return new FisheryProductLot({
       id, weight, commodityType,
       activityId,

@@ -5,7 +5,6 @@ import { Codes } from "~/constants/http/code.constant"
 import { logger } from "~/utils/logger.util"
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { query } from "~/services/query.service"
-import { getAndValidateUser } from "~/utils/user.util"
 
 const getProductLots = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
@@ -18,18 +17,21 @@ const getProductLots = async (req: Request, res: ExpressResponse):
       // TODO: remove authentication method, automatically assign user to any organization
       // to see activities
       const username = req.headers["username"] as string
-      const user = await getAndValidateUser(username)
+      const organization = req.headers["organization"] as string
 
-      let queryString = {}
+      const queryString = { selector: {}, fields: ["lot.commodityType", "lot.weight"] }
+
       if (harborId) {
-        queryString = { selector: { harbor: { id: harborId } } }
+        queryString.selector = { harbor: { id: harborId } }
       } else if (vesselId) {
-        queryString = { selector: { vessel: { id: vesselId } } }
+        queryString.selector = { vessel: { id: vesselId } }
       }
 
       const productLotsBuffer =
-        await query(user, "ProductLotsContract", "getProductLotsByQuery",
-          JSON.stringify(queryString))
+        await query(
+          { username, organization }, "ActivityContract", "getProductLotsByQuery",
+          JSON.stringify(queryString)
+        )
       
       return sendSuccessResponse(res, "lots",
         JSON.parse(productLotsBuffer.toString()))

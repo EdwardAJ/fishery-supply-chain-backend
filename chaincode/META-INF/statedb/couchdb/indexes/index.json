@@ -1,0 +1,9 @@
+{
+  "index": {
+    "fields": [
+      "lot"
+    ]
+  },
+  "name": "query-index",
+  "type": "json"
+}

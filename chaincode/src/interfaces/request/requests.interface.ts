@@ -5,6 +5,7 @@ import { LocationInterface } from "../base/location.interface"
 interface LoginRequestInterface {
   username: string
   password: string
+  organization: string
 }
 
 interface ActivityRequestInterface {  

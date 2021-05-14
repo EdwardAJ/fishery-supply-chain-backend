@@ -13,7 +13,7 @@ const login = async (req: Request, res: ExpressResponse): Promise<ExpressRespons
 
     const userBuffer = await query(
       { username, organization }, "UserContract", "login",
-      JSON.stringify({ username, password })
+      JSON.stringify(req.body)
     )
 
     const { role } = JSON.parse(userBuffer.toString())
