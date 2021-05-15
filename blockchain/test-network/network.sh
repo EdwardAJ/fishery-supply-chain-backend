@@ -266,15 +266,6 @@ function createConsortium() {
 function networkUp() {
   checkPrereqs
 
-  export ORDERER_PASSWORD=$(cat ${PWD}/../../.env | grep ORDERER_PASSWORD= | cut -d '=' -f2)
-  export ORG1_PASSWORD=$(cat ${PWD}/../../.env | grep ORG1_PASSWORD= | cut -d '=' -f2)
-  export ORG2_PASSWORD=$(cat ${PWD}/../../.env | grep ORG2_PASSWORD= | cut -d '=' -f2)
-  export ORG3_PASSWORD=$(cat ${PWD}/../../.env | grep ORG3_PASSWORD= | cut -d '=' -f2)
-  export ORG1_ADMIN=$(cat ${PWD}/../../.env | grep ORG1_ADMIN= | cut -d '=' -f2)
-  export ORG2_ADMIN=$(cat ${PWD}/../../.env | grep ORG2_ADMIN= | cut -d '=' -f2)
-  export ORG3_ADMIN=$(cat ${PWD}/../../.env | grep ORG3_ADMIN= | cut -d '=' -f2)
-  export ORDERER_ADMIN=$(cat ${PWD}/../../.env | grep ORDERER_ADMIN= | cut -d '=' -f2)
-
   # generate artifacts if they don't exist
   if [ ! -d "organizations/peerOrganizations" ]; then
     createOrgs
@@ -330,6 +321,7 @@ function networkDown() {
   docker-compose -f $COMPOSE_FILE_COUCH_ORG3 -f $COMPOSE_FILE_ORG3 down --volumes --remove-orphans
   # stop org4 containers also in addition to org1 and org2, in case we were running sample to add org4
   docker-compose -f $COMPOSE_FILE_COUCH_ORG4 -f $COMPOSE_FILE_ORG4 down --volumes --remove-orphans
+  docker-compose -f ${PWD}/docker/docker-compose-peers.yaml -f ${PWD}/docker/docker-compose-couch-peers.yaml down --volumes --remove-orphans
   # Don't remove the generated artifacts -- note, the ledgers are always removed
   if [ "$MODE" != "restart" ]; then
     # Bring down the network, deleting the volumes
