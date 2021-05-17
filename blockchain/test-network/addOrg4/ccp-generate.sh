@@ -32,5 +32,5 @@ CAPORT=13054
 PEERPEM=../organizations/peerOrganizations/org4.example.com/tlsca/tlsca.org4.example.com-cert.pem
 CAPEM=../organizations/peerOrganizations/org4.example.com/ca/ca.org4.example.com-cert.pem
 
-echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > ../organizations/peerOrganizations/org4.example.com/connection-org4.json
-echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > ../organizations/peerOrganizations/org4.example.com/connection-org4.yaml
+echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > ../organizations/peerOrganizations/org4.example.com/connection-peer0-org4.json
+echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > ../organizations/peerOrganizations/org4.example.com/connection-peer0-org4.yaml

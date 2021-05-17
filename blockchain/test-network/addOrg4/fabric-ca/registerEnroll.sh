@@ -12,7 +12,7 @@ function createOrg4 {
 	export FABRIC_CA_CLIENT_HOME=${PWD}/../organizations/peerOrganizations/org4.example.com/
 
   set -x
-  fabric-ca-client enroll -u https://admin:adminpw@localhost:13054 --caname ca-org4 --tls.certfiles ${PWD}/fabric-ca/org4/tls-cert.pem
+  fabric-ca-client enroll -u https://${ORG4_ADMIN}:${ORG4_PASSWORD}@localhost:13054 --caname ca-org4 --tls.certfiles ${PWD}/fabric-ca/org4/tls-cert.pem
   { set +x; } 2>/dev/null
 
   echo 'NodeOUs:

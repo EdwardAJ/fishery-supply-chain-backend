@@ -30,9 +30,12 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_CHAINCODE_LOGGING_SHIM=DEBUG
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
       # Peer specific variabes
       - CORE_PEER_ID=peer0.org4.example.com
       - CORE_PEER_ADDRESS=peer0.org4.example.com:13051
+      - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_PEER_LISTENADDRESS=0.0.0.0:13051
       - CORE_PEER_CHAINCODEADDRESS=peer0.org4.example.com:13052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:13052

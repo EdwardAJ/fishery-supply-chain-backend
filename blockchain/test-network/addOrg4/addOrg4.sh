@@ -133,6 +133,11 @@ function Org4Up () {
 
 # Generate the needed certificates, the genesis block and start the network.
 function addOrg4 () {
+  echo "Org4 password:"
+  echo $ORG4_PASSWORD
+  echo "Org4 admin username:"
+  echo $ORG4_ADMIN
+
   # If the test network is not up, abort
   if [ ! -d ../organizations/ordererOrganizations ]; then
     fatalln "ERROR: Please, run ./network.sh up createChannel first."

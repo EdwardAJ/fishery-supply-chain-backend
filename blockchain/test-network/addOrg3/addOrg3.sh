@@ -133,11 +133,8 @@ function Org3Up () {
 
 # Generate the needed certificates, the genesis block and start the network.
 function addOrg3 () {
-
-  # export ORG3_PASSWORD=$(cat ${PWD}/../../../.env | grep ORG3_PASSWORD= | cut -d '=' -f2)
   echo "Org3 password:"
   echo $ORG3_PASSWORD
-  # export ORG3_ADMIN=$(cat ${PWD}/../../../.env | grep ORG3_ADMIN= | cut -d '=' -f2)
   echo "Org3 admin username:"
   echo $ORG3_ADMIN
 
