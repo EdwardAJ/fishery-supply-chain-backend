@@ -19,11 +19,10 @@ const getConnectionInfo = (orgDomain: string, orgMspId: string, peerNumber = 0):
 
 const getWallet = async (): Promise<Wallet> => {
   // Create a new file system based wallet for managing identities.
-  const walletPath = path.join(process.cwd(), "blockchain", "wallet")
+  const walletPath = path.join(process.cwd(), "wallet")
   logger.info(`Creating wallet path at ${walletPath}...`)
   return await Wallets.newFileSystemWallet(walletPath)
 }
-
 
 export {
   adminExists,
