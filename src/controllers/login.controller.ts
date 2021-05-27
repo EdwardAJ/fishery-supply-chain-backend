@@ -12,6 +12,7 @@ const login = async (req: Request, res: ExpressResponse): Promise<ExpressRespons
       return sendErrorResponse(res, "Username or organization or password is required")
 
     const userBuffer = await query(
+      req,
       { username, organization }, "UserContract", "login",
       JSON.stringify(req.body)
     )

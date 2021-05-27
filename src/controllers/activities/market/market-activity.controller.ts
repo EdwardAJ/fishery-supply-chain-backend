@@ -16,6 +16,7 @@ const market = async (req: Request, res: ExpressResponse):
 
       const marketActivityBuffer =
         await invoke(
+          req,
           { username, organization }, "ActivityContract", "market",
           JSON.stringify({
             ...req.body,

@@ -17,6 +17,8 @@ export class UserContract extends Contract {
     if (!arePasswordsSame)
       throw new Error("Wrong password!")
 
+    console.log("userOrg: ", user.Organization)
+    console.log("req org: ", organization)
     if (user.Organization !== organization)
       throw new Error("Wrong organization!")
 

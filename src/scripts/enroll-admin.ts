@@ -13,7 +13,7 @@ import { getHashedPassword, getGeneratedPassword } from "~/utils/password.util"
 
 const main = async () => {
   try {
-    const organizations = [OrgNames.ORG_1, OrgNames.ORG_2, OrgNames.ORG_3]
+    const organizations = [OrgNames.ORG_1, OrgNames.ORG_2, OrgNames.ORG_3, OrgNames.ORG_4]
     for (const organization of organizations) {
       const generatedPassword = getGeneratedPassword()
       const hashedPassword = await getHashedPassword(generatedPassword)

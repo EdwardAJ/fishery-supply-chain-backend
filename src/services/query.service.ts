@@ -8,39 +8,49 @@ import { getConnectionInfo, getWallet } from "~/utils/wallet.util"
 import { getOrgCredentials } from "~/utils/organization.util"
 import { logger } from "~/utils/logger.util"
 import { UserInterface } from "~/interfaces/user.interface"
+import { Request } from "express"
 
 // TODO: refactor
 const query = async (
-  user: UserInterface, contractName: string, methodName: string, stateKey: string
+  req: Request, user: UserInterface, contractName: string, methodName: string, stateKey: string
 ): Promise<any> => {
 
   const { username, organization: orgName } = user
-  console.log("user: ", orgName)
-  const { domain, mspId } = getOrgCredentials(orgName)
-  const ccp = getConnectionInfo(domain, mspId)
   const wallet = await getWallet()
 
-  // Check to see if we've already enrolled the user.
   const identity = await wallet.get(username)
   if (!identity) {
-  logger.error(`Identity ${username} does not exist`)
+    logger.error(`Identity ${username} does not exist`)
     throw new Error(`An identity for the user ${username} does not exist in the wallet`)
   }
 
-  // Create a new gateway for connecting to our peer node.
+  const { domain, mspId } = getOrgCredentials(orgName)
   const gateway = new Gateway()
+
+  const ccp = getConnectionInfo(domain, mspId)
   await gateway.connect(ccp, { wallet, identity: username, discovery: { enabled: true, asLocalhost: true } })
 
-  // TODO: change "channel1" to use process.env 
-  const network = await gateway.getNetwork("channel1")
-  const contract = network.getContract("basic", contractName)
-  logger.info(`Querying ${methodName} with params: %O`, stateKey)
-  const result = await contract.evaluateTransaction(methodName, stateKey)
-  logger.info(`Getting transaction: ${result}`)
-
-  gateway.disconnect()
-
-  return result
+  let connectionAttemptCount = 0
+  // Connect to peer0 or peer1 first, then retry the request.
+  while (connectionAttemptCount !== 2) {
+    connectionAttemptCount++
+    try {
+      const ccp = getConnectionInfo(domain, mspId, req.app.locals.ACTIVE_PEER_NUMBER)
+      await gateway.connect(ccp, { wallet, identity: username, discovery: { enabled: true, asLocalhost: true } })
+      const network = await gateway.getNetwork("channel1")
+      const contract = network.getContract("basic", contractName)
+      const result = await contract.evaluateTransaction(methodName, stateKey)
+      gateway.disconnect()
+      return result
+    } catch (error) {
+      if (connectionAttemptCount === 2) throw error
+      if (error.message.includes("DiscoveryService has failed to return results")) {
+        req.app.locals.ACTIVE_PEER_NUMBER ^= req.app.locals.ACTIVE_PEER_NUMBER
+      }
+    }
+  }
+  
+  return
 }
 
 export {

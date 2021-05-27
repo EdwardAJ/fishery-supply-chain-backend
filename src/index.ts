@@ -19,6 +19,7 @@ const main = async () => {
     app.use(cors())
     app.use(express.json())
     app.use(mainRouter)
+    app.locals.ACTIVE_PEER_NUMBER = 0
 
     const PORT = process.env.PORT || DEFAULT_PORT
     app.listen(PORT, () => {

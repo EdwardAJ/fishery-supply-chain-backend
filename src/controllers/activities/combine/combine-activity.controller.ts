@@ -19,6 +19,7 @@ const combine = async (req: Request, res: ExpressResponse):
 
       const combineActivityBuffer =
         await invoke(
+          req,
           { username, organization }, "ActivityContract", "combine",
           JSON.stringify({
             ...req.body,

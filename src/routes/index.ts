@@ -11,7 +11,6 @@ const router = express.Router()
 
 router.use("/activity", activityRouter)
 router.use("/login", loginRouter)
-// router.use("/enroll", enrollAdminRouter)
 router.use("/register", registerUserRouter)
 router.use("/chain", chainRouter)
 router.use("/lot", productLotRouter)

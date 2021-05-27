@@ -27,6 +27,7 @@ const split = async (req: Request, res: ExpressResponse):
 
       const splitActivitiesBuffer =
         await invoke(
+          req,
           { username, organization }, "ActivityContract", "split",
           JSON.stringify({
             ...req.body,

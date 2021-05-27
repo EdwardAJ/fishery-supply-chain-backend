@@ -104,7 +104,7 @@ setGlobalsCLI() {
   elif [ $USING_ORG -eq 4 ]; then
     export CORE_PEER_ADDRESS=peer0.org4.example.com:13051
   elif [ $USING_ORG -eq 14 ]; then
-    export CORE_PEER_ADDRESS=peer0.org4.example.com:14051
+    export CORE_PEER_ADDRESS=peer1.org4.example.com:14051
   else
     errorln "ORG Unknown"
   fi

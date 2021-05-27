@@ -16,6 +16,7 @@ const transfer = async (req: Request, res: ExpressResponse):
 
       const transferActivityBuffer =
         await invoke(
+          req,
           { username, organization }, "ActivityContract", "transfer",
           JSON.stringify({
             ...req.body,

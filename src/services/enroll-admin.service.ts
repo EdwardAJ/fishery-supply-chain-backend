@@ -21,8 +21,8 @@ const enrollAdminToBlockchain = async (orgName: string): Promise<void> => {
   // Check to see if we've already enrolled the admin user.
   const identity = await wallet.get(adminUsername)
   if (identity) {
-      logger.error(`Identity ${adminUsername} already exists`)
-      throw new Error(`An identity for the admin user ${adminUsername} already exists in the wallet`)
+    logger.error(`Identity ${adminUsername} already exists`)
+    throw new Error(`An identity for the admin user ${adminUsername} already exists in the wallet`)
   }
 
   // Enroll the admin user, and import the new identity into the wallet.

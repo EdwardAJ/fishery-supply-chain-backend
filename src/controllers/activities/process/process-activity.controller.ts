@@ -18,6 +18,7 @@ const process = async (req: Request, res: ExpressResponse):
 
       const processActivityBuffer =
         await invoke(
+          req,
           { username, organization }, "ActivityContract", "process",
           JSON.stringify({
             ...req.body,

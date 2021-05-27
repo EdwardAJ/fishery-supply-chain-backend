@@ -5,17 +5,15 @@ import { logger } from "~/utils/logger.util"
 import { getOrgConnectionFileName } from "./organization.util"
 
 const adminExists = async (adminUsername: string): Promise<boolean> => {
-   const wallet = await getWallet()
-  // Check to see if we've already enrolled the admin user.
+  const wallet = await getWallet()
   const identity = await wallet.get(adminUsername)
   return !!identity
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getConnectionInfo = (orgDomain: string, orgMspId: string): any => {
-  // load the network configuration
+const getConnectionInfo = (orgDomain: string, orgMspId: string, peerNumber = 0): any => {
   const connectionInfoPath =
-    path.resolve(__dirname, "..", "..", "blockchain", "test-network","organizations", "peerOrganizations", orgDomain, getOrgConnectionFileName(orgMspId))
+    path.resolve(__dirname, "..", "..", "blockchain", "test-network","organizations", "peerOrganizations", orgDomain, getOrgConnectionFileName(orgMspId, peerNumber))
   return JSON.parse(fs.readFileSync(connectionInfoPath, "utf8"))
 }
 

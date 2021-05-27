@@ -17,6 +17,7 @@ const capture = async (req: Request, res: ExpressResponse):
 
       const captureActivityBuffer =
         await invoke(
+          req,
           { username, organization }, "ActivityContract", "capture",
           JSON.stringify({
             ...req.body,
