@@ -2,10 +2,8 @@ version: '3'
 
 services:
   backend.org1:
-    image: node:14
-    user: node
-    working_dir: /home/node/app
     container_name: backend.org1
+    build: .
     network_mode: host
     environment:
       - PORT=8001
@@ -16,18 +14,10 @@ services:
       - ORG_PASSWORD=PASSWORD1
       - APP_ADMIN=org1
       - ORG_NAME=Pelabuhan
-    volumes:
-      - ../:/home/node/app
-      - /home/node/app/blockchain/
-      - /home/node/app/chaincode/
-      - ../blockchain/test-network/organizations/peerOrganizations/org1.example.com/connection-peer0-org1.json:/home/node/app/connection-peer0-org1.json
-      - ../blockchain/test-network/organizations/peerOrganizations/org1.example.com/connection-peer1-org1.json:/home/node/app/connection-peer1-org1.json
     command: sh -c "rm -rf node_modules && yarn install && yarn enroll-admin && yarn start"
   backend.org2:
-    image: node:14
-    user: node
-    working_dir: /home/node/app
     container_name: backend.org2
+    build: .
     network_mode: host
     environment:
       - PORT=8002
@@ -38,12 +28,6 @@ services:
       - ORG_PASSWORD=PASSWORD2
       - APP_ADMIN=org2
       - ORG_NAME=Unit Pengolahan Ikan (UPI)
-    volumes:
-      - ../:/home/node/app
-      - /home/node/app/blockchain/
-      - /home/node/app/chaincode/
-      - ../blockchain/test-network/organizations/peerOrganizations/org2.example.com/connection-peer0-org2.json:/home/node/app/connection-peer0-org2.json
-      - ../blockchain/test-network/organizations/peerOrganizations/org2.example.com/connection-peer1-org2.json:/home/node/app/connection-peer1-org2.json
     command: sh -c "rm -rf node_modules && yarn install && yarn enroll-admin && yarn start"
 
 
