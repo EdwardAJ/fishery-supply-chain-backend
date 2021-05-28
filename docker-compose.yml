@@ -3,7 +3,11 @@ version: '3'
 services:
   backend.org1:
     container_name: backend.org1
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - ORG=org1
     network_mode: host
     environment:
       - PORT=8001
@@ -17,7 +21,11 @@ services:
     command: sh -c "rm -rf node_modules && yarn install && yarn enroll-admin && yarn start"
   backend.org2:
     container_name: backend.org2
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - ORG=org2
     network_mode: host
     environment:
       - PORT=8002
