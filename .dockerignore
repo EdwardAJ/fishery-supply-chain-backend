@@ -1,4 +1,16 @@
-blockchain
+blockchain/config
+blockchain/test-network/addOrg3
+blockchain/test-network/addOrg4
+blockchain/test-network/configtx
+blockchain/test-network/docker
+blockchain/test-network/scripts
+blockchain/test-network/system-genesis-block
+blockchain/test-network/.env
+blockchain/test-network/.gitignore
+blockchain/test-network/deploy-cc.sh
+blockchain/test-network/network-up.sh
+blockchain/test-network/network.sh
+blockchain/test-network/README.md
 chaincode
 node_modules
 yarn.lock
