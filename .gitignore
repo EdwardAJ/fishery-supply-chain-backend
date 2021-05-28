@@ -108,3 +108,5 @@ blockchain/wallet/
 blockchain/test-network/addOrg3/fabric-ca/org3/*
 blockchain/test-network/addOrg4/fabric-ca/org4/*
 .credentials
+
+wallet
