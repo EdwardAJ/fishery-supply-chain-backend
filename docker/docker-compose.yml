@@ -23,6 +23,5 @@ services:
       - ../blockchain/test-network/organizations/peerOrganizations/org1.example.com/connection-peer0-org1.json:/home/node/app/connection-peer0-org1.json
       - ../blockchain/test-network/organizations/peerOrganizations/org1.example.com/connection-peer1-org1.json:/home/node/app/connection-peer1-org1.json
     command: sh -c "rm -rf node_modules && yarn install && yarn enroll-admin && yarn start"
-    ports:
-      - 8001:8001
+
 
