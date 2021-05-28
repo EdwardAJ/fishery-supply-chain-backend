@@ -1,26 +1,29 @@
 import { Request, Response as ExpressResponse } from "express"
 import { Response } from "~/models/response.model"
+
 import { logger } from "~/utils/logger.util"
 import { signAndGetJwt } from "~/utils/jwt.util"
 import { sendSuccessResponse, sendErrorResponse } from "~/utils/response.util"
+import { getOrgName } from "~/utils/organization.util"
+
 import { query } from "~/services/query.service"
 
 const login = async (req: Request, res: ExpressResponse): Promise<ExpressResponse<Response>> => {
   try {
-    const { username, organization, password } = req.body || {}
-    if (!username || !organization || !password)
-      return sendErrorResponse(res, "Username or organization or password is required")
+    const { username, password } = req.body || {}
+    if (!username || !password)
+      return sendErrorResponse(res, "Username or password is required")
+
+    const requestBody = { ...req.body, organization: getOrgName() }
 
     const userBuffer = await query(
-      req,
-      { username, organization }, "UserContract", "login",
-      JSON.stringify(req.body)
+      req, { username }, "UserContract", "login",
+      JSON.stringify(requestBody)
     )
 
     const { role } = JSON.parse(userBuffer.toString())
     return sendSuccessResponse(res, "Login success!", {
-      token: signAndGetJwt({ username, organization, role }),
-      organization,
+      token: signAndGetJwt({ username, role }),
       role
     })
 

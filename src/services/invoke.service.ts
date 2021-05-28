@@ -16,7 +16,7 @@ const invoke = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> => {
 
-  const { organization: orgName, username } = user
+  const { username } = user
   
   const wallet = await getWallet()
   const identity = await wallet.get(username)
@@ -25,7 +25,7 @@ const invoke = async (
     throw new Error(`An identity for the user ${username} does not exist in the wallet`)
   }
 
-  const { domain, mspId } = getOrgCredentials(orgName)
+  const { domain, mspId } = getOrgCredentials()
   const gateway = new Gateway()
 
   let connectionAttemptCount = 0

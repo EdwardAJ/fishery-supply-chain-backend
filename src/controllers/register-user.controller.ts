@@ -14,18 +14,17 @@ import { OrgRoles } from "~/constants/organization.constant"
 const registerUser = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
   try {
-    const adminOrganization = req.headers["organization"] as string
     const role = req.headers["role"] as string
 
-    const { username, organization } = req.body
-    if (adminOrganization !== organization || role !== OrgRoles.ADMIN) {
+    const { username } = req.body
+    if (role !== OrgRoles.ADMIN) {
       return sendErrorResponse(res, "Forbidden!", Codes.FORBIDDEN)
     }
 
     const generatedPassword = getGeneratedPassword()
     const hashedPassword = await getHashedPassword(generatedPassword)
   
-    await registerUserToBlockchain(adminOrganization, username, hashedPassword)
+    await registerUserToBlockchain(username, hashedPassword)
     return sendSuccessResponse(res, `${username} successfully registered!`, {
       password: generatedPassword
     })

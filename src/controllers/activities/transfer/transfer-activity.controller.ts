@@ -11,13 +11,12 @@ const transfer = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
       const username = req.headers["username"] as string
-      const organization = req.headers["organization"] as string
       const newActivityId = getGeneratedUuid()
 
       const transferActivityBuffer =
         await invoke(
           req,
-          { username, organization }, "ActivityContract", "transfer",
+          { username }, "ActivityContract", "transfer",
           JSON.stringify({
             ...req.body,
             createdAt: new Date().toISOString(),

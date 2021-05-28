@@ -16,9 +16,9 @@ import { OrgRoles } from "~/constants/organization.constant"
  */
 
 const registerUserToBlockchain = async (
-  orgName: string, username: string, hashedPassword: string, role: string = OrgRoles.USER
+  username: string, hashedPassword: string, role: string = OrgRoles.USER
 ): Promise<void> => {
-  const orgCredential = getOrgCredentials(orgName)
+  const orgCredential = getOrgCredentials()
   const ccp = getConnectionInfo(orgCredential.domain, orgCredential.mspId)
   const caInfo = ccp.certificateAuthorities[`ca.${orgCredential.domain}`]
   const ca = new FabricCAServices(caInfo.url)

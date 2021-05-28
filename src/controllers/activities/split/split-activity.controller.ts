@@ -12,7 +12,6 @@ const split = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
       const username = req.headers["username"] as string
-      const organization = req.headers["organization"] as string
 
       const { newLots } = req.body
       if (!newLots.length) throw new Error("Please provide lot information")
@@ -28,7 +27,7 @@ const split = async (req: Request, res: ExpressResponse):
       const splitActivitiesBuffer =
         await invoke(
           req,
-          { username, organization }, "ActivityContract", "split",
+          { username }, "ActivityContract", "split",
           JSON.stringify({
             ...req.body,
             createdAt: new Date().toISOString(),

@@ -15,7 +15,7 @@ const query = async (
   req: Request, user: UserInterface, contractName: string, methodName: string, stateKey: string
 ): Promise<any> => {
 
-  const { username, organization: orgName } = user
+  const { username } = user
   const wallet = await getWallet()
 
   const identity = await wallet.get(username)
@@ -24,11 +24,8 @@ const query = async (
     throw new Error(`An identity for the user ${username} does not exist in the wallet`)
   }
 
-  const { domain, mspId } = getOrgCredentials(orgName)
+  const { domain, mspId } = getOrgCredentials()
   const gateway = new Gateway()
-
-  const ccp = getConnectionInfo(domain, mspId)
-  await gateway.connect(ccp, { wallet, identity: username, discovery: { enabled: true, asLocalhost: true } })
 
   let connectionAttemptCount = 0
   // Connect to peer0 or peer1 first, then retry the request.

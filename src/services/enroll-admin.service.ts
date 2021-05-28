@@ -8,8 +8,8 @@ import { getOrgCredentials } from "~/utils/organization.util"
 import { logger } from "~/utils/logger.util"
 import { getConnectionInfo, getWallet } from "~/utils/wallet.util"
 
-const enrollAdminToBlockchain = async (orgName: string): Promise<void> => {
-  const { adminUsername, password, domain, mspId } = getOrgCredentials(orgName)
+const enrollAdminToBlockchain = async (): Promise<void> => {
+  const { adminUsername, password, domain, mspId } = getOrgCredentials()
   const ccp = getConnectionInfo(domain, mspId)
 
   // Create a new CA client for interacting with the CA.

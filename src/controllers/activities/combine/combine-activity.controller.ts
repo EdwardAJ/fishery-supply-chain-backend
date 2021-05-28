@@ -12,7 +12,6 @@ const combine = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
       const username = req.headers["username"] as string
-      const organization = req.headers["organization"] as string
 
       const newLotId = getGeneratedUuid()
       const newActivityId = getGeneratedUuid()
@@ -20,7 +19,7 @@ const combine = async (req: Request, res: ExpressResponse):
       const combineActivityBuffer =
         await invoke(
           req,
-          { username, organization }, "ActivityContract", "combine",
+          { username }, "ActivityContract", "combine",
           JSON.stringify({
             ...req.body,
             createdAt: new Date().toISOString(),

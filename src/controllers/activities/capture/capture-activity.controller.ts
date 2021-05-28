@@ -10,7 +10,6 @@ const capture = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
       const username = req.headers["username"] as string
-      const organization = req.headers["organization"] as string
 
       const newLotId = getGeneratedUuid()
       const newActivityId = getGeneratedUuid()
@@ -18,7 +17,7 @@ const capture = async (req: Request, res: ExpressResponse):
       const captureActivityBuffer =
         await invoke(
           req,
-          { username, organization }, "ActivityContract", "capture",
+          { username }, "ActivityContract", "capture",
           JSON.stringify({
             ...req.body,
             createdAt: new Date().toISOString(),

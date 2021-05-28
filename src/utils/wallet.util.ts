@@ -13,7 +13,7 @@ const adminExists = async (adminUsername: string): Promise<boolean> => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getConnectionInfo = (orgDomain: string, orgMspId: string, peerNumber = 0): any => {
   const connectionInfoPath =
-    path.resolve(__dirname, "..", "..", "blockchain", "test-network","organizations", "peerOrganizations", orgDomain, getOrgConnectionFileName(orgMspId, peerNumber))
+    path.resolve(__dirname, "..", "..", getOrgConnectionFileName(orgMspId, peerNumber))
   return JSON.parse(fs.readFileSync(connectionInfoPath, "utf8"))
 }
 

@@ -11,13 +11,12 @@ const market = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
       const username = req.headers["username"] as string
-      const organization = req.headers["organization"] as string
       const newActivityId = getGeneratedUuid()
 
       const marketActivityBuffer =
         await invoke(
           req,
-          { username, organization }, "ActivityContract", "market",
+          { username }, "ActivityContract", "market",
           JSON.stringify({
             ...req.body,
             createdAt: new Date().toISOString(),

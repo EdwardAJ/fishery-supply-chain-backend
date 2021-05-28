@@ -6,7 +6,6 @@ import { logger } from "~/utils/logger.util"
 import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { query } from "~/services/query.service"
 import { getAppOrgAdminUsername } from "~/utils/organization.util"
-import { OrgNames } from "~/constants/organization.constant"
 
 const getActivitiesChainHistory = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
@@ -16,14 +15,13 @@ const getActivitiesChainHistory = async (req: Request, res: ExpressResponse):
         return sendErrorResponse(res, "Please provide lot ID!")
       }
 
-      const username = getAppOrgAdminUsername(OrgNames.ORG_4)
-      const organization = OrgNames.ORG_4
+      const username = getAppOrgAdminUsername()
 
       const activityChainBuffer =
         await query(
-          req,
-          { username, organization }, "ActivityContract", "getActivityChain",
-          lotId.toString())
+          req, { username }, "ActivityContract", "getActivityChain",
+          lotId.toString()
+        )
         
       const activityChain = JSON.parse(activityChainBuffer.toString())
       
