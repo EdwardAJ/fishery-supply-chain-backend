@@ -59,48 +59,6 @@ function joinChannelAndInstallChaincode () {
   { set +x; } 2>/dev/null
 }
 
-
-# function joinChannelAndInstallChaincodePeer1Org1 () {
-#   setGlobals 11
-#   peer channel join -b $BLOCKFILE
-#   echo "Installing chaincode on peer1org1...."
-#   set -x
-#   peer lifecycle chaincode install basic.tar.gz
-#   res=$?
-#   { set +x; } 2>/dev/null
-# }
-
-# function joinChannelAndInstallChaincodePeer1Org2 () {
-#   setGlobals 12
-#   peer channel join -b $BLOCKFILE
-#   echo "Installing chaincode on peer1org2...."
-#   set -x
-#   peer lifecycle chaincode install basic.tar.gz
-#   res=$?
-#   { set +x; } 2>/dev/null
-# }
-
-# function joinChannelAndInstallChaincodePeer1Org3 () {
-#   setGlobals 13
-#   peer channel join -b $BLOCKFILE
-#   echo "Installing chaincode on peer1org3...."
-#   set -x
-#   peer lifecycle chaincode install basic.tar.gz
-#   res=$?
-#   { set +x; } 2>/dev/null
-# }
-
-# function joinChannelAndInstallChaincodePeer1Org4 () {
-#   setGlobals 14
-#   peer channel join -b $BLOCKFILE
-#   echo "Installing chaincode on peer1org4...."
-#   set -x
-#   peer lifecycle chaincode install basic.tar.gz
-#   res=$?
-#   { set +x; } 2>/dev/null
-# }
-
-
 echo "Enrolling peer1.org1: "
 enrollPeer1Org1
 echo "Enrolling peer1.org2: "
@@ -113,15 +71,6 @@ enrollPeer1Org4
 IMAGETAG="latest"
 IMAGE_TAG=$IMAGETAG docker-compose -f ${PWD}/docker/docker-compose-peers.yaml -f ${PWD}/docker/docker-compose-couch-peers.yaml up -d 2>&1
 
-# echo "Joining and installing channel peer1.org1: "
-# joinChannelAndInstallChaincodePeer1Org1
-# echo "Joining channel peer1.org2: "
-# joinChannelAndInstallChaincodePeer1Org2
-# echo "Joining channel peer1.org3: "
-# joinChannelAndInstallChaincodePeer1Org3
-# echo "Joining channel peer1.org4: "
-# joinChannelAndInstallChaincodePeer1Org4
-
 echo "Joining and installing channel peer1.org1: "
 joinChannelAndInstallChaincode 11
 echo "Joining channel peer1.org2: "
@@ -131,4 +80,4 @@ joinChannelAndInstallChaincode 13
 echo "Joining channel peer1.org4: "
 joinChannelAndInstallChaincode 14
 
-./organizations/ccp-generate.sh
+./${PWD}/organizations/ccp-generate-peer1.sh
