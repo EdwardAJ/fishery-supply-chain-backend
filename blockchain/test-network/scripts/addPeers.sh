@@ -80,4 +80,4 @@ joinChannelAndInstallChaincode 13
 echo "Joining channel peer1.org4: "
 joinChannelAndInstallChaincode 14
 
-./${PWD}/organizations/ccp-generate-peer1.sh
+./organizations/ccp-generate-peer1.sh
