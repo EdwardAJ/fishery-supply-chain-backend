@@ -16,7 +16,7 @@ export class FisheryProductLotContract extends Contract {
     return new FisheryProductLot({
       id, weight, commodityType,
       activityId,
-      owner: new User(owner.username, owner.organization)
+      owner: !owner ? null : new User(owner.username, owner.organization) 
     })
   }
 }

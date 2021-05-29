@@ -13,13 +13,11 @@ import { getHashedPassword, getGeneratedPassword } from "~/utils/password.util"
 
 const main = async () => {
   try {
-    // for (const organization of organizations) {
     const generatedPassword = getGeneratedPassword()
     const hashedPassword = await getHashedPassword(generatedPassword)
     await enrollAdminToBlockchain()
     await registerUserToBlockchain(getAppOrgAdminUsername(), hashedPassword, OrgRoles.ADMIN)
     console.log(`${getAppOrgAdminUsername()} password: ${generatedPassword}`)
-    // }
     process.exit(0) 
 
   } catch (error) {
