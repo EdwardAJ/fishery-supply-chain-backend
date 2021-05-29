@@ -42,7 +42,7 @@ const query = async (
     } catch (error) {
       if (connectionAttemptCount === 2) throw error
       if (error.message.includes("DiscoveryService has failed to return results")) {
-        req.app.locals.ACTIVE_PEER_NUMBER ^= req.app.locals.ACTIVE_PEER_NUMBER
+        req.app.locals.ACTIVE_PEER_NUMBER = 1 - req.app.locals.ACTIVE_PEER_NUMBER
       }
     }
   }
