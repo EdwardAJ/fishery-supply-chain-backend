@@ -15,6 +15,8 @@ function json_ccp_peer1 {
         ${PWD}/organizations/ccp-template-peer1.json
 }
 
+echo "CCP generate peer1.org1"
+
 ORG=1
 P1PORT=8051
 CAPORT=7054
@@ -22,6 +24,9 @@ PEERPEM=organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.exampl
 CAPEM=organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
 
 echo "$(json_ccp_peer1 $ORG $P1PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/org1.example.com/connection-peer1-org1.json
+
+
+echo "CCP generate peer1.org2"
 
 ORG=2
 P1PORT=10051
@@ -31,6 +36,8 @@ CAPEM=organizations/peerOrganizations/org2.example.com/ca/ca.org2.example.com-ce
 
 echo "$(json_ccp_peer1 $ORG $P1PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/org2.example.com/connection-peer1-org2.json
 
+echo "CCP generate peer1.org3"
+
 ORG=3
 P1PORT=12051
 CAPORT=11054
@@ -38,6 +45,8 @@ PEERPEM=organizations/peerOrganizations/org3.example.com/tlsca/tlsca.org3.exampl
 CAPEM=organizations/peerOrganizations/org3.example.com/ca/ca.org3.example.com-cert.pem
 
 echo "$(json_ccp_peer1 $ORG $P1PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/org3.example.com/connection-peer1-org3.json
+
+echo "CCP generate peer1.org4"
 
 ORG=4
 P1PORT=14051
