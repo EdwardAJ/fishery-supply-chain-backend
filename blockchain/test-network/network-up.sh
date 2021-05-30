@@ -14,15 +14,12 @@ export CHANNEL_NAME="channel1"
 export BLOCKFILE="$PWD/channel-artifacts/${CHANNEL_NAME}.block"
 export CORE_PEER_TLS_ENABLED=true
 
-# ./network.sh up createChannel -c channel1 -ca -s couchdb
-./network.sh up createChannel -c channel1 -ca
+./network.sh up createChannel -c channel1 -ca -s couchdb
 cd addOrg3
-# ./addOrg3.sh up -c channel1 -ca -s couchdb
-./addOrg3.sh up -c channel1 -ca
+./addOrg3.sh up -c channel1 -ca -s couchdb
 cd ..
 cd addOrg4
-# ./addOrg4.sh up -c channel1 -ca -s couchdb
-./addOrg4.sh up -c channel1 -ca
+./addOrg4.sh up -c channel1 -ca -s couchdb
 cd ..
 ./network.sh deployCC -c channel1 -ccn basic -ccp ../../chaincode -ccl typescript -ccep "OutOf(2,'Org1MSP.member','Org2MSP.member','Org3MSP.member')"
 . scripts/addPeers.sh

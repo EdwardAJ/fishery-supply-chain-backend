@@ -16,7 +16,7 @@ router.post("/combine", authorizeToken, combine)
 router.post("/transfer", authorizeToken, transfer)
 router.post("/process", authorizeToken, process)
 router.post("/market", authorizeToken, market)
-router.get("/", authorizeToken, getActivitiesChainHistory)
+router.get("/", getActivitiesChainHistory)
 
 export {
   router as activityRouter

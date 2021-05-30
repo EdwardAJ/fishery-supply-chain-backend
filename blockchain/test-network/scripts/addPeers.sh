@@ -92,8 +92,7 @@ enrollPeer1Org4
 IMAGETAG="latest"
 IMAGE_TAG=$IMAGETAG
 
-# docker-compose -f ${PWD}/docker/docker-compose-peers.yaml -f ${PWD}/docker/docker-compose-couch-peers.yaml up -d 2>&1
-docker-compose -f ${PWD}/docker/docker-compose-peers.yaml up -d 2>&1
+docker-compose -f ${PWD}/docker/docker-compose-peers.yaml -f ${PWD}/docker/docker-compose-couch-peers.yaml up -d 2>&1
 
 export MAX_RETRY=5
 export DELAY=3
