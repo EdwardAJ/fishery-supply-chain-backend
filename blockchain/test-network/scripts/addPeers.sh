@@ -48,16 +48,37 @@ function enrollPeer1Org4 () {
   cp ${PWD}/organizations/peerOrganizations/org4.example.com/peers/peer1.org4.example.com/tls/keystore/* ${PWD}/organizations/peerOrganizations/org4.example.com/peers/peer1.org4.example.com/tls/server.key
 }
 
-function joinChannelAndInstallChaincode () {
+function joinChannel() {
   ORG=$1
   setGlobals $ORG
-  peer channel join -b $BLOCKFILE
-  echo "Installing chaincode on ${ORG}...."
+  local rc=1
+  local COUNTER=1
+  ## Sometimes Join takes time, hence retry
+  while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
+    sleep $DELAY
+    set -x
+    peer channel join -b $BLOCKFILE >&log.txt
+    res=$?
+    { set +x; } 2>/dev/null
+    let rc=$res
+    COUNTER=$(expr $COUNTER + 1)
+	done
+	cat log.txt
+	verifyResult $res "After $MAX_RETRY attempts, peer1.org${ORG} has failed to join channel '$CHANNEL_NAME' "
+}
+
+function installChaincode() {
+  ORG=$1
+  setGlobals $ORG
   set -x
-  peer lifecycle chaincode install basic.tar.gz
+  peer lifecycle chaincode install basic.tar.gz >&log.txt
   res=$?
   { set +x; } 2>/dev/null
+  cat log.txt
+  verifyResult $res "Chaincode installation on peer1.org${ORG} has failed"
+  successln "Chaincode is installed on peer1.org${ORG}"
 }
+
 
 echo "Enrolling peer1.org1: "
 enrollPeer1Org1
@@ -70,14 +91,25 @@ enrollPeer1Org4
 
 IMAGETAG="latest"
 IMAGE_TAG=$IMAGETAG docker-compose -f ${PWD}/docker/docker-compose-peers.yaml -f ${PWD}/docker/docker-compose-couch-peers.yaml up -d 2>&1
+export MAX_RETRY=5
+export DELAY=3
 
-echo "Joining and installing channel peer1.org1: "
-joinChannelAndInstallChaincode 11
+echo "Joining channel peer1.org1: "
+joinChannel 11
 echo "Joining channel peer1.org2: "
-joinChannelAndInstallChaincode 12
+joinChannel 12
 echo "Joining channel peer1.org3: "
-joinChannelAndInstallChaincode 13
+joinChannel 13
 echo "Joining channel peer1.org4: "
-joinChannelAndInstallChaincode 14
+joinChannel 14
+
+echo "Install chaincode peer1.org1: "
+installChaincode 11
+echo "Install chaincode peer1.org2: "
+installChaincode 12
+echo "Install chaincode peer1.org3: "
+installChaincode 13
+echo "Install chaincode peer1.org4: "
+installChaincode 14
 
 ./organizations/ccp-generate-peer1.sh
