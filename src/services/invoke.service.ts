@@ -44,18 +44,6 @@ const invoke = async (
       })
       const network = await gateway.getNetwork("channel1")
       const contract = network.getContract("basic", contractName)
-      const transaction = contract.createTransaction(methodName)
-      
-      const listener = (error: any, event: any) => {
-        if (error) {
-            console.log("Invoke error: ", error)
-        } else {
-            console.log("Event error: ", event)
-        }
-    }
-      const peers = network.getChannel().getEndorsers()
-      await network.addCommitListener(listener, peers, transaction.getTransactionId())
-
       const result = await contract.submitTransaction(methodName, ...args)
       gateway.disconnect()
       return result

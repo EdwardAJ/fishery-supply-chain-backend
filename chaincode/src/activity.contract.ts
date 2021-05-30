@@ -4,6 +4,7 @@
 import { Context, Contract } from "fabric-contract-api"
 import { SplitRequestInterface } from "./interfaces/request/requests.interface"
 
+import { Shim } from "fabric-shim"
 import { Activity } from "./models/base/activity.model"
 import { User } from "./models/base/user.model"
 import { FisheryProductLot } from "./models/base/fishery-product-lot.model"
@@ -142,7 +143,9 @@ export class ActivityContract extends Contract {
 
   public async getActivityChain (context: Context, lotId: string): Promise<string> {
     if (!lotId) throw new Error("Please provide lotId")
+    const logger = Shim.newLogger("createOrUpdateFisheryProductLot")
     const { ActivityId } = await getLot(context, lotId)
+    logger.info("Getting lot")
     const activityChain = await this.constructAndGetChain(context, ActivityId)
     return JSON.stringify(activityChain)
   }
