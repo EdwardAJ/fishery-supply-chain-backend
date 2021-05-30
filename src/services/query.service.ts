@@ -32,6 +32,7 @@ const query = async (
   while (connectionAttemptCount !== 2) {
     connectionAttemptCount++
     try {
+      logger.info(`Current active peer: ${req.app.locals.ACTIVE_PEER_NUMBER}`)
       const ccp = getConnectionInfo(domain, mspId, req.app.locals.ACTIVE_PEER_NUMBER)
       await gateway.connect(ccp, {
         wallet,
@@ -48,9 +49,7 @@ const query = async (
       return result
     } catch (error) {
       if (connectionAttemptCount === 2) throw error
-      if (error.message.includes("DiscoveryService has failed to return results")) {
-        req.app.locals.ACTIVE_PEER_NUMBER = 1 - req.app.locals.ACTIVE_PEER_NUMBER
-      }
+      req.app.locals.ACTIVE_PEER_NUMBER = 1 - req.app.locals.ACTIVE_PEER_NUMBER
     }
   }
   
