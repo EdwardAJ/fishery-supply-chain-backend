@@ -33,7 +33,14 @@ const query = async (
     connectionAttemptCount++
     try {
       const ccp = getConnectionInfo(domain, mspId, req.app.locals.ACTIVE_PEER_NUMBER)
-      await gateway.connect(ccp, { wallet, identity: username, discovery: { enabled: true, asLocalhost: true } })
+      await gateway.connect(ccp, {
+        wallet,
+        identity: username,
+        discovery: { enabled: true, asLocalhost: true },
+        eventHandlerOptions: {
+          strategy: null
+        }
+      })
       const network = await gateway.getNetwork("channel1")
       const contract = network.getContract("basic", contractName)
       const result = await contract.evaluateTransaction(methodName, stateKey)
