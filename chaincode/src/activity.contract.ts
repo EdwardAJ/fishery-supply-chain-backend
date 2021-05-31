@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Context, Contract } from "fabric-contract-api"
+import { Shim } from "fabric-shim"
 import { SplitRequestInterface } from "./interfaces/request/requests.interface"
 
 import { Activity } from "./models/base/activity.model"
@@ -10,7 +11,7 @@ import { FisheryProductLot } from "./models/base/fishery-product-lot.model"
 import { SplitActivity } from "./models/split/split-activity.model"
 
 import { createOrUpdateLot, getLot, getLotAndEnsureOwnership } from "./utils/fishery-product-lot.util"
-import { getAllResults, readState } from "./utils/contract.util"
+import { getTotalWeight, readState } from "./utils/contract.util"
 
 import { getLotAndCaptureActivity, getValidatedUserAndCaptureRequest } from "./utils/activity/capture-activity.util"
 import { getLotAndCombineActivity, getValidatedUserAndCombineRequest } from "./utils/activity/combine-activity.util"
@@ -92,10 +93,16 @@ export class ActivityContract extends Contract {
     return new Activity({ id, name, parentIds, lot, createdAt })
   }
 
-  public async getProductLotsByQuery(context: Context, queryString: string): Promise<any> {
+  public async getTotalWeightByQuery(context: Context, queryString: string): Promise<any> {
+    const logger = Shim.newLogger("getTotalWeightByQuery")
+    logger.debug("Waiting for getQuery")
     const resultsIterator = await context.stub.getQueryResult(queryString)
-    const results = await getAllResults(resultsIterator)
-    return results
+    logger.debug("Get total weight")
+    const totalWeight = await getTotalWeight(resultsIterator)
+    logger.debug("Total weight %s", totalWeight)
+    return JSON.stringify({
+      totalWeight
+    })
   }
 	
   public async capture (context: Context, requestBody: string): Promise<string> {

@@ -4,25 +4,25 @@
 import { Context } from "fabric-contract-api"
 
 // Taken from asset-transfer-ledger-queries
-async function getAllResults(iterator: any): Promise<any> {
-  const allResults = []
+async function getTotalWeight(iterator: any): Promise<any> {
+  let totalWeight = 0
   let res = await iterator.next()
   while (!res.done) {
     if (res.value && res.value.value.toString()) {
-      let jsonRes = {}
-      console.log(res.value.value.toString("utf8"))
+      let jsonRes: any = {}
       try {
         jsonRes = JSON.parse(res.value.value.toString("utf8"))
       } catch (err) {
         console.log(err)
         jsonRes = res.value.value.toString("utf8")
       }
-      allResults.push(jsonRes)
+      console.log("Res: ", res.value.value.toString("utf8"))
+      totalWeight += jsonRes.weight
     }
     res = await iterator.next()
   }
   iterator.close()
-  return allResults
+  return totalWeight
 }
 
 // Taken from asset-transfer-events
@@ -35,5 +35,5 @@ async function readState (context: Context, key: string): Promise<any> {
 }
 
 export {
-  getAllResults, readState
+  getTotalWeight, readState
 }

@@ -38,7 +38,7 @@ const getProductLots = async (req: Request, res: ExpressResponse):
       const productLotsBuffer =
         await query(
           req,
-          { username }, "ActivityContract", "getProductLotsByQuery",
+          { username }, "ActivityContract", "getTotalWeightByQuery",
           JSON.stringify(queryString)
         )
       
