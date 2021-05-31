@@ -24,8 +24,17 @@ const getWallet = async (): Promise<Wallet> => {
   return await Wallets.newFileSystemWallet(walletPath)
 }
 
+const validateWallet = async (wallet: Wallet, username: string): Promise<void> => {
+  const identity = await wallet.get(username)
+  if (!identity) {
+    logger.error(`Identity ${username} does not exist`)
+    throw new Error(`An identity for the user ${username} does not exist in the wallet`)
+  }
+} 
+
 export {
   adminExists,
   getConnectionInfo,
-  getWallet
+  getWallet,
+  validateWallet
 }

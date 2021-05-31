@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { getWallet } from "~/utils/wallet.util"
+import { getWallet, validateWallet } from "~/utils/wallet.util"
 import { logger } from "~/utils/logger.util"
 import { UserInterface } from "~/interfaces/user.interface"
 import { Request } from "express"
@@ -33,11 +33,7 @@ const invoke = async (
       if (connectionAttemptCount === 2) throw error
       req.app.locals.ACTIVE_PEER_NUMBER = 1 - req.app.locals.ACTIVE_PEER_NUMBER
       const wallet = await getWallet()
-      const identity = await wallet.get(username)
-      if (!identity) {
-        logger.error(`Identity ${username} does not exist`)
-        throw new Error(`An identity for the user ${username} does not exist in the wallet`)
-      }
+      await validateWallet(wallet, username)
       await connect(ccp, wallet, username)
     }
   }

@@ -7,7 +7,7 @@ import { logger } from "~/utils/logger.util"
 import { UserInterface } from "~/interfaces/user.interface"
 import { Request } from "express"
 import { gateways, connect } from "~/gateway/index"
-import { getWallet } from "~/utils/wallet.util"
+import { getWallet, validateWallet } from "~/utils/wallet.util"
 
 // TODO: refactor
 const query = async (
@@ -22,21 +22,18 @@ const query = async (
   while (connectionAttemptCount !== 2) {
     connectionAttemptCount++
     try {
-      logger.info(`Connecting to gateway`)
+      logger.info("Connecting to gateway")
       const network = await gateways[username].getNetwork("channel1")
       const contract = network.getContract("basic", contractName)
-      logger.info(`Submitting...`)
+      logger.info("Submitting...")
       const result = await contract.evaluateTransaction(methodName, stateKey)
+      logger.info("Result...")
       return result
     } catch (error) {
       if (connectionAttemptCount === 2) throw error
       req.app.locals.ACTIVE_PEER_NUMBER = 1 - req.app.locals.ACTIVE_PEER_NUMBER
       const wallet = await getWallet()
-      const identity = await wallet.get(username)
-      if (!identity) {
-        logger.error(`Identity ${username} does not exist`)
-        throw new Error(`An identity for the user ${username} does not exist in the wallet`)
-      }
+      await validateWallet(wallet, username)
       await connect(ccp, wallet, username)
     }
   }
