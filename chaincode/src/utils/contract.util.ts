@@ -16,8 +16,8 @@ async function getTotalWeight(iterator: any): Promise<any> {
         console.log(err)
         jsonRes = res.value.value.toString("utf8")
       }
-      console.log("Res: ", res.value.value.toString("utf8"))
-      totalWeight += jsonRes.weight
+      // console.log("Res: ", jsonRes)
+      totalWeight += jsonRes.lot.weight
     }
     res = await iterator.next()
   }

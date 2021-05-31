@@ -7,7 +7,7 @@ import { sendErrorResponse, sendSuccessResponse } from "~/utils/response.util"
 import { query } from "~/services/query.service"
 import { getAppOrgAdminUsername } from "~/utils/organization.util"
 
-const getProductLots = async (req: Request, res: ExpressResponse):
+const getTotalWeight = async (req: Request, res: ExpressResponse):
   Promise<ExpressResponse<Response>> => {
     try {
       const { harborId, vesselId } = req.query
@@ -35,14 +35,14 @@ const getProductLots = async (req: Request, res: ExpressResponse):
         }
       }
 
-      const productLotsBuffer =
+      const totalWeightBuffer =
         await query(
           req,
           { username }, "ActivityContract", "getTotalWeightByQuery",
           JSON.stringify(queryString)
         )
       
-      return sendSuccessResponse(res, "lots", JSON.parse(productLotsBuffer.toString()))
+      return sendSuccessResponse(res, "lots", JSON.parse(totalWeightBuffer.toString()))
       
     } catch (error) {
       logger.error(error)
@@ -51,5 +51,5 @@ const getProductLots = async (req: Request, res: ExpressResponse):
 }
 
 export {
-  getProductLots
+  getTotalWeight
 }
