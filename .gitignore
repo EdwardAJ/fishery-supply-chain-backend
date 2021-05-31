@@ -110,3 +110,4 @@ blockchain/test-network/addOrg4/fabric-ca/org4/*
 .credentials
 
 wallet
+yarn.lock

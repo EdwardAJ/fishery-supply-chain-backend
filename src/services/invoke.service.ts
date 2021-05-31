@@ -3,8 +3,7 @@
  */
 
 import { Gateway } from "fabric-network"
-import { getConnectionInfo, getWallet } from "~/utils/wallet.util"
-import { getOrgCredentials } from "~/utils/organization.util"
+import { getWallet } from "~/utils/wallet.util"
 import { logger } from "~/utils/logger.util"
 import { UserInterface } from "~/interfaces/user.interface"
 import { Request } from "express"
@@ -25,7 +24,6 @@ const invoke = async (
     throw new Error(`An identity for the user ${username} does not exist in the wallet`)
   }
 
-  const { domain, mspId } = getOrgCredentials()
   const gateway = new Gateway()
 
   let connectionAttemptCount = 0
@@ -34,7 +32,7 @@ const invoke = async (
     connectionAttemptCount++
     try {
       logger.info(`Current active peer: ${req.app.locals.ACTIVE_PEER_NUMBER}`)
-      const ccp = getConnectionInfo(domain, mspId, req.app.locals.ACTIVE_PEER_NUMBER)
+      const ccp = req.app.locals[`PEER_${req.app.locals.ACTIVE_PEER_NUMBER}_CCP`]
       await gateway.connect(ccp, {
         wallet,
         identity: username,

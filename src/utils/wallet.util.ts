@@ -11,7 +11,7 @@ const adminExists = async (adminUsername: string): Promise<boolean> => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getConnectionInfo = (orgDomain: string, orgMspId: string, peerNumber = 0): any => {
+const getConnectionInfo = (orgMspId: string, peerNumber = 0): any => {
   const connectionInfoPath =
     path.resolve(__dirname, "..", "..", getOrgConnectionFileName(orgMspId, peerNumber))
   return JSON.parse(fs.readFileSync(connectionInfoPath, "utf8"))

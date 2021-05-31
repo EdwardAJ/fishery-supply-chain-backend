@@ -10,6 +10,8 @@ import cors from "cors"
 import { logger } from "~/utils/logger.util"
 import { mainRouter } from "~/routes"
 import { DEFAULT_PORT } from "~/constants/env.constant"
+import { getConnectionInfo } from "./utils/wallet.util"
+import { getOrgCredentials } from "./utils/organization.util"
 
 const main = async () => {
   logger.info("Initializing app...")
@@ -20,6 +22,12 @@ const main = async () => {
     app.use(express.json())
     app.use(mainRouter)
     app.locals.ACTIVE_PEER_NUMBER = 0
+
+    const { mspId } = getOrgCredentials()
+    app.locals.PEER_0_CCP = getConnectionInfo(mspId)
+    logger.info("CCP for Peer0: %O", app.locals.PEER_0_CCP)
+    app.locals.PEER_1_CCP = getConnectionInfo(mspId, 1)
+    logger.info("CCP for Peer1: %O", app.locals.PEER_1_CCP)
 
     const PORT = process.env.PORT || DEFAULT_PORT
     app.listen(PORT, () => {

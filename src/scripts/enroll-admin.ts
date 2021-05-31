@@ -8,15 +8,20 @@ dotenv.config()
 import { OrgRoles } from "~/constants/organization.constant"
 import { enrollAdminToBlockchain } from "~/services/enroll-admin.service"
 import { registerUserToBlockchain } from "~/services/register-user.service"
-import { getAppOrgAdminUsername } from "~/utils/organization.util"
+import { getAppOrgAdminUsername, getOrgCredentials } from "~/utils/organization.util"
 import { getHashedPassword, getGeneratedPassword } from "~/utils/password.util"
+import { getConnectionInfo } from "~/utils/wallet.util"
 
 const main = async () => {
   try {
     const generatedPassword = getGeneratedPassword()
     const hashedPassword = await getHashedPassword(generatedPassword)
-    await enrollAdminToBlockchain()
-    await registerUserToBlockchain(getAppOrgAdminUsername(), hashedPassword, OrgRoles.ADMIN)
+
+    const { mspId } = getOrgCredentials()
+    const ccp = getConnectionInfo(mspId)
+
+    await enrollAdminToBlockchain(ccp)
+    await registerUserToBlockchain(ccp, getAppOrgAdminUsername(), hashedPassword, OrgRoles.ADMIN)
     console.log(`${getAppOrgAdminUsername()} password: ${generatedPassword}`)
     process.exit(0) 
 

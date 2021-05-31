@@ -24,7 +24,8 @@ const registerUser = async (req: Request, res: ExpressResponse):
     const generatedPassword = getGeneratedPassword()
     const hashedPassword = await getHashedPassword(generatedPassword)
   
-    await registerUserToBlockchain(username, hashedPassword)
+    const activePeer = req.app.locals.ACTIVE_PEER_NUMBER
+    await registerUserToBlockchain(req.app.locals[`PEER_${activePeer}_CCP`], username, hashedPassword)
     return sendSuccessResponse(res, `${username} successfully registered!`, {
       password: generatedPassword
     })

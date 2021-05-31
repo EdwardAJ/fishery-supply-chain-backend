@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /*
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -6,7 +8,7 @@ import FabricCAServices from "fabric-ca-client"
 import { X509Identity } from "fabric-network"
 import { getOrgCredentials, getOrgAffiliation } from "~/utils/organization.util"
 import { logger } from "~/utils/logger.util"
-import { getConnectionInfo, getWallet } from "~/utils/wallet.util"
+import { getWallet } from "~/utils/wallet.util"
 import { OrgRoles } from "~/constants/organization.constant"
 
 /*
@@ -16,10 +18,9 @@ import { OrgRoles } from "~/constants/organization.constant"
  */
 
 const registerUserToBlockchain = async (
-  username: string, hashedPassword: string, role: string = OrgRoles.USER
+  ccp: any, username: string, hashedPassword: string, role: string = OrgRoles.USER
 ): Promise<void> => {
   const orgCredential = getOrgCredentials()
-  const ccp = getConnectionInfo(orgCredential.domain, orgCredential.mspId)
   const caInfo = ccp.certificateAuthorities[`ca.${orgCredential.domain}`]
   const ca = new FabricCAServices(caInfo.url)
 
