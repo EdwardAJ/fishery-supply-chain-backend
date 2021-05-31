@@ -10,10 +10,7 @@ async function connect (ccp: any, wallet: any, username: string): Promise<any> {
   await gateways[username].connect(ccp, {
     wallet,
     identity: username,
-    discovery: { enabled: true, asLocalhost: true },
-    eventHandlerOptions: {
-      strategy: null
-    }
+    discovery: { enabled: true, asLocalhost: true }
   })
 }
 
