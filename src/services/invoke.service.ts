@@ -32,7 +32,9 @@ const invoke = async (
     connectionAttemptCount++
     try {
       logger.info(`Current active peer: ${req.app.locals.ACTIVE_PEER_NUMBER}`)
+      logger.info(`Get ccp`)
       const ccp = req.app.locals[`PEER_${req.app.locals.ACTIVE_PEER_NUMBER}_CCP`]
+      logger.info(`Connecting to gateway`)
       await gateway.connect(ccp, {
         wallet,
         identity: username,
@@ -43,6 +45,7 @@ const invoke = async (
       })
       const network = await gateway.getNetwork("channel1")
       const contract = network.getContract("basic", contractName)
+      logger.info(`Submitting...`)
       const result = await contract.submitTransaction(methodName, ...args)
       gateway.disconnect()
       return result
