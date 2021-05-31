@@ -10,8 +10,9 @@ import cors from "cors"
 import { logger } from "~/utils/logger.util"
 import { mainRouter } from "~/routes"
 import { DEFAULT_PORT } from "~/constants/env.constant"
-import { getConnectionInfo } from "./utils/wallet.util"
-import { getOrgCredentials } from "./utils/organization.util"
+import { getConnectionInfo, getWallet, validateWallet } from "./utils/wallet.util"
+import { getAppOrgAdminUsername, getOrgCredentials } from "./utils/organization.util"
+import { connect } from "./gateway"
 
 const main = async () => {
   logger.info("Initializing app...")
@@ -26,6 +27,14 @@ const main = async () => {
     const { mspId } = getOrgCredentials()
     app.locals.PEER_0_CCP = getConnectionInfo(mspId)
     app.locals.PEER_1_CCP = getConnectionInfo(mspId, 1)
+
+    const username = getAppOrgAdminUsername()
+
+    const wallet = await getWallet()
+    await validateWallet(wallet, username)
+    
+    const ccp = app.locals.PEER_0_CCP
+    await connect(ccp, wallet, username)
 
     const PORT = process.env.PORT || DEFAULT_PORT
     app.listen(PORT, () => {

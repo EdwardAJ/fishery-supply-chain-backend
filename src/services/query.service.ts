@@ -18,6 +18,7 @@ const query = async (
 
   let connectionAttemptCount = 0
   const ccp = req.app.locals[`PEER_${req.app.locals.ACTIVE_PEER_NUMBER}_CCP`]
+  
   // Connect to peer0 or peer1 first, then retry the request.
   while (connectionAttemptCount !== 2) {
     connectionAttemptCount++
