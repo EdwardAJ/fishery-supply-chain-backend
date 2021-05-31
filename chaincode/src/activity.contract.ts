@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Context, Contract } from "fabric-contract-api"
-import { Shim } from "fabric-shim"
 import { SplitRequestInterface } from "./interfaces/request/requests.interface"
 
 import { Activity } from "./models/base/activity.model"
@@ -19,6 +18,11 @@ import { getValidatedUserAndSplitRequest } from "./utils/activity/split-activity
 import { getLotAndTransferActivity, getValidatedUserAndTransferRequest } from "./utils/activity/transfer-activity.util"
 import { getLotAndProcessActivity, getValidatedUserAndProcessRequest } from "./utils/activity/process-activity.util"
 import { getLotAndMarketActivity, getValidatedUserAndMarketRequest } from "./utils/activity/market-activity.util"
+import { CaptureActivity } from "./models/capture/capture-activity.model"
+import { ProcessActivity } from "./models/process/process-activity.model"
+import { MarketActivity } from "./models/market/market-activity.model"
+import { CombineActivity } from "./models/combine/combine-activity.model"
+import { TransferActivity } from "./models/transfer/transfer-activity.model"
 
 
 export class ActivityContract extends Contract {
@@ -89,17 +93,37 @@ export class ActivityContract extends Contract {
   }
 
   private async getActivity (context: Context, activityId: string): Promise<Activity> {
-    const { id, name, parentIds, lot, createdAt } = await readState(context, activityId)
-    return new Activity({ id, name, parentIds, lot, createdAt })
+    const activity = await readState(context, activityId)
+    const { id, name, parentIds, lot, createdAt } = activity
+    switch (name) {
+      case "Penangkapan": {
+        const { harbor, vessel, location } = activity
+        return new CaptureActivity({ id, name, parentIds, lot, createdAt }, harbor, vessel, location)
+      }
+      case "Olah": {
+        const { supplier, storage, processTo, location } = activity
+        return new ProcessActivity({ id, name, parentIds, lot, createdAt }, supplier, storage, processTo, location)
+      }
+      case "Pasarkan": {
+        const { marketTo, location } = activity
+        return new MarketActivity({ id, name, parentIds, lot, createdAt }, marketTo, location)
+      }
+      case "Gabung": {
+        return new CombineActivity({ id, name, parentIds, lot, createdAt })
+      }
+      case "Pecah": {
+        return new SplitActivity({ id, name, parentIds, lot, createdAt })
+      }
+      case "Transfer": {
+        const { user } = activity
+        return new TransferActivity({ id, name, parentIds, lot, createdAt }, user)
+      }
+    }
   }
 
   public async getTotalWeightByQuery(context: Context, queryString: string): Promise<any> {
-    const logger = Shim.newLogger("getTotalWeightByQuery")
-    logger.debug("Waiting for getQuery")
     const resultsIterator = await context.stub.getQueryResult(queryString)
-    logger.debug("Get total weight")
     const totalWeight = await getTotalWeight(resultsIterator)
-    logger.debug("Total weight %s", totalWeight)
     return JSON.stringify({
       totalWeight
     })
