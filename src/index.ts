@@ -25,9 +25,7 @@ const main = async () => {
 
     const { mspId } = getOrgCredentials()
     app.locals.PEER_0_CCP = getConnectionInfo(mspId)
-    logger.info("CCP for Peer0: %O", app.locals.PEER_0_CCP)
     app.locals.PEER_1_CCP = getConnectionInfo(mspId, 1)
-    logger.info("CCP for Peer1: %O", app.locals.PEER_1_CCP)
 
     const PORT = process.env.PORT || DEFAULT_PORT
     app.listen(PORT, () => {

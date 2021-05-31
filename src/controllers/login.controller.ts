@@ -7,6 +7,9 @@ import { sendSuccessResponse, sendErrorResponse } from "~/utils/response.util"
 import { getOrgName } from "~/utils/organization.util"
 
 import { query } from "~/services/query.service"
+import { getWallet } from "~/utils/wallet.util"
+
+import { gateways, connect } from "~/gateway/index"
 
 const login = async (req: Request, res: ExpressResponse): Promise<ExpressResponse<Response>> => {
   try {
@@ -14,8 +17,19 @@ const login = async (req: Request, res: ExpressResponse): Promise<ExpressRespons
     if (!username || !password)
       return sendErrorResponse(res, "Username or password is required")
 
-    const requestBody = { ...req.body, organization: getOrgName() }
+    const wallet = await getWallet()
+    const identity = await wallet.get(username)
+    if (!identity) {
+      logger.error(`Identity ${username} does not exist`)
+      throw new Error(`An identity for the user ${username} does not exist in the wallet`)
+    }
 
+    if (gateways[username] === undefined) {
+      const ccp = req.app.locals[`PEER_${req.app.locals.ACTIVE_PEER_NUMBER}_CCP`]
+      await connect(ccp, wallet, username)
+    }
+
+    const requestBody = { ...req.body, organization: getOrgName() }
     const userBuffer = await query(
       req, { username }, "UserContract", "login",
       JSON.stringify(requestBody)
