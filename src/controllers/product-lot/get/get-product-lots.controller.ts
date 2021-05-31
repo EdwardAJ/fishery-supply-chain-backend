@@ -17,12 +17,22 @@ const getProductLots = async (req: Request, res: ExpressResponse):
 
       const username = getAppOrgAdminUsername()
 
-      const queryString = { selector: {}, fields: ["lot.commodityType", "lot.weight"] }
+      const queryString = {
+        selector: {},
+        fields: ["lot.weight"],
+        use_index: ["_design/aggregationDoc", "aggregationQuery"]
+      }
 
       if (harborId) {
-        queryString.selector = { harbor: { id: harborId } }
+        queryString.selector = {
+          harbor: { id: harborId },
+          name: "Penangkapan"
+        }
       } else if (vesselId) {
-        queryString.selector = { vessel: { id: vesselId } }
+        queryString.selector = {
+          vessel: { id: vesselId },
+          name: "Penangkapan"
+        }
       }
 
       const productLotsBuffer =

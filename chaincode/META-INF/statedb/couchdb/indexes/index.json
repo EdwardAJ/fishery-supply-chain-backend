@@ -1,9 +1,16 @@
 {
   "index": {
+    "partial_filter_selector": {
+      "name": "Penangkapan"
+    },
     "fields": [
-      "lot"
+      "vessel.id",
+      "harbor.id",
+      "lot",
+      "lot.weight"
     ]
   },
-  "name": "query-index",
+  "name": "aggregationQuery",
+  "ddoc": "aggregationDoc",
   "type": "json"
 }
