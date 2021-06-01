@@ -115,8 +115,8 @@ export class ActivityContract extends Contract {
         return new SplitActivity({ id, name, parentIds, lot, createdAt })
       }
       case "Transfer": {
-        const { user } = activity
-        return new TransferActivity({ id, name, parentIds, lot, createdAt }, user)
+        const { from } = activity
+        return new TransferActivity({ id, name, parentIds, lot, createdAt }, from)
       }
     }
   }
