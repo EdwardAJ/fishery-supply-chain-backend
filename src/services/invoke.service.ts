@@ -17,8 +17,6 @@ const invoke = async (
   const { username } = user
 
   let connectionAttemptCount = 0
-  // Connect to peer0 or peer1 first, then retry the request.
-  const ccp = req.app.locals[`PEER_${req.app.locals.ACTIVE_PEER_NUMBER}_CCP`]
   while (connectionAttemptCount !== 2) {
     connectionAttemptCount++
     try {
@@ -32,6 +30,7 @@ const invoke = async (
     } catch (error) {
       if (connectionAttemptCount === 2) throw error
       req.app.locals.ACTIVE_PEER_NUMBER = 1 - req.app.locals.ACTIVE_PEER_NUMBER
+      const ccp = req.app.locals[`PEER_${req.app.locals.ACTIVE_PEER_NUMBER}_CCP`]
       const wallet = await getWallet()
       await validateWallet(wallet, username)
       await connect(ccp, wallet, username)
